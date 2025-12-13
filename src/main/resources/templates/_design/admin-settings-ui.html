@@ -3,42 +3,113 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Clientes e Config</title>
+  <title>Admin - Gestão Completa</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --primary: #E91E63; --bg-body: #F3F4F6; --text-dark: #1F2937; --border: #E5E7EB; --radius: 12px; }
+    :root { --primary: #E91E63; --primary-hover: #C2185B; --bg-body: #F3F4F6; --text-dark: #1F2937; --border: #E5E7EB; --radius: 12px; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Poppins', sans-serif; background: var(--bg-body); padding: 20px; }
+    body { font-family: 'Poppins', sans-serif; background: var(--bg-body); padding: 20px; color: var(--text-dark); }
 
-    .container { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
-    h2 { margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+    .container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+    h2 { margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
-    /* SECTION CLIENTES */
-    .client-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; }
-    .client-table th, .client-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); }
-    .client-table th { background: #f9f9f9; font-weight: 600; }
+    /* TABELAS GENÉRICAS */
+    .data-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .data-table th, .data-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); }
+    .data-table th { background: #f9f9f9; font-weight: 600; color: #555; }
 
-    .badge-danger { background: #FEE2E2; color: #991B1B; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
-    .btn-ban { color: red; background: none; border: 1px solid red; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; }
-    .btn-ban:hover { background: #FEE2E2; }
+    /* BADGES E BOTÕES */
+    .badge-danger { background: #FEE2E2; color: #991B1B; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+    .badge-success { background: #D1FAE5; color: #065F46; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
 
-    /* SECTION CONFIG SALÃO */
+    .btn-outline-danger { color: #DC2626; background: none; border: 1px solid #DC2626; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 0.85rem; transition: 0.2s; }
+    .btn-outline-danger:hover { background: #FEE2E2; }
+
+    .btn-primary { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-icon { background: transparent; border: 1px solid var(--border); padding: 5px; border-radius: 6px; cursor: pointer; }
+
+    /* FORM CONFIG */
+    .config-card { background: white; padding: 25px; border-radius: var(--radius); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; font-weight: 500; }
-    input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Poppins'; }
+    label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; }
+    input[type="text"], input[type="email"] { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Poppins'; outline: none; }
+    input:focus { border-color: var(--primary); }
+    .color-picker { width: 100%; height: 45px; padding: 2px; cursor: pointer; border: 1px solid var(--border); border-radius: 8px; }
 
-    .color-picker { height: 45px; padding: 2px; cursor: pointer; }
-    .btn-save { background: var(--primary); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    /* SEÇÃO DE SERVIÇOS (TAGS) */
+    .services-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+    .tag { background: #F3F4F6; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; border: 1px solid #E5E7EB; }
+
+    /* MODAL (SIMPLIFICADO) */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+    .modal { background: white; padding: 30px; border-radius: var(--radius); width: 500px; max-width: 90%; }
+    .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .checkbox-group { display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto; border: 1px solid var(--border); padding: 10px; border-radius: 8px; }
+    .checkbox-item { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
 
   </style>
 </head>
 <body>
+
 <div class="container">
 
   <section>
+    <h2>
+      Equipe & Profissionais
+      <button class="btn-primary" onclick="toggleModal(true)">+ Nova Profissional</button>
+    </h2>
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>Profissional</th>
+        <th>E-mail (Login)</th>
+        <th>Serviços Habilitados</th>
+        <th>Status</th>
+        <th>Ação</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 32px; height: 32px; background: #E91E63; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">JS</div>
+          <div>
+            <strong>Julia Silva</strong><br>
+            <span style="font-size: 0.8rem; color: #666;">Admin</span>
+          </div>
+        </td>
+        <td>julia@salao.com</td>
+        <td><span class="tag">Todos</span></td>
+        <td><span class="badge-success">Ativo</span></td>
+        <td><button class="btn-icon">✏️</button></td>
+      </tr>
+      <tr>
+        <td style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 32px; height: 32px; background: #9C27B0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">MG</div>
+          <div>
+            <strong>Mariana Garcia</strong><br>
+            <span style="font-size: 0.8rem; color: #666;">Profissional</span>
+          </div>
+        </td>
+        <td>mari@salao.com</td>
+        <td>
+          <div class="services-tags">
+            <span class="tag">Manicure</span>
+            <span class="tag">Pedicure</span>
+          </div>
+        </td>
+        <td><span class="badge-success">Ativo</span></td>
+        <td><button class="btn-outline-danger">Desativar</button></td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
     <h2>Gestão de Clientes (CRM)</h2>
-    <table class="client-table">
+    <table class="data-table">
       <thead>
       <tr>
         <th>Nome</th>
@@ -51,14 +122,14 @@
       <tr>
         <td>Ana Clara</td>
         <td>(11) 99999-0000</td>
-        <td><span style="color:green">Cliente Fiel</span></td>
-        <td><button style="border:1px solid #ccc; background:white; padding:5px;">Ver</button></td>
+        <td><span style="color:green; font-weight: 600; font-size: 0.9rem;">★ Cliente Fiel</span></td>
+        <td><button class="btn-icon">👁️</button></td>
       </tr>
       <tr>
         <td style="font-weight:bold">Beatriz "Bia"</td>
         <td>(21) 98888-1234</td>
         <td><span class="badge-danger">⚠ 3 Faltas</span></td>
-        <td><button class="btn-ban">Banir</button></td>
+        <td><button class="btn-outline-danger">Banir</button></td>
       </tr>
       </tbody>
     </table>
@@ -66,7 +137,7 @@
 
   <section>
     <h2>Identidade do Salão</h2>
-    <div style="background: white; padding: 25px; border-radius: 12px;">
+    <div class="config-card">
       <div class="form-grid">
         <div class="form-group">
           <label>Nome Fantasia</label>
@@ -77,7 +148,7 @@
           <input type="text" value="Sua autoestima em primeiro lugar">
         </div>
         <div class="form-group">
-          <label>Cor Primária (Tema)</label>
+          <label>Cor Primária (Tema do Site)</label>
           <input type="color" class="color-picker" value="#E91E63">
         </div>
         <div class="form-group">
@@ -85,10 +156,66 @@
           <input type="text" value="(00) 00000-0000">
         </div>
       </div>
-      <button class="btn-save">Salvar Alterações</button>
+      <button class="btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;">Salvar Alterações</button>
     </div>
   </section>
 
 </div>
+
+<div class="modal-overlay" id="modalProfissional">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Novo Profissional</h3>
+      <button style="background:none; border:none; cursor:pointer; font-size: 1.2rem;" onclick="toggleModal(false)">✖</button>
+    </div>
+    <form>
+      <div class="form-group">
+        <label>Nome Completo</label>
+        <input type="text" placeholder="Ex: Mariana Garcia" required>
+      </div>
+      <div class="form-group">
+        <label>E-mail (Será usado para login)</label>
+        <input type="email" placeholder="mariana@email.com" required>
+        <small style="color: #666; font-size: 0.75rem;">Senha inicial padrão: <b>mudar123</b></small>
+      </div>
+
+      <div class="form-group">
+        <label>Serviços que realiza:</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="s1" checked> <label for="s1" style="margin:0">Manicure Simples</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="s2" checked> <label for="s2" style="margin:0">Pedicure Simples</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="s3"> <label for="s3" style="margin:0">Alongamento Gel</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="s4"> <label for="s4" style="margin:0">Spa dos Pés</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Cor na Agenda</label>
+        <input type="color" class="color-picker" value="#9C27B0" style="height: 35px;">
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button type="button" onclick="toggleModal(false)" style="flex:1; padding: 10px; border: 1px solid #ddd; background: white; border-radius: 8px; cursor: pointer;">Cancelar</button>
+        <button type="submit" class="btn-primary" style="flex:1; justify-content: center;">Cadastrar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function toggleModal(show) {
+    const modal = document.getElementById('modalProfissional');
+    modal.style.display = show ? 'flex' : 'none';
+  }
+</script>
+
 </body>
 </html>
