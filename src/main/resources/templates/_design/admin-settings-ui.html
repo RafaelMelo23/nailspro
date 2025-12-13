@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Clientes e Config</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --primary: #E91E63; --bg-body: #F3F4F6; --text-dark: #1F2937; --border: #E5E7EB; --radius: 12px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: var(--bg-body); padding: 20px; }
+
+    .container { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+    h2 { margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+
+    /* SECTION CLIENTES */
+    .client-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; }
+    .client-table th, .client-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); }
+    .client-table th { background: #f9f9f9; font-weight: 600; }
+
+    .badge-danger { background: #FEE2E2; color: #991B1B; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+    .btn-ban { color: red; background: none; border: 1px solid red; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; }
+    .btn-ban:hover { background: #FEE2E2; }
+
+    /* SECTION CONFIG SALÃO */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: 500; }
+    input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Poppins'; }
+
+    .color-picker { height: 45px; padding: 2px; cursor: pointer; }
+    .btn-save { background: var(--primary); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <section>
+    <h2>Gestão de Clientes (CRM)</h2>
+    <table class="client-table">
+      <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Telefone</th>
+        <th>Histórico</th>
+        <th>Ação</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>Ana Clara</td>
+        <td>(11) 99999-0000</td>
+        <td><span style="color:green">Cliente Fiel</span></td>
+        <td><button style="border:1px solid #ccc; background:white; padding:5px;">Ver</button></td>
+      </tr>
+      <tr>
+        <td style="font-weight:bold">Beatriz "Bia"</td>
+        <td>(21) 98888-1234</td>
+        <td><span class="badge-danger">⚠ 3 Faltas</span></td>
+        <td><button class="btn-ban">Banir</button></td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Identidade do Salão</h2>
+    <div style="background: white; padding: 25px; border-radius: 12px;">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nome Fantasia</label>
+          <input type="text" value="Studio Belas Unhas">
+        </div>
+        <div class="form-group">
+          <label>Slogan</label>
+          <input type="text" value="Sua autoestima em primeiro lugar">
+        </div>
+        <div class="form-group">
+          <label>Cor Primária (Tema)</label>
+          <input type="color" class="color-picker" value="#E91E63">
+        </div>
+        <div class="form-group">
+          <label>WhatsApp Comercial</label>
+          <input type="text" value="(00) 00000-0000">
+        </div>
+      </div>
+      <button class="btn-save">Salvar Alterações</button>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

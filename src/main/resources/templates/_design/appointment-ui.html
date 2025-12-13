@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento - Identity Restore</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- VARIÁVEIS (Mantendo sua identidade visual) --- */
+    :root {
+      --primary-color: #E91E63;
+      --primary-bg-light: #FCE4EC;
+      --text-dark: #1F2937;
+      --text-gray: #6B7280;
+      --bg-body: #F3F4F6;
+      --bg-card: #FFFFFF;
+      --border-color: #E5E7EB;
+
+      --radius-lg: 12px;
+      --radius-sm: 8px;
+
+      --spacing-md: 1.5rem;
+      --font-main: 'Poppins', sans-serif;
+    }
+
+    /* --- RESET --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-body);
+      color: var(--text-dark);
+      padding-bottom: 40px;
+    }
+
+    /* Utilitários de Visibilidade */
+    .hidden { display: none !important; }
+    .active-section { display: block !important; animation: fadeIn 0.4s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* --- HEADER --- */
+    .app-header {
+      background: var(--bg-card);
+      padding: 1rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-identity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      font-size: 1.5rem;
+      background: var(--primary-bg-light);
+      width: 40px; height: 40px;
+      color: var(--primary-color);
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+    }
+
+    .brand-name { font-size: 1.1rem; font-weight: 600; }
+
+    /* --- STEPPER --- */
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      padding: 0 10px;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-circle {
+      width: 30px; height: 30px;
+      background-color: #DDD;
+      color: #FFF;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+
+    .step-label {
+      font-size: 0.75rem;
+      color: var(--text-gray);
+      font-weight: 500;
+    }
+
+    .step.active .step-circle { background-color: var(--primary-color); }
+    .step.active .step-label { color: var(--primary-color); font-weight: 700; }
+
+    .step-line {
+      flex-grow: 1;
+      height: 2px;
+      background-color: #DDD;
+      margin: -15px 10px 0 10px;
+      z-index: 1;
+    }
+
+    /* --- TÍTULOS --- */
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-gray);
+      margin-bottom: 1.5rem;
+    }
+
+    /* --- CARDS GENÉRICOS DE SELEÇÃO (Reaproveitando estilo service-item) --- */
+    .selection-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .selection-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .selection-item:hover {
+      border-color: var(--primary-color);
+      transform: translateX(4px);
+    }
+
+    .selection-item.selected {
+      border-color: var(--primary-color);
+      background-color: var(--primary-bg-light);
+    }
+
+    /* Profissional específico */
+    .prof-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .prof-avatar {
+      width: 50px; height: 50px;
+      background-color: #eee;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold;
+      color: var(--text-gray);
+      font-size: 1.1rem;
+    }
+
+    .item-info h3 { font-size: 1rem; font-weight: 600; margin-bottom: 2px; }
+    .item-info p { font-size: 0.85rem; color: var(--text-gray); }
+    .item-price { font-weight: 700; color: var(--primary-color); }
+
+    /* Ícone de Check */
+    .selection-check {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: transparent;
+      transition: 0.2s;
+    }
+
+    .selection-item.selected .selection-check {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+    }
+
+    /* --- CALENDÁRIO & TIME (Seu CSS) --- */
+    .datetime-wrapper {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .custom-calendar {
+      background: #FFF;
+      max-width: 100%;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .current-month { font-weight: 700; font-size: 1rem; text-transform: capitalize; }
+
+    .cal-nav-btn {
+      background: transparent; border: 1px solid var(--border-color);
+      border-radius: 50%; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-gray);
+    }
+
+    .calendar-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      text-align: center; font-size: 0.8rem; color: var(--text-gray);
+      font-weight: 600; margin-bottom: 10px;
+    }
+
+    .calendar-days {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;
+    }
+
+    .day-btn {
+      aspect-ratio: 1 / 1; background: transparent; border: none;
+      border-radius: 50%; font-family: var(--font-main);
+      font-size: 0.9rem; color: var(--text-dark); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .day-btn:hover:not(.disabled) { background-color: #F3F4F6; color: var(--primary-color); }
+    .day-btn.selected { background-color: var(--primary-color); color: white; font-weight: 700; }
+    .day-btn.disabled { color: #ccc; pointer-events: none; }
+
+    /* Time Slots */
+    .slots-grid-compact {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px;
+    }
+    .slot-box {
+      padding: 10px 0; text-align: center; background: #FFF;
+      border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+      font-size: 0.9rem; cursor: pointer; transition: 0.2s;
+    }
+    .slot-box:hover { border-color: var(--primary-color); }
+    .slot-box.selected { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+    /* --- REVIEW --- */
+    .review-card {
+      background: var(--bg-card); border-radius: var(--radius-lg);
+      padding: 20px; border: 1px solid var(--border-color); margin-bottom: 1.5rem;
+    }
+    .review-header {
+      border-bottom: 1px solid #EEE; padding-bottom: 15px; margin-bottom: 15px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .review-service-name { font-size: 1.1rem; font-weight: 600; }
+    .review-price { color: var(--primary-color); font-weight: 700; }
+    .review-row { margin-bottom: 10px; font-size: 0.95rem; color: var(--text-dark); display: flex; gap: 10px;}
+    .review-total {
+      margin-top: 20px; padding-top: 15px; border-top: 2px dashed var(--border-color);
+      display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem;
+    }
+
+    /* --- NAVIGATION --- */
+    .step-actions { display: flex; justify-content: space-between; margin-top: 20px; }
+    .btn-primary {
+      background-color: var(--primary-color); color: white; border: none;
+      padding: 12px 30px; border-radius: var(--radius-sm); font-weight: 600;
+      font-size: 1rem; cursor: pointer; transition: background 0.2s;
+    }
+    .btn-primary:disabled { background-color: #ccc; cursor: not-allowed; }
+    .btn-secondary {
+      background-color: transparent; color: var(--text-gray); border: 1px solid var(--border-color);
+      padding: 12px 25px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="container header-flex">
+    <div class="brand-identity">
+      <div class="brand-logo">✨</div>
+      <div class="brand-name">Beleza & Estética</div>
+    </div>
+    <div class="user-placeholder">👤</div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="stepper">
+    <div class="step active" id="step-ind-1">
+      <div class="step-circle">1</div>
+      <div class="step-label">Profissional</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-ind-2">
+      <div class="step-circle">2</div>
+      <div class="step-label">Serviço</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-ind-3">
+      <div class="step-circle">3</div>
+      <div class="step-label">Data</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-ind-4">
+      <div class="step-circle">4</div>
+      <div class="step-label">Fim</div>
+    </div>
+  </div>
+
+  <form id="booking-form" onsubmit="event.preventDefault()">
+
+    <div id="step-1" class="active-section">
+      <h2 class="section-title">Escolha o Profissional</h2>
+      <p class="section-subtitle">Com quem você deseja ser atendido(a)?</p>
+
+      <div class="selection-list" id="professional-list-container">
+      </div>
+    </div>
+
+    <div id="step-2" class="hidden">
+      <h2 class="section-title">Selecione o Serviço</h2>
+      <p class="section-subtitle" id="service-subtitle">Procedimentos disponíveis</p>
+
+      <div class="selection-list" id="service-list-container">
+      </div>
+    </div>
+
+    <div id="step-3" class="hidden">
+      <h2 class="section-title">Data e Horário</h2>
+      <p class="section-subtitle">Verifique a disponibilidade</p>
+
+      <div class="datetime-wrapper">
+        <div class="custom-calendar">
+          <div class="calendar-header">
+            <button class="cal-nav-btn" onclick="changeMonth(-1)">❮</button>
+            <span class="current-month" id="current-month-display">Outubro 2023</span>
+            <button class="cal-nav-btn" onclick="changeMonth(1)">❯</button>
+          </div>
+          <div class="calendar-weekdays">
+            <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
+          </div>
+          <div class="calendar-days" id="calendar-days-grid">
+          </div>
+        </div>
+
+        <div>
+          <label class="input-label" style="margin-bottom:10px; display:block;">Horários Disponíveis</label>
+          <div class="slots-grid-compact" id="time-slots-container">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="step-4" class="hidden">
+      <h2 class="section-title">Confirmar Agendamento</h2>
+      <p class="section-subtitle">Verifique os detalhes antes de finalizar</p>
+
+      <div class="review-card">
+        <div class="review-header">
+          <span class="review-service-name" id="review-service">Nome do Serviço</span>
+          <span class="review-price" id="review-price">R$ 0,00</span>
+        </div>
+
+        <div class="review-row">
+          <span class="icon">👤</span>
+          <span id="review-professional">Profissional</span>
+        </div>
+        <div class="review-row">
+          <span class="icon">📅</span>
+          <span id="review-date">Data</span>
+        </div>
+        <div class="review-row">
+          <span class="icon">⏰</span>
+          <span id="review-time">Horário</span>
+        </div>
+
+        <div class="review-total">
+          <span>Total</span>
+          <span id="review-total">R$ 0,00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-actions">
+      <button type="button" class="btn-secondary" id="btn-back" onclick="prevStep()" style="visibility: hidden;">Voltar</button>
+      <button type="button" class="btn-primary" id="btn-next" onclick="nextStep()" disabled>Continuar</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  /* --- MOCK DATABASE (Dados Simulados) --- */
+  const servicesDB = [
+    { id: 101, name: "Limpeza de Pele", price: 150, duration: 60 },
+    { id: 102, name: "Botox (Zona Testa)", price: 800, duration: 30 },
+    { id: 103, name: "Massagem Relaxante", price: 120, duration: 50 },
+    { id: 104, name: "Drenagem Linfática", price: 100, duration: 40 },
+    { id: 105, name: "Preenchimento Labial", price: 1200, duration: 45 }
+  ];
+
+  const professionalsDB = [
+    {
+      id: 1,
+      name: "Dra. Ana Souza",
+      role: "Biomédica",
+      avatar: "AS",
+      // Ana faz apenas invasivos
+      services: [102, 105]
+    },
+    {
+      id: 2,
+      name: "Carla Silva",
+      role: "Esteticista",
+      avatar: "CS",
+      // Carla faz estética básica
+      services: [101, 103, 104]
+    },
+    {
+      id: 3,
+      name: "Dr. Roberto",
+      role: "Dermatologista",
+      avatar: "DR",
+      // Roberto faz tudo menos massagem
+      services: [101, 102, 105]
+    }
+  ];
+
+  // Horários fixos para exemplo
+  const mockTimes = ["09:00", "10:00", "11:30", "14:00", "15:30", "17:00"];
+
+  /* --- STATE MANAGEMENT --- */
+  let currentStep = 1;
+  let booking = {
+    professional: null,
+    service: null,
+    date: null,
+    time: null
+  };
+
+  // Data atual para calendário
+  let currDate = new Date();
+
+  /* --- INICIALIZAÇÃO --- */
+  document.addEventListener('DOMContentLoaded', () => {
+    renderProfessionals();
+    renderCalendar();
+    updateNavigation();
+  });
+
+  /* --- RENDERIZADORES --- */
+
+  // 1. Renderiza Lista de Profissionais
+  function renderProfessionals() {
+    const container = document.getElementById('professional-list-container');
+    container.innerHTML = '';
+
+    // Opção "Sem Preferência" (Opcional, mas boa prática)
+    const anyProfHTML = `
+                <div class="selection-item" onclick="selectProfessional(this, null)">
+                    <div class="prof-content">
+                        <div class="prof-avatar" style="background:#E91E63; color:white;">★</div>
+                        <div class="item-info">
+                            <h3>Sem preferência</h3>
+                            <p>Primeiro horário disponível</p>
+                        </div>
+                    </div>
+                    <div class="selection-check">✔</div>
+                </div>`;
+    container.innerHTML += anyProfHTML;
+
+    professionalsDB.forEach(prof => {
+      const html = `
+                <div class="selection-item" onclick="selectProfessional(this, ${prof.id})">
+                    <div class="prof-content">
+                        <div class="prof-avatar">${prof.avatar}</div>
+                        <div class="item-info">
+                            <h3>${prof.name}</h3>
+                            <p>${prof.role}</p>
+                        </div>
+                    </div>
+                    <div class="selection-check">✔</div>
+                </div>`;
+      container.innerHTML += html;
+    });
+  }
+
+  // 2. Renderiza Serviços (Com filtro!)
+  function renderServices() {
+    const container = document.getElementById('service-list-container');
+    const subtitle = document.getElementById('service-subtitle');
+    container.innerHTML = '';
+
+    let filteredServices = [];
+
+    if (booking.professional) {
+      // Filtra apenas o que o profissional faz
+      subtitle.innerText = `Especialidades de ${booking.professional.name}`;
+      filteredServices = servicesDB.filter(s => booking.professional.services.includes(s.id));
+    } else {
+      // Mostra tudo se não tiver preferência
+      subtitle.innerText = "Todos os serviços disponíveis";
+      filteredServices = servicesDB;
+    }
+
+    filteredServices.forEach(srv => {
+      const html = `
+                <div class="selection-item" onclick="selectService(this, ${srv.id})">
+                    <div class="item-info">
+                        <h3>${srv.name}</h3>
+                        <p>${srv.duration} min • A partir de</p>
+                    </div>
+                    <div style="text-align:right">
+                        <div class="item-price">R$ ${srv.price}</div>
+                        </div>
+                    <div class="selection-check" style="margin-left:15px">✔</div>
+                </div>`;
+      container.innerHTML += html;
+    });
+  }
+
+  // 3. Calendário Lógico
+  function renderCalendar() {
+    const monthDisplay = document.getElementById('current-month-display');
+    const daysGrid = document.getElementById('calendar-days-grid');
+
+    const year = currDate.getFullYear();
+    const month = currDate.getMonth();
+
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+
+    const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+    monthDisplay.innerText = `${months[month]} ${year}`;
+    daysGrid.innerHTML = "";
+
+    // Dias vazios antes do dia 1
+    for (let i = 0; i < firstDayIndex; i++) {
+      const div = document.createElement("div");
+      daysGrid.appendChild(div);
+    }
+
+    // Dias do mês
+    for (let i = 1; i <= lastDate; i++) {
+      const btn = document.createElement("button");
+      btn.innerText = i;
+      btn.classList.add("day-btn");
+      btn.type = "button"; // Previne submit
+
+      // Simples verificação de data passada
+      const today = new Date();
+      const checkDate = new Date(year, month, i);
+      if (checkDate < today.setHours(0,0,0,0)) {
+        btn.classList.add("disabled");
+      } else {
+        btn.onclick = () => selectDate(btn, i, month, year);
+      }
+
+      daysGrid.appendChild(btn);
+    }
+
+    // Renderiza Slots de tempo (resetados)
+    const timeContainer = document.getElementById('time-slots-container');
+    timeContainer.innerHTML = '';
+    mockTimes.forEach(time => {
+      const div = document.createElement('div');
+      div.className = 'slot-box';
+      div.innerText = time;
+      div.onclick = () => selectTime(div, time);
+      timeContainer.appendChild(div);
+    });
+  }
+
+  function changeMonth(dir) {
+    currDate.setMonth(currDate.getMonth() + dir);
+    renderCalendar();
+  }
+
+  /* --- LÓGICA DE SELEÇÃO (EVENTS) --- */
+
+  function selectProfessional(el, id) {
+    // Remove 'selected' visual de todos
+    document.querySelectorAll('#professional-list-container .selection-item').forEach(d => d.classList.remove('selected'));
+    // Adiciona ao clicado
+    el.classList.add('selected');
+
+    if (id === null) {
+      booking.professional = null; // Sem preferência
+    } else {
+      booking.professional = professionalsDB.find(p => p.id === id);
+    }
+
+    checkStepValidity();
+  }
+
+  function selectService(el, id) {
+    document.querySelectorAll('#service-list-container .selection-item').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+    booking.service = servicesDB.find(s => s.id === id);
+    checkStepValidity();
+  }
+
+  function selectDate(el, day, month, year) {
+    document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+    booking.date = `${day}/${month+1}/${year}`;
+    checkStepValidity();
+  }
+
+  function selectTime(el, time) {
+    document.querySelectorAll('.slot-box').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+    booking.time = time;
+    checkStepValidity();
+  }
+
+  /* --- NAVEGAÇÃO ENTRE PASSOS --- */
+
+  function checkStepValidity() {
+    const btn = document.getElementById('btn-next');
+    let valid = false;
+
+    if (currentStep === 1 && (booking.professional !== undefined)) valid = true;
+    // Nota: booking.professional pode ser null (sem preferencia) ou objeto, mas definimos undefined no inicio se nao clicado.
+    // Simplificando: vamos checar se há seleção visual.
+    if (currentStep === 1 && document.querySelector('#professional-list-container .selected')) valid = true;
+
+    if (currentStep === 2 && booking.service) valid = true;
+    if (currentStep === 3 && booking.date && booking.time) valid = true;
+    if (currentStep === 4) valid = true;
+
+    btn.disabled = !valid;
+  }
+
+  function nextStep() {
+    if (currentStep === 4) {
+      alert("Agendamento Enviado! JSON: " + JSON.stringify(booking));
+      return;
+    }
+
+    // Lógica ao sair do Passo 1: Renderizar serviços corretos
+    if (currentStep === 1) {
+      renderServices();
+    }
+    // Lógica ao entrar no Passo 4: Renderizar resumo
+    if (currentStep === 3) {
+      document.getElementById('review-professional').innerText = booking.professional ? booking.professional.name : "Qualquer profissional";
+      document.getElementById('review-service').innerText = booking.service.name;
+      document.getElementById('review-price').innerText = "R$ " + booking.service.price;
+      document.getElementById('review-total').innerText = "R$ " + booking.service.price;
+      document.getElementById('review-date').innerText = booking.date;
+      document.getElementById('review-time').innerText = booking.time;
+    }
+
+    // Animação de troca
+    document.getElementById(`step-${currentStep}`).classList.remove('active-section');
+    document.getElementById(`step-${currentStep}`).classList.add('hidden');
+
+    currentStep++;
+
+    document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+    document.getElementById(`step-${currentStep}`).classList.add('active-section');
+
+    updateNavigation();
+    checkStepValidity();
+  }
+
+  function prevStep() {
+    if (currentStep > 1) {
+      document.getElementById(`step-${currentStep}`).classList.remove('active-section');
+      document.getElementById(`step-${currentStep}`).classList.add('hidden');
+
+      currentStep--;
+
+      document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+      document.getElementById(`step-${currentStep}`).classList.add('active-section');
+
+      updateNavigation();
+    }
+  }
+
+  function updateNavigation() {
+    // Stepper Visual
+    document.querySelectorAll('.step').forEach((el, index) => {
+      if (index + 1 <= currentStep) el.classList.add('active');
+      else el.classList.remove('active');
+    });
+
+    // Botões
+    const btnBack = document.getElementById('btn-back');
+    const btnNext = document.getElementById('btn-next');
+
+    btnBack.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+    btnNext.innerText = currentStep === 4 ? 'Confirmar Agendamento' : 'Continuar';
+  }
+
+</script>
+</body>
+</html>
