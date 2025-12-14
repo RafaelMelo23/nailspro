@@ -1,17 +1,18 @@
-package com.rafael.nailspro.webapp.model.entity.client;
+package com.rafael.nailspro.webapp.model.entity.user;
 
 import com.rafael.nailspro.webapp.model.entity.Appointment;
-import com.rafael.nailspro.webapp.model.entity.user.User;
 import com.rafael.nailspro.webapp.model.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@Setter
-@Getter
 @Entity
+@SuperBuilder
+@Setter @Getter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "clients")
 @PrimaryKeyJoinColumn(name = "user_id")
 public class Client extends User {
@@ -21,6 +22,9 @@ public class Client extends User {
 
     @OneToMany(mappedBy = "client")
     private List<Appointment> clientAppointments;
+
+    @Column(name = "phone_number", nullable = false, unique = true, length = 13)
+    private String phoneNumber;
 
     @PrePersist
     public void prePersist() {

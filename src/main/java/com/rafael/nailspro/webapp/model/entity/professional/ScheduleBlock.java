@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.model.entity.professional;
 
+import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
