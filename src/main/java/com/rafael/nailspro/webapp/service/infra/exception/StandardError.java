@@ -1,10 +1,12 @@
 package com.rafael.nailspro.webapp.service.infra.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 
 import java.io.Serializable;
 import java.time.Instant;
 
+@AllArgsConstructor
 public class StandardError implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")

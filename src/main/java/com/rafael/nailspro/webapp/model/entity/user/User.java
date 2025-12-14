@@ -46,6 +46,10 @@ public abstract class User implements UserDetails {
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.userRole.name()));
 
+        if (this.userRole == UserRole.ADMIN) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_PROFESSIONAL"));
+        }
+
         return authorities;
     }
 
