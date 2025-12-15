@@ -8,7 +8,6 @@ import com.rafael.nailspro.webapp.model.enums.UserStatus;
 import com.rafael.nailspro.webapp.model.repository.ClientRepository;
 import com.rafael.nailspro.webapp.model.repository.UserRepository;
 import com.rafael.nailspro.webapp.service.infra.exception.BusinessException;
-import com.rafael.nailspro.webapp.service.infra.exception.LoginException;
 import com.rafael.nailspro.webapp.service.infra.exception.UserAlreadyExistsException;
 import com.rafael.nailspro.webapp.service.infra.security.TokenService;
 import lombok.RequiredArgsConstructor;

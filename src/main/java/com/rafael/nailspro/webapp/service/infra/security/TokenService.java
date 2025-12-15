@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 @Service
 public class TokenService {
 
-    @Value("${api.security.jwt.secret}")
+    @Value("${api.security.jwt.secret:whatever}")
     private String secret;
     private static final String ISSUER = "nailspro-api";
 

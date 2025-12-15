@@ -29,5 +29,6 @@ public class Client extends User {
     @PrePersist
     public void prePersist() {
         setUserRole(UserRole.CLIENT);
+        setMissedAppointments(0);
     }
 }

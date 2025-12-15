@@ -34,4 +34,18 @@ public class GlobalExceptionHandler {
                 request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<StandardError> userAlreadyExists(Exception e, HttpServletRequest request) {
+        String error = "Usuário já cadastrado";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        log.error("User tried registering with existing user info", e);
+        StandardError err = new StandardError(Instant.now(),
+                status.value(),
+                error,
+                e.getMessage(),
+                request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
 }

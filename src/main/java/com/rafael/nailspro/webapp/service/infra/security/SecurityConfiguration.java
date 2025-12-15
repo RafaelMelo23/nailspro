@@ -47,6 +47,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/admin/agenda-profissional").hasAnyRole("ADMIN", "PROFESSIONAL")
 
                         // APIs
+                        .requestMatchers("/api/v1/auth/login",
+                                "/api/v1/auth/register").permitAll()
 
                         // User/Anonymous Pages
                         .requestMatchers(HttpMethod.GET,

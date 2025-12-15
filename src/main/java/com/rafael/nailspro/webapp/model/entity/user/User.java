@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "user")
+@Table(name = "users")
 public abstract class User implements UserDetails {
     @Id
     @GeneratedValue
