@@ -1,0 +1,67 @@
+package com.rafael.nailspro.webapp.service.admin.salon.profile;
+
+import com.rafael.nailspro.webapp.model.dto.admin.salon.profile.SalonProfileDTO;
+import com.rafael.nailspro.webapp.model.entity.SalonProfile;
+import com.rafael.nailspro.webapp.model.repository.SalonProfileRepository;
+import com.rafael.nailspro.webapp.service.infra.files.FileUploadService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+
+@Service
+@RequiredArgsConstructor
+public class AdminSalonProfileService {
+
+    private final SalonProfileRepository salonProfileRepository;
+    private final FileUploadService fileUploadService;
+
+    public void createOrUpdateProfile(SalonProfileDTO profile) throws IOException {
+
+        SalonProfile salonProfile = salonProfileRepository.findById(1L)
+                .orElse(new SalonProfile());
+
+        if (profile.tradeName() != null) {
+            salonProfile.setTradeName(profile.tradeName());
+        }
+        if (profile.slogan() != null) {
+            salonProfile.setSlogan(profile.slogan());
+        }
+        if (profile.primaryColor() != null) {
+            salonProfile.setPrimaryColor(profile.primaryColor());
+        }
+
+        if (profile.logoBase64() != null) {
+            if (salonProfile.getLogoPath() != null) {
+                deleteSalonLogo();
+            }
+            salonProfile.setLogoPath(fileUploadService.uploadBase64Image(profile.logoBase64()));
+        }
+        if (profile.comercialPhone() != null) {
+            salonProfile.setComercialPhone(profile.comercialPhone());
+        }
+        if (profile.fullAddress() != null) {
+            salonProfile.setFullAddress(profile.fullAddress());
+        }
+        if (profile.socialMediaLink() != null) {
+            salonProfile.setSocialMediaLink(profile.socialMediaLink());
+        }
+        if (profile.warningMessage() != null) {
+            salonProfile.setWarningMessage(profile.warningMessage());
+        }
+        if (profile.status() != null) {
+            salonProfile.setOperationalStatus(profile.status());
+        }
+        if (profile.appointmentCancelWindowInMinutes() != null) {
+            salonProfile.setAppointmentCancelWindowInMinutes(profile.appointmentCancelWindowInMinutes());
+        }
+    }
+
+    public void deleteSalonLogo() throws IOException {
+
+        SalonProfile salonProfile = salonProfileRepository.findById(1L)
+                .orElse(new SalonProfile());
+
+        fileUploadService.deleteFile(salonProfile.getLogoPath());
+    }
+}

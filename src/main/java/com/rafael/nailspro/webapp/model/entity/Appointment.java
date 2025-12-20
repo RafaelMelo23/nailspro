@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,5 +48,8 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     @Column(name = "appointment_status")
     private AppointmentStatus appointmentStatus;
+
+    @Column(name = "date", nullable = false)
+    private LocalDateTime date;
 
 }

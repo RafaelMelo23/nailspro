@@ -1,18 +1,23 @@
 package com.rafael.nailspro.webapp.service.infra.security;
 
-import com.rafael.nailspro.webapp.model.repository.UserRepository;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.rafael.nailspro.webapp.model.entity.user.UserPrincipal;
+import com.rafael.nailspro.webapp.model.enums.UserRole;
+import com.rafael.nailspro.webapp.model.enums.security.TokenClaim;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -20,44 +25,43 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     TokenService tokenService;
 
-    @Autowired
-    UserRepository userRepository;
-
-
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        var token = recoverToken(request);
+        var token = recoverAndValidateToken(request);
 
         if (token != null) {
 
-            var userEmail = tokenService.validateToken(token);
+            Long userId = token.getClaim(TokenClaim.ID.getValue()).asLong();
+            String userEmail = token.getSubject();
+            UserRole userRole = UserRole.fromString(token.getClaim(TokenClaim.ROLE.getValue()).asString());
 
-            if (userEmail != null) {
-                UserDetails user = userRepository.findByEmail(userEmail);
+            UserPrincipal userPrincipal = UserPrincipal.builder()
+                    .id(userId)
+                    .email(userEmail)
+                    .userRole(userRole)
+                    .build();
 
-                if (user != null) {
+            var authentication = new UsernamePasswordAuthenticationToken(
+                    userPrincipal,
+                    null,
+                    userPrincipal.getAuthorities());
 
-                    var authentication = new UsernamePasswordAuthenticationToken(
-                            user, null,
-                            user.getAuthorities()
-                    );
-
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            }
-        }
-        filterChain.doFilter(request, response);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } filterChain.doFilter(request, response);
     }
 
-    private String recoverToken(HttpServletRequest request) {
+    private DecodedJWT recoverAndValidateToken(HttpServletRequest request) {
 
-        String authorization = request.getHeader("Authorization");
+        Cookie[] cookies = request.getCookies();
 
-        if (authorization == null) return null;
+        Optional<Cookie> jwtCookie = (cookies == null)
+                ? Optional.empty()
+                : Arrays.stream(cookies)
+                .filter(cookie -> "AUTH_TOKEN".equals(cookie.getName()))
+                .findFirst();
 
-        return authorization.substring(7);
+        return jwtCookie.map(cookie -> tokenService.validateAndDecode(cookie.getValue()))
+                .orElse(null);
     }
 }

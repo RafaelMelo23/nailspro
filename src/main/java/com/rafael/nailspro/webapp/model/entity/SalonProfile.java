@@ -24,8 +24,8 @@ public class SalonProfile {
     @Column(name = "primary_color", nullable = false, length = 15)
     private String primaryColor;
 
-    @Column(name = "logo_url", nullable = false)
-    private String logoUrl;
+    @Column(name = "logo_path", nullable = false)
+    private String logoPath;
 
     @Column(name = "comercial_phone", nullable = false, length = 11)
     private String comercialPhone;
@@ -43,7 +43,7 @@ public class SalonProfile {
     @Column(name = "warning_message", length = 200)
     private String warningMessage;
 
-    @Column(name = "appointment_cancel_window", nullable = false)
-    private Integer appointmentCancelWindow;
+    @Column(name = "appointment_cancel_window_in_minutes", nullable = false)
+    private Integer appointmentCancelWindowInMinutes;
 
 }

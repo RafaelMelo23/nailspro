@@ -1,0 +1,66 @@
+package com.rafael.nailspro.webapp.service.admin.client;
+
+import com.rafael.nailspro.webapp.model.dto.admin.client.ClientAppointmentDTO;
+import com.rafael.nailspro.webapp.model.dto.admin.client.ClientDTO;
+import com.rafael.nailspro.webapp.model.entity.SalonService;
+import com.rafael.nailspro.webapp.model.enums.UserStatus;
+import com.rafael.nailspro.webapp.model.repository.AppointmentRepository;
+import com.rafael.nailspro.webapp.model.repository.ClientRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class AdminClientService {
+
+    private final ClientRepository clientRepository;
+    private final AppointmentRepository appointmentRepository;
+
+    @Transactional
+    public void changeClientStatus(Long clientId, UserStatus status) {
+
+        clientRepository.changeClientStatus(clientId, status);
+    }
+
+    public Page<ClientDTO> searchForClients(String clientName, Pageable pageable) {
+
+        return clientRepository
+                .findByFullNameContainingIgnoreCase(clientName, pageable).map(cl -> ClientDTO.builder()
+                        .clientId(cl.getId())
+                        .email(cl.getEmail())
+                        .phoneNumber(cl.getPhoneNumber())
+                        .missedAppointments(cl.getMissedAppointments())
+                        .userStatus(cl.getStatus())
+                        .build());
+    }
+
+    public Page<ClientAppointmentDTO> getClientAppointments(Long clientId, Pageable pageable) {
+
+        return appointmentRepository
+                .getClientAppointmentsById(clientId, pageable)
+                .map(ap -> ClientAppointmentDTO.builder()
+                        .appointmentId(ap.getId())
+
+                        .professionalId(ap.getProfessional().getId())
+                        .professionalName(ap.getProfessional().getFullName())
+
+                        .appointmentDate(ap.getDate())
+                        .status(ap.getAppointmentStatus())
+
+                        .mainServiceName(ap.getMainSalonService().getName())
+                        .addOnServiceNames(
+                                ap.getAddOnSalonServices()
+                                        .stream()
+                                        .map(SalonService::getName)
+                                        .toList()
+                        )
+
+                        .totalValue(ap.getTotalValue())
+                        .observations(ap.getObservations())
+                        .build()
+                );
+    }
+}

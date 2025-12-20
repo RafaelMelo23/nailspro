@@ -24,7 +24,9 @@ public class SecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+
+        int cost = 12;
+        return new BCryptPasswordEncoder(cost);
     }
 
     @Bean
