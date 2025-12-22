@@ -18,7 +18,7 @@ import java.util.List;
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "externalId", nullable = false)
     private Long id;
 
     @ManyToOne(optional = false)

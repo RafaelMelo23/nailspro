@@ -2,15 +2,18 @@ package com.rafael.nailspro.webapp.model.entity;
 
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Getter
-@Setter
 @Entity
+@Builder
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@SQLRestriction("is_deleted = false")
 @Table(name = "service")
 public class SalonService {
     @Id
@@ -34,12 +37,21 @@ public class SalonService {
     private Integer value;
 
     @Column(name = "active", nullable = false)
-    private Boolean active = false;
+    private Boolean active = true;
+
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
 
     @ManyToMany
     @JoinTable(name = "service_professionals",
             joinColumns = @JoinColumn(name = "salonService_id"),
             inverseJoinColumns = @JoinColumn(name = "professionals_id"))
     private Set<Professional> professionals = new LinkedHashSet<>();
+
+    @PrePersist
+    protected void onCreate() {
+        this.active = true;
+        this.isDeleted = false;
+    }
 
 }

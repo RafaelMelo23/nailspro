@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.service;
 
+import com.rafael.nailspro.webapp.model.dto.professional.ProfessionalSimplifiedDTO;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.repository.ProfessionalRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,21 @@ public class ProfessionalService {
     public Set<Professional> findAllById(List<Long> ids) {
 
         return new HashSet<>(professionalRepository.findAllById(ids));
+    }
+
+    public List<ProfessionalSimplifiedDTO> findAllSimplified() {
+
+        return professionalRepository.findAll().stream()
+                .map(p -> ProfessionalSimplifiedDTO.builder()
+                        .externalId(p.getExternalId())
+                        .name(p.getFullName())
+                        .professionalPicture(p.getProfessionalPicture())
+                        .build())
+                .toList();
+    }
+
+    public Set<Professional> findAll() {
+
+        return new HashSet<>(professionalRepository.findAll());
     }
 }

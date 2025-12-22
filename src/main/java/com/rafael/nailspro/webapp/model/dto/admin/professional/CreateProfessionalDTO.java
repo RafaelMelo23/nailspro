@@ -9,5 +9,5 @@ import java.util.List;
 public record CreateProfessionalDTO(Long id,
                                     String fullName,
                                     String email,
-                                    List<SalonServiceDTO> services
+                                    List<Long> servicesOfferedByProfessional
 ) {}

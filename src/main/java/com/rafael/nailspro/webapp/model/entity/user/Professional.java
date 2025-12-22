@@ -14,6 +14,7 @@ import org.hibernate.annotations.SQLDelete;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 //@SQLDelete(sql = "UPDATE professionals SET is_active = false WHERE user_id = ?")
 //@FilterDef(
@@ -29,7 +30,11 @@ import java.util.Set;
 @Table(name = "professionals")
 @PrimaryKeyJoinColumn(name = "user_id")
 public class Professional extends User {
+
     private String professionalPicture;
+
+    @Column(unique = true, nullable = false)
+    private UUID externalId = UUID.randomUUID();
 
     @OneToOne
     private WorkSchedule workSchedule;
@@ -50,6 +55,7 @@ public class Professional extends User {
     public void prePersist() {
         this.isActive = Boolean.TRUE;
         this.isFirstLogin = Boolean.TRUE;
+        this.externalId = UUID.randomUUID();
     }
 
 }

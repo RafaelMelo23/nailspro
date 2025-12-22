@@ -28,9 +28,8 @@ public class AdminProfessionalService {
 
         Set<SalonService> servicesOfferedByProfessional =
                 new HashSet<>(salonServiceService.findByIdIn(
-                        professionalDTO.services()
+                        professionalDTO.servicesOfferedByProfessional()
                                 .stream()
-                                .map(SalonServiceDTO::id)
                                 .toList()
                 ));
 

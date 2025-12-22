@@ -14,7 +14,7 @@ import java.time.LocalTime;
 public class WorkSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "externalId", nullable = false)
     private Long id;
 
     @Enumerated(EnumType.STRING)

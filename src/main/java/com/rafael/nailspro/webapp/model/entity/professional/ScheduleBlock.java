@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class ScheduleBlock {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "externalId", nullable = false)
     private Long id;
 
     @Column(name = "date_and_start_time", nullable = false)
