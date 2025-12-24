@@ -2,6 +2,7 @@ package com.rafael.nailspro.webapp.model.entity.user;
 
 import com.rafael.nailspro.webapp.model.enums.UserRole;
 import lombok.Builder;
+import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Builder
+@Getter
 public class UserPrincipal implements UserDetails {
 
     private Long id;

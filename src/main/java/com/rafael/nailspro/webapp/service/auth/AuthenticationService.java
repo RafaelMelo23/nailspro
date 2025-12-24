@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.service;
+package com.rafael.nailspro.webapp.service.auth;
 
 import com.rafael.nailspro.webapp.model.dto.auth.LoginDTO;
 import com.rafael.nailspro.webapp.model.dto.auth.RegisterDTO;

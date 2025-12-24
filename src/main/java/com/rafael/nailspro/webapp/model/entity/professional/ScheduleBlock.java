@@ -2,14 +2,15 @@ package com.rafael.nailspro.webapp.model.entity.professional;
 
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @Entity
+@Builder
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "schedule_block")
 public class ScheduleBlock {
     @Id

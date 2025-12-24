@@ -11,10 +11,7 @@ import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 //@SQLDelete(sql = "UPDATE professionals SET is_active = false WHERE user_id = ?")
 //@FilterDef(
@@ -51,11 +48,13 @@ public class Professional extends User {
     @Column(name = "is_first_login", nullable = false)
     private Boolean isFirstLogin = false;
 
+    @OneToMany(mappedBy = "professional", orphanRemoval = true)
+    private Set<WorkSchedule> workSchedules = new HashSet<>();
+
     @PrePersist
     public void prePersist() {
         this.isActive = Boolean.TRUE;
         this.isFirstLogin = Boolean.TRUE;
         this.externalId = UUID.randomUUID();
     }
-
 }

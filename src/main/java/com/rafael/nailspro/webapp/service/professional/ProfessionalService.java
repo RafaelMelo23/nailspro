@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.service;
+package com.rafael.nailspro.webapp.service.professional;
 
 import com.rafael.nailspro.webapp.model.dto.professional.ProfessionalSimplifiedDTO;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
@@ -19,6 +19,11 @@ public class ProfessionalService {
     public Set<Professional> findAllById(List<Long> ids) {
 
         return new HashSet<>(professionalRepository.findAllById(ids));
+    }
+
+    public Professional findById(Long id) {
+        return professionalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Professional not found"));
     }
 
     public List<ProfessionalSimplifiedDTO> findAllSimplified() {

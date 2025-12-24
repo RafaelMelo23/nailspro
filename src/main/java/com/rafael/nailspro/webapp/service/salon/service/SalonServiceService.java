@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.service;
+package com.rafael.nailspro.webapp.service.salon.service;
 
 import com.rafael.nailspro.webapp.model.dto.salon.service.SalonServiceDTO;
 import com.rafael.nailspro.webapp.model.dto.salon.service.SalonServiceOutDTO;
@@ -6,6 +6,7 @@ import com.rafael.nailspro.webapp.model.entity.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.repository.SalonServiceRepository;
 import com.rafael.nailspro.webapp.service.infra.mapper.SalonServiceMapper;
+import com.rafael.nailspro.webapp.service.professional.ProfessionalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

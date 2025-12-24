@@ -2,8 +2,9 @@ package com.rafael.nailspro.webapp.controller.api.admin;
 
 import com.rafael.nailspro.webapp.model.dto.salon.service.SalonServiceDTO;
 import com.rafael.nailspro.webapp.model.dto.salon.service.SalonServiceOutDTO;
-import com.rafael.nailspro.webapp.service.SalonServiceService;
+import com.rafael.nailspro.webapp.service.salon.service.SalonServiceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class AdminSalonServiceController {
     public ResponseEntity<Void> createSalonService(@RequestBody SalonServiceDTO salonServiceDTO) {
 
         salonService.createService(salonServiceDTO);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")

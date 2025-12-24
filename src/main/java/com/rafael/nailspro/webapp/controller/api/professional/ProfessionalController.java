@@ -1,7 +1,7 @@
-package com.rafael.nailspro.webapp.controller.api.admin;
+package com.rafael.nailspro.webapp.controller.api.professional;
 
 import com.rafael.nailspro.webapp.model.dto.professional.ProfessionalSimplifiedDTO;
-import com.rafael.nailspro.webapp.service.ProfessionalService;
+import com.rafael.nailspro.webapp.service.professional.ProfessionalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
