@@ -33,4 +33,5 @@ public class ScheduleBlock {
     @ManyToOne(optional = false)
     @JoinColumn(name = "professional_id", nullable = false)
     private Professional professional;
+
 }

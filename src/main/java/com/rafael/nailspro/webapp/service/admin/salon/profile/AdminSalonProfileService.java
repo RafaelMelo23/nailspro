@@ -57,6 +57,12 @@ public class AdminSalonProfileService {
         }
     }
 
+    public SalonProfile findById(Long id) {
+
+        return salonProfileRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Couldnt find salon profile"));
+    }
+
     public void deleteSalonLogo() throws IOException {
 
         SalonProfile salonProfile = salonProfileRepository.findById(1L)

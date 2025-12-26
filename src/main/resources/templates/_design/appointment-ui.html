@@ -3,728 +3,478 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agendamento - Identity Restore</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!-- TODO: nao tem na UI os servicos de extra-->
+  <title>Nails Pro - Agendamento v2.1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* --- VARIÁVEIS (Mantendo sua identidade visual) --- */
+    /* --- VARIÁVEIS --- */
     :root {
-      --primary-color: #E91E63;
-      --primary-bg-light: #FCE4EC;
-      --text-dark: #1F2937;
-      --text-gray: #6B7280;
-      --bg-body: #F3F4F6;
+      --primary: #E91E63;
+      --primary-light: #FCE4EC;
+      --status-avail: #10B981;
+      --status-busy: #EF4444;
+      --status-part: #F59E0B;
+      --text-main: #1F2937;
+      --text-muted: #6B7280;
+      --bg-body: #F9FAFB;
       --bg-card: #FFFFFF;
-      --border-color: #E5E7EB;
-
-      --radius-lg: 12px;
-      --radius-sm: 8px;
-
-      --spacing-md: 1.5rem;
-      --font-main: 'Poppins', sans-serif;
+      --border: #E5E7EB;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
     }
 
-    /* --- RESET --- */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 90px; }
 
-    body {
-      font-family: var(--font-main);
-      background-color: var(--bg-body);
-      color: var(--text-dark);
-      padding-bottom: 40px;
-    }
-
-    /* Utilitários de Visibilidade */
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
     .hidden { display: none !important; }
-    .active-section { display: block !important; animation: fadeIn 0.4s ease; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .container {
-      width: 90%;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    /* --- HEADER --- */
-    .app-header {
-      background: var(--bg-card);
-      padding: 1rem 0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      margin-bottom: 2rem;
-    }
-
-    .header-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .brand-identity {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-logo {
-      font-size: 1.5rem;
-      background: var(--primary-bg-light);
-      width: 40px; height: 40px;
-      color: var(--primary-color);
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 50%;
-    }
-
-    .brand-name { font-size: 1.1rem; font-weight: 600; }
+    .fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     /* --- STEPPER --- */
-    .stepper {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2.5rem;
-      padding: 0 10px;
-    }
+    .stepper { display: flex; justify-content: space-between; margin-bottom: 30px; position: relative; }
+    .stepper::before { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 2px; background: #E5E7EB; z-index: 0; }
+    .step { position: relative; z-index: 1; background: var(--bg-body); padding: 0 5px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .step-circle { width: 32px; height: 32px; border-radius: 50%; background: #D1D5DB; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; transition: 0.3s; }
+    .step-label { font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; }
+    .step.active .step-circle { background: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
+    .step.completed .step-circle { background: var(--status-avail); }
 
-    .step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      position: relative;
-      z-index: 2;
+    /* --- CARDS GENÉRICOS --- */
+    .selection-grid { display: flex; flex-direction: column; gap: 12px; }
+    .card-item {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between;
     }
+    .card-item:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow); }
+    .card-item.selected { border-color: var(--primary); background: var(--primary-light); }
 
-    .step-circle {
-      width: 30px; height: 30px;
-      background-color: #DDD;
-      color: #FFF;
-      border-radius: 50%;
+    .item-left { display: flex; align-items: center; gap: 15px; }
+    .avatar { width: 48px; height: 48px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #666; }
+    .item-info h3 { font-size: 15px; font-weight: 600; }
+    .item-info p { font-size: 13px; color: var(--text-muted); }
+    .price-tag { font-weight: 700; color: var(--primary); }
+
+    /* --- CHECKBOX E QTD CONTROLS --- */
+    .checkbox-circle {
+      width: 24px; height: 24px; border: 2px solid #D1D5DB; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; color: transparent; transition: 0.2s;
+    }
+    .card-item.selected .checkbox-circle { background: var(--primary); border-color: var(--primary); color: white; }
+
+    /* Estilos do Seletor de Quantidade */
+    .qty-control { display: none; align-items: center; gap: 8px; background: white; border-radius: 20px; padding: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .card-item.selected .qty-control { display: flex; animation: popIn 0.2s; }
+
+    /* Esconde o checkbox se o controle de quantidade estiver visível */
+    .card-item.selected.has-qty .checkbox-circle { display: none; }
+
+    .btn-qty {
+      width: 26px; height: 26px; border-radius: 50%; border: none; background: #f3f4f6;
+      color: var(--primary); font-weight: bold; font-size: 16px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: 0.3s;
     }
+    .btn-qty:hover { background: var(--primary); color: white; }
+    .qty-val { font-size: 14px; font-weight: 700; min-width: 18px; text-align: center; }
 
-    .step-label {
-      font-size: 0.75rem;
-      color: var(--text-gray);
-      font-weight: 500;
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    /* --- CALENDÁRIO --- */
+    .calendar-container { background: var(--bg-card); border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .month-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .week-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; }
+    .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+    .day-card {
+      aspect-ratio: 1; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer; position: relative; background: #FAFAFA; transition: 0.2s;
     }
-
-    .step.active .step-circle { background-color: var(--primary-color); }
-    .step.active .step-label { color: var(--primary-color); font-weight: 700; }
-
-    .step-line {
-      flex-grow: 1;
-      height: 2px;
-      background-color: #DDD;
-      margin: -15px 10px 0 10px;
-      z-index: 1;
-    }
-
-    /* --- TÍTULOS --- */
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text-dark);
-    }
-
-    .section-subtitle {
-      font-size: 0.9rem;
-      color: var(--text-gray);
-      margin-bottom: 1.5rem;
-    }
-
-    /* --- CARDS GENÉRICOS DE SELEÇÃO (Reaproveitando estilo service-item) --- */
-    .selection-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .selection-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .selection-item:hover {
-      border-color: var(--primary-color);
-      transform: translateX(4px);
-    }
-
-    .selection-item.selected {
-      border-color: var(--primary-color);
-      background-color: var(--primary-bg-light);
-    }
-
-    /* Profissional específico */
-    .prof-content {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .prof-avatar {
-      width: 50px; height: 50px;
-      background-color: #eee;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: bold;
-      color: var(--text-gray);
-      font-size: 1.1rem;
-    }
-
-    .item-info h3 { font-size: 1rem; font-weight: 600; margin-bottom: 2px; }
-    .item-info p { font-size: 0.85rem; color: var(--text-gray); }
-    .item-price { font-weight: 700; color: var(--primary-color); }
-
-    /* Ícone de Check */
-    .selection-check {
-      width: 24px; height: 24px;
-      border: 2px solid var(--border-color);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: transparent;
-      transition: 0.2s;
-    }
-
-    .selection-item.selected .selection-check {
-      background-color: var(--primary-color);
-      border-color: var(--primary-color);
-      color: white;
-    }
-
-    /* --- CALENDÁRIO & TIME (Seu CSS) --- */
-    .datetime-wrapper {
-      background: var(--bg-card);
-      padding: 20px;
-      border-radius: var(--radius-lg);
-      margin-bottom: 1.5rem;
-      border: 1px solid var(--border-color);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .custom-calendar {
-      background: #FFF;
-      max-width: 100%;
-    }
-
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .current-month { font-weight: 700; font-size: 1rem; text-transform: capitalize; }
-
-    .cal-nav-btn {
-      background: transparent; border: 1px solid var(--border-color);
-      border-radius: 50%; width: 32px; height: 32px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; color: var(--text-gray);
-    }
-
-    .calendar-weekdays {
-      display: grid; grid-template-columns: repeat(7, 1fr);
-      text-align: center; font-size: 0.8rem; color: var(--text-gray);
-      font-weight: 600; margin-bottom: 10px;
-    }
-
-    .calendar-days {
-      display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;
-    }
-
-    .day-btn {
-      aspect-ratio: 1 / 1; background: transparent; border: none;
-      border-radius: 50%; font-family: var(--font-main);
-      font-size: 0.9rem; color: var(--text-dark); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s;
-    }
-
-    .day-btn:hover:not(.disabled) { background-color: #F3F4F6; color: var(--primary-color); }
-    .day-btn.selected { background-color: var(--primary-color); color: white; font-weight: 700; }
-    .day-btn.disabled { color: #ccc; pointer-events: none; }
+    .day-card.avail .day-status { background: var(--status-avail); }
+    .day-card.busy .day-status { background: var(--status-busy); }
+    .day-card.part .day-status { background: var(--status-part); }
+    .day-card.disabled { opacity: 0.3; pointer-events: none; }
+    .day-card.selected { background: var(--primary); color: white; transform: scale(1.05); }
+    .day-card.selected .day-status { background: white; }
+    .day-status { width: 6px; height: 6px; border-radius: 50%; margin-top: 4px; }
 
     /* Time Slots */
-    .slots-grid-compact {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px;
-    }
-    .slot-box {
-      padding: 10px 0; text-align: center; background: #FFF;
-      border: 1px solid var(--border-color); border-radius: var(--radius-sm);
-      font-size: 0.9rem; cursor: pointer; transition: 0.2s;
-    }
-    .slot-box:hover { border-color: var(--primary-color); }
-    .slot-box.selected { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+    .slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 20px; border-top: 1px dashed var(--border); padding-top: 20px; }
+    .time-pill { padding: 8px; text-align: center; border: 1px solid var(--border); border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.2s; }
+    .time-pill.selected { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* --- REVIEW --- */
-    .review-card {
-      background: var(--bg-card); border-radius: var(--radius-lg);
-      padding: 20px; border: 1px solid var(--border-color); margin-bottom: 1.5rem;
-    }
-    .review-header {
-      border-bottom: 1px solid #EEE; padding-bottom: 15px; margin-bottom: 15px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .review-service-name { font-size: 1.1rem; font-weight: 600; }
-    .review-price { color: var(--primary-color); font-weight: 700; }
-    .review-row { margin-bottom: 10px; font-size: 0.95rem; color: var(--text-dark); display: flex; gap: 10px;}
-    .review-total {
-      margin-top: 20px; padding-top: 15px; border-top: 2px dashed var(--border-color);
-      display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem;
-    }
+    /* --- FOOTER E REVISÃO --- */
+    .review-box { background: var(--bg-card); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 20px; }
+    .review-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+    .review-total { border-top: 2px dashed var(--border); padding-top: 15px; margin-top: 10px; font-weight: 700; font-size: 18px; color: var(--primary); display: flex; justify-content: space-between; }
 
-    /* --- NAVIGATION --- */
-    .step-actions { display: flex; justify-content: space-between; margin-top: 20px; }
-    .btn-primary {
-      background-color: var(--primary-color); color: white; border: none;
-      padding: 12px 30px; border-radius: var(--radius-sm); font-weight: 600;
-      font-size: 1rem; cursor: pointer; transition: background 0.2s;
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; z-index: 100;
     }
-    .btn-primary:disabled { background-color: #ccc; cursor: not-allowed; }
-    .btn-secondary {
-      background-color: transparent; color: var(--text-gray); border: 1px solid var(--border-color);
-      padding: 12px 25px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer;
-    }
+    .btn-next { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; }
+    .btn-next:disabled { background: #E5E7EB; color: #9CA3AF; cursor: not-allowed; }
+    .btn-back { border: none; background: transparent; color: var(--text-muted); font-weight: 600; cursor: pointer; }
+    textarea { width: 100%; border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; margin-top: 5px; }
 
   </style>
 </head>
 <body>
 
-<header class="app-header">
-  <div class="container header-flex">
-    <div class="brand-identity">
-      <div class="brand-logo">✨</div>
-      <div class="brand-name">Beleza & Estética</div>
-    </div>
-    <div class="user-placeholder">👤</div>
-  </div>
-</header>
-
 <div class="container">
+  <div style="text-align: center; margin-bottom: 20px;">
+    <h1 style="font-size: 20px; font-weight: 700;">Novo Agendamento</h1>
+    <p style="font-size: 13px; color: var(--text-muted);">Configure sua experiência</p>
+  </div>
+
   <div class="stepper">
-    <div class="step active" id="step-ind-1">
-      <div class="step-circle">1</div>
-      <div class="step-label">Profissional</div>
-    </div>
-    <div class="step-line"></div>
-    <div class="step" id="step-ind-2">
-      <div class="step-circle">2</div>
-      <div class="step-label">Serviço</div>
-    </div>
-    <div class="step-line"></div>
-    <div class="step" id="step-ind-3">
-      <div class="step-circle">3</div>
-      <div class="step-label">Data</div>
-    </div>
-    <div class="step-line"></div>
-    <div class="step" id="step-ind-4">
-      <div class="step-circle">4</div>
-      <div class="step-label">Fim</div>
-    </div>
+    <div class="step active" id="st-1"><div class="step-circle">1</div><span class="step-label">Prof</span></div>
+    <div class="step" id="st-2"><div class="step-circle">2</div><span class="step-label">Serviço</span></div>
+    <div class="step" id="st-3"><div class="step-circle">3</div><span class="step-label">Extras</span></div>
+    <div class="step" id="st-4"><div class="step-circle">4</div><span class="step-label">Data</span></div>
+    <div class="step" id="st-5"><div class="step-circle">5</div><span class="step-label">Fim</span></div>
   </div>
 
   <form id="booking-form" onsubmit="event.preventDefault()">
 
-    <div id="step-1" class="active-section">
-      <h2 class="section-title">Escolha o Profissional</h2>
-      <p class="section-subtitle">Com quem você deseja ser atendido(a)?</p>
+    <div id="step-1" class="fade-in">
+      <h2 style="margin-bottom: 15px; font-size: 18px;">Quem vai te atender?</h2>
+      <div class="selection-grid" id="prof-list"></div>
+    </div>
 
-      <div class="selection-list" id="professional-list-container">
+    <div id="step-2" class="hidden fade-in">
+      <h2 style="margin-bottom: 15px; font-size: 18px;">Qual o procedimento?</h2>
+      <div class="selection-grid" id="service-list"></div>
+    </div>
+
+    <div id="step-3" class="hidden fade-in">
+      <h2 style="margin-bottom: 5px; font-size: 18px;">Adicionais?</h2>
+      <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Selecione itens extras ou quantidade de reparos.</p>
+      <div class="selection-grid" id="addons-list"></div>
+    </div>
+
+    <div id="step-4" class="hidden fade-in">
+      <h2 style="margin-bottom: 15px; font-size: 18px;">Escolha o Horário</h2>
+      <div class="calendar-container">
+        <div class="month-nav">
+          <button type="button" class="nav-btn" onclick="navMonth(-1)">❮</button>
+          <h3 id="month-display">Mês</h3>
+          <button type="button" class="nav-btn" onclick="navMonth(1)">❯</button>
+        </div>
+        <div class="week-days"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
+        <div class="days-grid" id="calendar-grid"></div>
+        <div class="slots-grid hidden" id="time-slots"></div>
       </div>
     </div>
 
-    <div id="step-2" class="hidden">
-      <h2 class="section-title">Selecione o Serviço</h2>
-      <p class="section-subtitle" id="service-subtitle">Procedimentos disponíveis</p>
+    <div id="step-5" class="hidden fade-in">
+      <h2 style="margin-bottom: 15px; font-size: 18px;">Resumo do Pedido</h2>
+      <div class="review-box">
+        <div class="review-row"><span>Profissional</span> <strong id="rev-prof">...</strong></div>
+        <div class="review-row"><span>Serviço</span> <strong id="rev-serv">...</strong></div>
+        <div class="review-row"><span>Data</span> <strong id="rev-date">...</strong></div>
 
-      <div class="selection-list" id="service-list-container">
-      </div>
-    </div>
-
-    <div id="step-3" class="hidden">
-      <h2 class="section-title">Data e Horário</h2>
-      <p class="section-subtitle">Verifique a disponibilidade</p>
-
-      <div class="datetime-wrapper">
-        <div class="custom-calendar">
-          <div class="calendar-header">
-            <button class="cal-nav-btn" onclick="changeMonth(-1)">❮</button>
-            <span class="current-month" id="current-month-display">Outubro 2023</span>
-            <button class="cal-nav-btn" onclick="changeMonth(1)">❯</button>
-          </div>
-          <div class="calendar-weekdays">
-            <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
-          </div>
-          <div class="calendar-days" id="calendar-days-grid">
-          </div>
-        </div>
-
-        <div>
-          <label class="input-label" style="margin-bottom:10px; display:block;">Horários Disponíveis</label>
-          <div class="slots-grid-compact" id="time-slots-container">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="step-4" class="hidden">
-      <h2 class="section-title">Confirmar Agendamento</h2>
-      <p class="section-subtitle">Verifique os detalhes antes de finalizar</p>
-
-      <div class="review-card">
-        <div class="review-header">
-          <span class="review-service-name" id="review-service">Nome do Serviço</span>
-          <span class="review-price" id="review-price">R$ 0,00</span>
-        </div>
-
-        <div class="review-row">
-          <span class="icon">👤</span>
-          <span id="review-professional">Profissional</span>
-        </div>
-        <div class="review-row">
-          <span class="icon">📅</span>
-          <span id="review-date">Data</span>
-        </div>
-        <div class="review-row">
-          <span class="icon">⏰</span>
-          <span id="review-time">Horário</span>
-        </div>
+        <div id="rev-addons" style="margin: 10px 0; padding: 10px 0; border-top: 1px solid #eee; font-size: 13px; color: #555;"></div>
 
         <div class="review-total">
-          <span>Total</span>
-          <span id="review-total">R$ 0,00</span>
+          <span>Total Estimado</span>
+          <span id="rev-total">R$ 0,00</span>
         </div>
       </div>
-    </div>
-
-    <div class="step-actions">
-      <button type="button" class="btn-secondary" id="btn-back" onclick="prevStep()" style="visibility: hidden;">Voltar</button>
-      <button type="button" class="btn-primary" id="btn-next" onclick="nextStep()" disabled>Continuar</button>
+      <div>
+        <label style="font-size: 14px; font-weight: 600;">Observações</label>
+        <textarea rows="3" id="obs-input" placeholder="Ex: Alergia a esmalte comum..."></textarea>
+      </div>
     </div>
   </form>
 </div>
 
+<div class="bottom-bar">
+  <button class="btn-back" id="btn-back" onclick="prevStep()" style="visibility: hidden;">Voltar</button>
+  <div style="text-align: right;">
+    <span style="font-size: 12px; display: block; color: var(--text-muted);">Total: <span id="footer-total" style="font-weight:700; color:var(--primary)">R$ 0</span></span>
+    <button class="btn-next" id="btn-next" onclick="nextStep()" disabled>Continuar</button>
+  </div>
+</div>
+
 <script>
-  /* --- MOCK DATABASE (Dados Simulados) --- */
-  const servicesDB = [
-    { id: 101, name: "Limpeza de Pele", price: 150, duration: 60 },
-    { id: 102, name: "Botox (Zona Testa)", price: 800, duration: 30 },
-    { id: 103, name: "Massagem Relaxante", price: 120, duration: 50 },
-    { id: 104, name: "Drenagem Linfática", price: 100, duration: 40 },
-    { id: 105, name: "Preenchimento Labial", price: 1200, duration: 45 }
+  /* --- DADOS MOCKADOS (Simulando Backend) --- */
+  const professionals = [
+    { id: 1, name: "Dra. Ana", role: "Biomédica", initial: "A" },
+    { id: 2, name: "Carla S.", role: "Manicure", initial: "C" },
+    { id: 3, name: "Beto", role: "Cabeleireiro", initial: "B" }
   ];
 
-  const professionalsDB = [
-    {
-      id: 1,
-      name: "Dra. Ana Souza",
-      role: "Biomédica",
-      avatar: "AS",
-      // Ana faz apenas invasivos
-      services: [102, 105]
-    },
-    {
-      id: 2,
-      name: "Carla Silva",
-      role: "Esteticista",
-      avatar: "CS",
-      // Carla faz estética básica
-      services: [101, 103, 104]
-    },
-    {
-      id: 3,
-      name: "Dr. Roberto",
-      role: "Dermatologista",
-      avatar: "DR",
-      // Roberto faz tudo menos massagem
-      services: [101, 102, 105]
-    }
+  const services = [
+    { id: 10, name: "Unha em Gel", price: 120, time: "90min" },
+    { id: 11, name: "Spa dos Pés", price: 80, time: "45min" },
+    { id: 12, name: "Corte & Escova", price: 150, time: "60min" }
   ];
 
-  // Horários fixos para exemplo
-  const mockTimes = ["09:00", "10:00", "11:30", "14:00", "15:30", "17:00"];
+  const addons = [
+    { id: 901, name: "Decoração (Por Dedo)", price: 15, perUnit: true }, // FLAG: Por Unidade
+    { id: 902, name: "Conserto de Unha", price: 20, perUnit: true },     // FLAG: Por Unidade
+    { id: 903, name: "Massagem nas Mãos", price: 25, perUnit: false },   // Fixo
+    { id: 904, name: "Hidratação Cutículas", price: 15, perUnit: false } // Fixo
+  ];
 
-  /* --- STATE MANAGEMENT --- */
-  let currentStep = 1;
+  /* --- ESTADO --- */
+  let step = 1;
   let booking = {
     professional: null,
-    service: null,
+    mainService: null,
+    addOns: [], // Array de { id, qty, price, name }
     date: null,
-    time: null
+    time: null,
+    total: 0
   };
-
-  // Data atual para calendário
-  let currDate = new Date();
+  let currentMonth = new Date();
 
   /* --- INICIALIZAÇÃO --- */
-  document.addEventListener('DOMContentLoaded', () => {
-    renderProfessionals();
+  document.addEventListener("DOMContentLoaded", () => {
+    renderProf();
+    renderServices();
+    renderAddons();
     renderCalendar();
-    updateNavigation();
   });
 
   /* --- RENDERIZADORES --- */
-
-  // 1. Renderiza Lista de Profissionais
-  function renderProfessionals() {
-    const container = document.getElementById('professional-list-container');
-    container.innerHTML = '';
-
-    // Opção "Sem Preferência" (Opcional, mas boa prática)
-    const anyProfHTML = `
-                <div class="selection-item" onclick="selectProfessional(this, null)">
-                    <div class="prof-content">
-                        <div class="prof-avatar" style="background:#E91E63; color:white;">★</div>
-                        <div class="item-info">
-                            <h3>Sem preferência</h3>
-                            <p>Primeiro horário disponível</p>
-                        </div>
-                    </div>
-                    <div class="selection-check">✔</div>
-                </div>`;
-    container.innerHTML += anyProfHTML;
-
-    professionalsDB.forEach(prof => {
-      const html = `
-                <div class="selection-item" onclick="selectProfessional(this, ${prof.id})">
-                    <div class="prof-content">
-                        <div class="prof-avatar">${prof.avatar}</div>
-                        <div class="item-info">
-                            <h3>${prof.name}</h3>
-                            <p>${prof.role}</p>
-                        </div>
-                    </div>
-                    <div class="selection-check">✔</div>
-                </div>`;
-      container.innerHTML += html;
-    });
+  function renderProf() {
+    const el = document.getElementById('prof-list');
+    el.innerHTML = professionals.map(p => `
+      <div class="card-item" onclick="selectProf(this, ${p.id})">
+        <div class="item-left">
+          <div class="avatar">${p.initial}</div>
+          <div class="item-info"><h3>${p.name}</h3><p>${p.role}</p></div>
+        </div>
+        <div class="checkbox-circle">✓</div>
+      </div>
+    `).join('');
   }
 
-  // 2. Renderiza Serviços (Com filtro!)
   function renderServices() {
-    const container = document.getElementById('service-list-container');
-    const subtitle = document.getElementById('service-subtitle');
-    container.innerHTML = '';
-
-    let filteredServices = [];
-
-    if (booking.professional) {
-      // Filtra apenas o que o profissional faz
-      subtitle.innerText = `Especialidades de ${booking.professional.name}`;
-      filteredServices = servicesDB.filter(s => booking.professional.services.includes(s.id));
-    } else {
-      // Mostra tudo se não tiver preferência
-      subtitle.innerText = "Todos os serviços disponíveis";
-      filteredServices = servicesDB;
-    }
-
-    filteredServices.forEach(srv => {
-      const html = `
-                <div class="selection-item" onclick="selectService(this, ${srv.id})">
-                    <div class="item-info">
-                        <h3>${srv.name}</h3>
-                        <p>${srv.duration} min • A partir de</p>
-                    </div>
-                    <div style="text-align:right">
-                        <div class="item-price">R$ ${srv.price}</div>
-                        </div>
-                    <div class="selection-check" style="margin-left:15px">✔</div>
-                </div>`;
-      container.innerHTML += html;
-    });
+    const el = document.getElementById('service-list');
+    el.innerHTML = services.map(s => `
+      <div class="card-item" onclick="selectService(this, ${s.id})">
+        <div class="item-left">
+          <div class="item-info"><h3>${s.name}</h3><p>${s.time}</p></div>
+        </div>
+        <div class="price-tag">R$ ${s.price}</div>
+      </div>
+    `).join('');
   }
 
-  // 3. Calendário Lógico
+  // --- LÓGICA CORE: RENDERIZAÇÃO INTELIGENTE DOS ADDONS ---
+  function renderAddons() {
+    const el = document.getElementById('addons-list');
+    el.innerHTML = addons.map(a => {
+      // Se for item unitário (nailCount=1 no back), usa classe 'has-qty'
+      const hasQtyClass = a.perUnit ? 'has-qty' : '';
+      const unitLabel = a.perUnit ? '<span style="font-size:10px; font-weight:400; color:#999">/unid</span>' : '';
+
+      return `
+      <div class="card-item ${hasQtyClass}" id="addon-card-${a.id}" onclick="toggleAddon(this, ${a.id})">
+        <div class="item-left">
+          <div class="item-info">
+            <h3>${a.name}</h3>
+            <p class="price-tag" style="margin:0">+R$ ${a.price} ${unitLabel}</p>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center;">
+
+          <div class="checkbox-circle">✓</div>
+
+          ${a.perUnit ? `
+            <div class="qty-control" onclick="event.stopPropagation()">
+              <button class="btn-qty" type="button" onclick="changeQty(${a.id}, -1)">-</button>
+              <span class="qty-val" id="qty-${a.id}">1</span>
+              <button class="btn-qty" type="button" onclick="changeQty(${a.id}, 1)">+</button>
+            </div>
+          ` : ''}
+
+        </div>
+      </div>
+    `}).join('');
+  }
+
   function renderCalendar() {
-    const monthDisplay = document.getElementById('current-month-display');
-    const daysGrid = document.getElementById('calendar-days-grid');
-
-    const year = currDate.getFullYear();
-    const month = currDate.getMonth();
-
-    const firstDayIndex = new Date(year, month, 1).getDay();
-    const lastDate = new Date(year, month + 1, 0).getDate();
-
+    const grid = document.getElementById('calendar-grid');
+    const display = document.getElementById('month-display');
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-    monthDisplay.innerText = `${months[month]} ${year}`;
-    daysGrid.innerHTML = "";
+    display.innerText = `${months[currentMonth.getMonth()]} ${currentMonth.getFullYear()}`;
+    grid.innerHTML = "";
 
-    // Dias vazios antes do dia 1
-    for (let i = 0; i < firstDayIndex; i++) {
-      const div = document.createElement("div");
-      daysGrid.appendChild(div);
+    const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+    const startDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
+
+    for(let i=0; i<startDay; i++) grid.innerHTML += `<div></div>`;
+
+    for(let i=1; i<=daysInMonth; i++) {
+      let status = "avail";
+      if(i % 7 === 0) status = "busy"; // Mock
+
+      const btn = document.createElement("div");
+      btn.className = `day-card ${status}`;
+      if(status === 'busy') btn.classList.add('disabled');
+      btn.innerHTML = `<span style="font-size:14px; font-weight:600">${i}</span><div class="day-status"></div>`;
+      btn.onclick = () => selectDate(btn, i);
+      grid.appendChild(btn);
     }
-
-    // Dias do mês
-    for (let i = 1; i <= lastDate; i++) {
-      const btn = document.createElement("button");
-      btn.innerText = i;
-      btn.classList.add("day-btn");
-      btn.type = "button"; // Previne submit
-
-      // Simples verificação de data passada
-      const today = new Date();
-      const checkDate = new Date(year, month, i);
-      if (checkDate < today.setHours(0,0,0,0)) {
-        btn.classList.add("disabled");
-      } else {
-        btn.onclick = () => selectDate(btn, i, month, year);
-      }
-
-      daysGrid.appendChild(btn);
-    }
-
-    // Renderiza Slots de tempo (resetados)
-    const timeContainer = document.getElementById('time-slots-container');
-    timeContainer.innerHTML = '';
-    mockTimes.forEach(time => {
-      const div = document.createElement('div');
-      div.className = 'slot-box';
-      div.innerText = time;
-      div.onclick = () => selectTime(div, time);
-      timeContainer.appendChild(div);
-    });
   }
 
-  function changeMonth(dir) {
-    currDate.setMonth(currDate.getMonth() + dir);
+  function navMonth(dir) {
+    currentMonth.setMonth(currentMonth.getMonth() + dir);
     renderCalendar();
   }
 
-  /* --- LÓGICA DE SELEÇÃO (EVENTS) --- */
+  /* --- INTERAÇÃO --- */
 
-  function selectProfessional(el, id) {
-    // Remove 'selected' visual de todos
-    document.querySelectorAll('#professional-list-container .selection-item').forEach(d => d.classList.remove('selected'));
-    // Adiciona ao clicado
+  function selectProf(el, id) {
+    document.querySelectorAll('#prof-list .card-item').forEach(e => e.classList.remove('selected'));
     el.classList.add('selected');
-
-    if (id === null) {
-      booking.professional = null; // Sem preferência
-    } else {
-      booking.professional = professionalsDB.find(p => p.id === id);
-    }
-
-    checkStepValidity();
+    booking.professional = professionals.find(p => p.id === id);
+    checkValidity();
   }
 
   function selectService(el, id) {
-    document.querySelectorAll('#service-list-container .selection-item').forEach(d => d.classList.remove('selected'));
+    document.querySelectorAll('#service-list .card-item').forEach(e => e.classList.remove('selected'));
     el.classList.add('selected');
-    booking.service = servicesDB.find(s => s.id === id);
-    checkStepValidity();
+    booking.mainService = services.find(s => s.id === id);
+    updateTotal();
+    checkValidity();
   }
 
-  function selectDate(el, day, month, year) {
-    document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('selected'));
-    el.classList.add('selected');
-    booking.date = `${day}/${month+1}/${year}`;
-    checkStepValidity();
+  // --- LÓGICA CORE: TOGGLE ADDON ---
+  function toggleAddon(el, id) {
+    const addonData = addons.find(a => a.id === id);
+    const isSelected = el.classList.contains('selected');
+
+    if (isSelected) {
+      // Remover
+      el.classList.remove('selected');
+      booking.addOns = booking.addOns.filter(item => item.id !== id);
+    } else {
+      // Adicionar
+      el.classList.add('selected');
+      // Default qty = 1
+      booking.addOns.push({ ...addonData, qty: 1 });
+
+      // Resetar visual do contador para 1 se existir
+      const qtyDisplay = document.getElementById(`qty-${id}`);
+      if(qtyDisplay) qtyDisplay.innerText = "1";
+    }
+    updateTotal();
   }
 
-  function selectTime(el, time) {
-    document.querySelectorAll('.slot-box').forEach(d => d.classList.remove('selected'));
-    el.classList.add('selected');
-    booking.time = time;
-    checkStepValidity();
+  // --- LÓGICA CORE: MUDAR QUANTIDADE ---
+  function changeQty(id, delta) {
+    const index = booking.addOns.findIndex(a => a.id === id);
+    if (index === -1) return;
+
+    let newQty = booking.addOns[index].qty + delta;
+    if (newQty < 1) newQty = 1;  // Mínimo
+    if (newQty > 10) newQty = 10; // Máximo (ex: dedos da mão)
+
+    booking.addOns[index].qty = newQty;
+    document.getElementById(`qty-${id}`).innerText = newQty;
+    updateTotal();
   }
 
-  /* --- NAVEGAÇÃO ENTRE PASSOS --- */
+  function selectDate(el, day) {
+    document.querySelectorAll('.day-card').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+    booking.date = `${day}/${currentMonth.getMonth()+1}`;
 
-  function checkStepValidity() {
-    const btn = document.getElementById('btn-next');
-    let valid = false;
+    // Render time slots
+    const slotContainer = document.getElementById('time-slots');
+    slotContainer.classList.remove('hidden');
+    const times = ["09:00", "10:00", "14:00", "16:30"];
+    slotContainer.innerHTML = times.map(t => `<div class="time-pill" onclick="selectTime(this, '${t}')">${t}</div>`).join('');
+    checkValidity();
+  }
 
-    if (currentStep === 1 && (booking.professional !== undefined)) valid = true;
-    // Nota: booking.professional pode ser null (sem preferencia) ou objeto, mas definimos undefined no inicio se nao clicado.
-    // Simplificando: vamos checar se há seleção visual.
-    if (currentStep === 1 && document.querySelector('#professional-list-container .selected')) valid = true;
+  function selectTime(el, t) {
+    document.querySelectorAll('.time-pill').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+    booking.time = t;
+    checkValidity();
+  }
 
-    if (currentStep === 2 && booking.service) valid = true;
-    if (currentStep === 3 && booking.date && booking.time) valid = true;
-    if (currentStep === 4) valid = true;
+  function updateTotal() {
+    let t = 0;
+    if (booking.mainService) t += booking.mainService.price;
+    // Soma: Preço * Quantidade
+    booking.addOns.forEach(a => t += (a.price * a.qty));
 
-    btn.disabled = !valid;
+    booking.total = t;
+    document.getElementById('footer-total').innerText = `R$ ${t}`;
+
+    if(step === 5) renderReview();
+  }
+
+  /* --- NAVEGAÇÃO --- */
+  function checkValidity() {
+    let ok = false;
+    if (step === 1 && booking.professional) ok = true;
+    if (step === 2 && booking.mainService) ok = true;
+    if (step === 3) ok = true;
+    if (step === 4 && booking.date && booking.time) ok = true;
+    if (step === 5) ok = true;
+    document.getElementById('btn-next').disabled = !ok;
   }
 
   function nextStep() {
-    if (currentStep === 4) {
-      alert("Agendamento Enviado! JSON: " + JSON.stringify(booking));
+    if (step === 5) {
+      const obs = document.getElementById('obs-input').value;
+      alert(`Enviando para API:\nProf: ${booking.professional.name}\nServiço: ${booking.mainService.name}\nExtras: ${JSON.stringify(booking.addOns)}\nObs: ${obs}`);
       return;
     }
 
-    // Lógica ao sair do Passo 1: Renderizar serviços corretos
-    if (currentStep === 1) {
-      renderServices();
-    }
-    // Lógica ao entrar no Passo 4: Renderizar resumo
-    if (currentStep === 3) {
-      document.getElementById('review-professional').innerText = booking.professional ? booking.professional.name : "Qualquer profissional";
-      document.getElementById('review-service').innerText = booking.service.name;
-      document.getElementById('review-price').innerText = "R$ " + booking.service.price;
-      document.getElementById('review-total').innerText = "R$ " + booking.service.price;
-      document.getElementById('review-date').innerText = booking.date;
-      document.getElementById('review-time').innerText = booking.time;
-    }
+    if (step === 4) renderReview(); // Prepara review antes de entrar no passo 5
 
-    // Animação de troca
-    document.getElementById(`step-${currentStep}`).classList.remove('active-section');
-    document.getElementById(`step-${currentStep}`).classList.add('hidden');
+    document.getElementById(`st-${step}`).classList.remove('active');
+    document.getElementById(`st-${step}`).classList.add('completed');
+    document.getElementById(`step-${step}`).classList.add('hidden');
 
-    currentStep++;
+    step++;
 
-    document.getElementById(`step-${currentStep}`).classList.remove('hidden');
-    document.getElementById(`step-${currentStep}`).classList.add('active-section');
+    document.getElementById(`st-${step}`).classList.add('active');
+    document.getElementById(`step-${step}`).classList.remove('hidden');
 
-    updateNavigation();
-    checkStepValidity();
+    updateUI();
+    checkValidity();
   }
 
   function prevStep() {
-    if (currentStep > 1) {
-      document.getElementById(`step-${currentStep}`).classList.remove('active-section');
-      document.getElementById(`step-${currentStep}`).classList.add('hidden');
-
-      currentStep--;
-
-      document.getElementById(`step-${currentStep}`).classList.remove('hidden');
-      document.getElementById(`step-${currentStep}`).classList.add('active-section');
-
-      updateNavigation();
-    }
+    document.getElementById(`st-${step}`).classList.remove('active');
+    document.getElementById(`step-${step}`).classList.add('hidden');
+    step--;
+    document.getElementById(`st-${step}`).classList.add('active');
+    document.getElementById(`st-${step}`).classList.remove('completed');
+    document.getElementById(`step-${step}`).classList.remove('hidden');
+    updateUI();
   }
 
-  function updateNavigation() {
-    // Stepper Visual
-    document.querySelectorAll('.step').forEach((el, index) => {
-      if (index + 1 <= currentStep) el.classList.add('active');
-      else el.classList.remove('active');
-    });
+  function updateUI() {
+    document.getElementById('btn-back').style.visibility = step === 1 ? 'hidden' : 'visible';
+    document.getElementById('btn-next').innerText = step === 5 ? 'Confirmar Agendamento' : 'Continuar';
+  }
 
-    // Botões
-    const btnBack = document.getElementById('btn-back');
-    const btnNext = document.getElementById('btn-next');
+  function renderReview() {
+    document.getElementById('rev-prof').innerText = booking.professional.name;
+    document.getElementById('rev-serv').innerText = booking.mainService.name;
+    document.getElementById('rev-date').innerText = `${booking.date} às ${booking.time}`;
+    document.getElementById('rev-total').innerText = `R$ ${booking.total}`;
 
-    btnBack.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
-    btnNext.innerText = currentStep === 4 ? 'Confirmar Agendamento' : 'Continuar';
+    const addonsHTML = booking.addOns.map(a => {
+      // Mostra Qtd apenas se for unitário ou qty > 1
+      const qtyStr = a.perUnit ? ` <strong>(${a.qty}x)</strong>` : '';
+      return `<div style="display:flex; justify-content:space-between; margin-bottom:4px">
+                <span>+ ${a.name}${qtyStr}</span>
+                <span>R$ ${a.price * a.qty}</span>
+              </div>`;
+    }).join('');
+
+    document.getElementById('rev-addons').innerHTML = addonsHTML || '<span style="font-style:italic">Sem itens adicionais</span>';
   }
 
 </script>

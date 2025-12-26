@@ -2,8 +2,10 @@ package com.rafael.nailspro.webapp.service.salon.service;
 
 import com.rafael.nailspro.webapp.model.dto.salon.service.SalonServiceDTO;
 import com.rafael.nailspro.webapp.model.dto.salon.service.SalonServiceOutDTO;
+import com.rafael.nailspro.webapp.model.entity.AppointmentAddOn;
 import com.rafael.nailspro.webapp.model.entity.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
+import com.rafael.nailspro.webapp.model.repository.AddOnRepository;
 import com.rafael.nailspro.webapp.model.repository.SalonServiceRepository;
 import com.rafael.nailspro.webapp.service.infra.mapper.SalonServiceMapper;
 import com.rafael.nailspro.webapp.service.professional.ProfessionalService;
@@ -23,6 +25,7 @@ public class SalonServiceService {
     private final SalonServiceRepository salonServiceRepository;
     private final ProfessionalService professionalService;
     private final SalonServiceMapper salonServiceMapper;
+    private final AddOnRepository addOnRepository;
 
     public SalonService findById(Long id) {
 
@@ -36,6 +39,10 @@ public class SalonServiceService {
                 .orElseThrow(() -> new RuntimeException("SalonService not found"));
     }
 
+    public List<AppointmentAddOn> findAddOns(List<Long> addOnIds) {
+
+        return addOnRepository.findAllById(addOnIds);
+    }
     @Transactional
     public void createService(SalonServiceDTO salonServiceDTO) {
 

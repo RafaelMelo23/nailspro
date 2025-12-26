@@ -27,7 +27,7 @@ public class WorkScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createWorkSchedule(@RequestBody Set<WorkScheduleRecordDTO> workScheduleRecordDTO,
+    public ResponseEntity<Void> createWorkSchedule(@RequestBody List<WorkScheduleRecordDTO> workScheduleRecordDTO,
                                                    @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         workScheduleService.registerSchedules(workScheduleRecordDTO, userPrincipal.getId());

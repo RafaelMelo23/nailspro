@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.service.professional;
 
+import com.rafael.nailspro.webapp.model.dto.appointment.TimeInterval;
 import com.rafael.nailspro.webapp.model.dto.professional.schedule.WorkScheduleRecordDTO;
 import com.rafael.nailspro.webapp.model.entity.professional.WorkSchedule;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
@@ -11,10 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +25,7 @@ public class WorkScheduleService {
     private final ProfessionalService professionalService;
 
     @Transactional
-    public void registerSchedules(Set<WorkScheduleRecordDTO> workScheduleDTO, Long professionalId) {
+    public void registerSchedules(List<WorkScheduleRecordDTO> workScheduleDTO, Long professionalId) {
         Set<WorkSchedule> schedulesToBeSaved = new HashSet<>();
 
         Professional professional = professionalService.findById(professionalId);
@@ -43,8 +43,8 @@ public class WorkScheduleService {
 
             schedulesToBeSaved.add(WorkSchedule.builder()
                     .dayOfWeek(sch.dayOfWeek())
-                    .startTime(sch.startTime())
-                    .endTime(sch.endTime())
+                    .workStart(sch.startTime())
+                    .workEnd(sch.endTime())
                     .lunchBreakStartTime(sch.lunchBreakStartTime())
                     .lunchBreakEndTime(sch.lunchBreakEndTime())
                     .isActive(true)
@@ -108,12 +108,22 @@ public class WorkScheduleService {
                 .map(wsc -> new WorkScheduleRecordDTO(
                         wsc.getId(),
                         wsc.getDayOfWeek(),
-                        wsc.getStartTime(),
-                        wsc.getEndTime(),
+                        wsc.getWorkStart(),
+                        wsc.getWorkEnd(),
                         wsc.getLunchBreakStartTime(),
                         wsc.getLunchBreakEndTime(),
                         wsc.getIsActive()
                 ))
                 .collect(Collectors.toSet());
+    }
+
+    public void checkProfessionalAvailability(UUID professionalExternalId, TimeInterval interval) {
+        if (!repository.checkIfProfessionalIsAvailable(
+                professionalExternalId,
+                interval.getStartTimeOnly(),
+                interval.getEndTimeOnly(),
+                interval.getDayOfWeek())) {
+            throw new BusinessException("O profissional não está disponível neste período.");
+        }
     }
 }

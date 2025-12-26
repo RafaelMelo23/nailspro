@@ -35,10 +35,10 @@ public class WorkSchedule {
     private DayOfWeek dayOfWeek;
 
     @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
+    private LocalTime workStart;
 
     @Column(name = "end_time", nullable = false)
-    private LocalTime endTime;
+    private LocalTime workEnd;
 
     @Column(name = "lunch_break_start_time", nullable = false)
     private LocalTime lunchBreakStartTime;
@@ -55,8 +55,8 @@ public class WorkSchedule {
 
     public void updateFromDto(WorkScheduleRecordDTO dto) {
         if (dto.dayOfWeek() != null) this.dayOfWeek = dto.dayOfWeek();
-        if (dto.startTime() != null) this.startTime = dto.startTime();
-        if (dto.endTime() != null) this.endTime = dto.endTime();
+        if (dto.startTime() != null) this.workStart = dto.startTime();
+        if (dto.endTime() != null) this.workEnd = dto.endTime();
         if (dto.lunchBreakStartTime() != null) this.lunchBreakStartTime = dto.lunchBreakStartTime();
         if (dto.lunchBreakEndTime() != null) this.lunchBreakEndTime = dto.lunchBreakEndTime();
         if (dto.isActive() != null) this.isActive = dto.isActive();

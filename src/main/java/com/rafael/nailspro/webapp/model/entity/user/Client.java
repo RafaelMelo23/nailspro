@@ -20,6 +20,9 @@ public class Client extends User {
     @Column(name = "missed_appointments", nullable = false)
     private Integer missedAppointments = 0;
 
+    @Column(name = "cancelled_appointments", nullable = false)
+    private Integer canceledAppointments = 0;
+
     @OneToMany(mappedBy = "client")
     private List<Appointment> clientAppointments;
 

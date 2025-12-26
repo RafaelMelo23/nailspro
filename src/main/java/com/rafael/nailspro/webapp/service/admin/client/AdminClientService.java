@@ -2,10 +2,13 @@ package com.rafael.nailspro.webapp.service.admin.client;
 
 import com.rafael.nailspro.webapp.model.dto.admin.client.ClientAppointmentDTO;
 import com.rafael.nailspro.webapp.model.dto.admin.client.ClientDTO;
+import com.rafael.nailspro.webapp.model.entity.AppointmentAddOn;
 import com.rafael.nailspro.webapp.model.entity.SalonService;
+import com.rafael.nailspro.webapp.model.entity.user.Client;
 import com.rafael.nailspro.webapp.model.enums.UserStatus;
 import com.rafael.nailspro.webapp.model.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.model.repository.ClientRepository;
+import com.rafael.nailspro.webapp.service.infra.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,14 +50,14 @@ public class AdminClientService {
                         .professionalId(ap.getProfessional().getId())
                         .professionalName(ap.getProfessional().getFullName())
 
-                        .appointmentDate(ap.getDate())
+                        .appointmentDate(ap.getStartDate())
                         .status(ap.getAppointmentStatus())
 
                         .mainServiceName(ap.getMainSalonService().getName())
                         .addOnServiceNames(
-                                ap.getAddOnSalonServices()
+                                ap.getAddOns()
                                         .stream()
-                                        .map(SalonService::getName)
+                                        .map(app -> app.getService().getName())
                                         .toList()
                         )
 
@@ -62,5 +65,11 @@ public class AdminClientService {
                         .observations(ap.getObservations())
                         .build()
                 );
+    }
+
+    public Client getClient(Long clientId) {
+
+        return clientRepository.findById(clientId)
+                .orElseThrow(() -> new BusinessException("Cliente não encontrado"));
     }
 }

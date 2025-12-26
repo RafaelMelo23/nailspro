@@ -2,6 +2,7 @@ package com.rafael.nailspro.webapp.model.entity.user;
 
 import com.rafael.nailspro.webapp.model.entity.Appointment;
 import com.rafael.nailspro.webapp.model.entity.SalonService;
+import com.rafael.nailspro.webapp.model.entity.professional.ScheduleBlock;
 import com.rafael.nailspro.webapp.model.entity.professional.WorkSchedule;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,8 +34,11 @@ public class Professional extends User {
     @Column(unique = true, nullable = false)
     private UUID externalId = UUID.randomUUID();
 
-    @OneToOne
-    private WorkSchedule workSchedule;
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = false;
+
+    @Column(name = "is_first_login", nullable = false)
+    private Boolean isFirstLogin = false;
 
     @OneToMany(mappedBy = "professional")
     private List<Appointment> professionalAppointments;
@@ -42,14 +46,11 @@ public class Professional extends User {
     @ManyToMany(mappedBy = "professionals")
     private Set<SalonService> salonServices = new LinkedHashSet<>();
 
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive = false;
-
-    @Column(name = "is_first_login", nullable = false)
-    private Boolean isFirstLogin = false;
-
     @OneToMany(mappedBy = "professional", orphanRemoval = true)
     private Set<WorkSchedule> workSchedules = new HashSet<>();
+
+    @OneToMany(mappedBy = "professional", orphanRemoval = true)
+    private Set<ScheduleBlock> scheduleBlocks = new LinkedHashSet<>();
 
     @PrePersist
     public void prePersist() {

@@ -26,4 +26,8 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     void changeClientStatus(@Param("id") Long clientId, @Param("status") UserStatus status);
 
     Page<Client> findByFullNameContainingIgnoreCase(String name, Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Client cl SET cl.canceledAppointments = cl.canceledAppointments + 1 WHERE cl.id = :clientId")
+    void incrementCanceledAppointments(@Param("clientId") Long clientId);
 }

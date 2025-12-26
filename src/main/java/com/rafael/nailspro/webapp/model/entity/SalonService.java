@@ -48,6 +48,9 @@ public class SalonService {
             inverseJoinColumns = @JoinColumn(name = "professionals_id"))
     private Set<Professional> professionals = new LinkedHashSet<>();
 
+    @Column(name = "is_add_on") // todo: put nullable false
+    private Boolean isAddOn = false;
+
     @PrePersist
     protected void onCreate() {
         this.active = true;
