@@ -1,6 +1,7 @@
 package com.rafael.nailspro.webapp.model.entity.professional;
 
 import com.rafael.nailspro.webapp.model.dto.professional.schedule.WorkScheduleRecordDTO;
+import com.rafael.nailspro.webapp.model.entity.BaseEntity;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,7 +25,7 @@ import java.util.List;
                 )
         }
 )
-public class WorkSchedule {
+public class WorkSchedule extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "externalId", nullable = false)
@@ -60,10 +61,5 @@ public class WorkSchedule {
         if (dto.lunchBreakStartTime() != null) this.lunchBreakStartTime = dto.lunchBreakStartTime();
         if (dto.lunchBreakEndTime() != null) this.lunchBreakEndTime = dto.lunchBreakEndTime();
         if (dto.isActive() != null) this.isActive = dto.isActive();
-    }
-
-    public void validateUnregisteredDays(List<DayOfWeek> daysFromList) {
-
-
     }
 }

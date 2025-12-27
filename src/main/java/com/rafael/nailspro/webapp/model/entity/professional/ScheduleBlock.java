@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.model.entity.professional;
 
+import com.rafael.nailspro.webapp.model.entity.BaseEntity;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "schedule_block")
-public class ScheduleBlock {
+public class ScheduleBlock extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "externalId", nullable = false)

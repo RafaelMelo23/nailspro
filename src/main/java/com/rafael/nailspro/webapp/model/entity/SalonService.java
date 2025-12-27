@@ -15,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @SQLRestriction("is_deleted = false")
 @Table(name = "service")
-public class SalonService {
+public class SalonService extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)

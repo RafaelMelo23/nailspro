@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "salon_profile")
-public class SalonProfile {
+public class SalonProfile extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "externalId", nullable = false)
@@ -45,5 +45,8 @@ public class SalonProfile {
 
     @Column(name = "appointment_cancel_window_in_minutes", nullable = false)
     private Integer appointmentCancelWindowInMinutes;
+
+    @Column(name = "domain_slug", nullable = false, unique = true, length = 40)
+    private String domainSlug;
 
 }

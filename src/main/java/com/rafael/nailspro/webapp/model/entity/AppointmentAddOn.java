@@ -9,7 +9,7 @@ import lombok.*;
 @Table(name = "appointment_addons_record")
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppointmentAddOn {
+public class AppointmentAddOn extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

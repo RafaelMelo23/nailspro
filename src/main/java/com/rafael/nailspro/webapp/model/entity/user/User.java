@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.model.entity.user;
 
+import com.rafael.nailspro.webapp.model.entity.BaseEntity;
 import com.rafael.nailspro.webapp.model.enums.UserRole;
 import com.rafael.nailspro.webapp.model.enums.UserStatus;
 import jakarta.persistence.*;
@@ -20,10 +21,11 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
-public abstract class User implements UserDetails {
+public abstract class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
+
     private String fullName;
     @Column(unique = true)
     private String email;

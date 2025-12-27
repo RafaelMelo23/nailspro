@@ -22,6 +22,9 @@ public class SecurityConfiguration {
     @Autowired
     SecurityFilter filter;
 
+    @Autowired
+    TenantFilter tenantFilter;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
 
@@ -61,6 +64,7 @@ public class SecurityConfiguration {
 
                         .anyRequest().authenticated())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(tenantFilter, SecurityFilter.class)
                 .build();
     }
 }
