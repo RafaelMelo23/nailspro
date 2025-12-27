@@ -30,4 +30,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Modifying
     @Query("UPDATE Client cl SET cl.canceledAppointments = cl.canceledAppointments + 1 WHERE cl.id = :clientId")
     void incrementCanceledAppointments(@Param("clientId") Long clientId);
+
+    boolean existsByPhoneNumber(String phoneNumber);
 }

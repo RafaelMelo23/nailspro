@@ -29,9 +29,13 @@ public class Client extends User {
     @Column(name = "phone_number", nullable = false, unique = true, length = 13)
     private String phoneNumber;
 
-    @PrePersist
+    @Override
     public void prePersist() {
+        super.prePersist();
+
         setUserRole(UserRole.CLIENT);
-        setMissedAppointments(0);
+
+        if (this.missedAppointments == null) this.missedAppointments = 0;
+        if (this.canceledAppointments == null) this.setCanceledAppointments(0);
     }
 }

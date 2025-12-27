@@ -4,11 +4,12 @@ import com.rafael.nailspro.webapp.model.entity.BaseEntity;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Builder
+@SuperBuilder
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor

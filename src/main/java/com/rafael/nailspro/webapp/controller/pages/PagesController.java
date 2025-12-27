@@ -1,48 +1,58 @@
-//    package com.rafael.nailspro.webapp.controller.pages;
-//
-//    import org.springframework.stereotype.Controller;
-//    import org.springframework.web.bind.annotation.RequestMapping;
-//
-//    @Controller
-//    public class PagesController {
-//
-//        @RequestMapping("/agendar")
-//        public String scheduling() {
-//            return "";
-//        }
-//
-//        @RequestMapping("/entrar")
-//        public String login() {
-//            return "";
-//        }
-//
-//        @RequestMapping("/cadastro")
-//        public String register() {
-//            return "";
-//        }
-//
-//        @RequestMapping("/perfil")
-//        public String profile() {
-//            return "";
-//        }
-//
-//        @RequestMapping("/agendar")
-//        public String createAppointment() {
-//            return "";
-//        }
-//
-//        @RequestMapping("/admin/servicos")
-//        public String adminServices() {
-//            return "";
-//        }
-//
-//        @RequestMapping("/admin/configuracoes")
-//        public String adminSettings() {
-//            return "";
-//        }
-//
-//        @RequestMapping("/agenda-profissional")
-//        public String professionalAppointments() {
-//            return "";
-//        }
+package com.rafael.nailspro.webapp.controller.pages;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class PagesController {
+
+    @RequestMapping("/redefinir-senha")
+    public String redefinirSenha(@RequestParam String resetToken,
+                                 Model model) {
+
+        model.addAttribute("resetToken", resetToken);
+        return "redefinir-senha";
+    }
+
+//    @RequestMapping("/agendar")
+//    public String scheduling() {
+//        return "";
 //    }
+//
+//    @RequestMapping("/entrar")
+//    public String login() {
+//        return "";
+//    }
+//
+//    @RequestMapping("/cadastro")
+//    public String register() {
+//        return "";
+//    }
+//
+//    @RequestMapping("/perfil")
+//    public String profile() {
+//        return "";
+//    }
+//
+//    @RequestMapping("/agendar")
+//    public String createAppointment() {
+//        return "";
+//    }
+//
+//    @RequestMapping("/admin/servicos")
+//    public String adminServices() {
+//        return "";
+//    }
+//
+//    @RequestMapping("/admin/configuracoes")
+//    public String adminSettings() {
+//        return "";
+//    }
+//
+//    @RequestMapping("/agenda-profissional")
+//    public String professionalAppointments() {
+//        return "";
+//    }
+}

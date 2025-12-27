@@ -12,7 +12,7 @@ import lombok.Setter;
 public class SalonProfile extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "externalId", nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "trade_name", nullable = false, length = 60)

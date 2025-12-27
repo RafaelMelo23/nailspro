@@ -1,13 +1,15 @@
 package com.rafael.nailspro.webapp.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 
-
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@SuperBuilder
 @Getter
 @MappedSuperclass
 @FilterDef(
@@ -26,5 +28,4 @@ public class BaseEntity {
     public void prePersist() {
         this.tenantId = TenantContext.getTenant();
     }
-
 }

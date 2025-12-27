@@ -3,13 +3,14 @@ package com.rafael.nailspro.webapp.model.entity;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Builder
+@SuperBuilder
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor

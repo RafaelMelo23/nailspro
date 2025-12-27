@@ -1,16 +1,21 @@
 package com.rafael.nailspro.webapp.service.auth;
 
+import com.rafael.nailspro.webapp.model.dto.auth.ChangeEmailRequestDTO;
 import com.rafael.nailspro.webapp.model.dto.auth.LoginDTO;
 import com.rafael.nailspro.webapp.model.dto.auth.RegisterDTO;
+import com.rafael.nailspro.webapp.model.dto.auth.ResetPasswordDTO;
 import com.rafael.nailspro.webapp.model.entity.user.Client;
 import com.rafael.nailspro.webapp.model.entity.user.User;
 import com.rafael.nailspro.webapp.model.enums.UserStatus;
 import com.rafael.nailspro.webapp.model.repository.ClientRepository;
 import com.rafael.nailspro.webapp.model.repository.UserRepository;
+import com.rafael.nailspro.webapp.service.infra.email.EmailService;
+import com.rafael.nailspro.webapp.service.infra.email.template.EmailTemplateBuilder;
 import com.rafael.nailspro.webapp.service.infra.exception.BusinessException;
 import com.rafael.nailspro.webapp.service.infra.exception.UserAlreadyExistsException;
 import com.rafael.nailspro.webapp.service.infra.security.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,11 +45,23 @@ public class AuthenticationService {
         );
     }
 
+    private void checkIfUserAlreadyExists(RegisterDTO registerDTO) {
+        userRepository.findByEmailIgnoreCase(registerDTO.email())
+                .ifPresent(user -> {
+                    throw new UserAlreadyExistsException("O E-mail informado já está sendo utilizado");
+                });
+
+        clientRepository.findByPhoneNumber(registerDTO.phoneNumber())
+                .ifPresent(user -> {
+                    throw new UserAlreadyExistsException("O telefone informado já está sendo utilizado");
+                });
+    }
+
     public String login(LoginDTO loginDTO) {
 
         Optional<User> userOptional = userRepository.findByEmailIgnoreCase(loginDTO.email());
-
         User user;
+
         if (userOptional.isPresent()) {
             user = userOptional.get();
             if (!passwordEncoder.matches(loginDTO.password(), user.getPassword())) {
@@ -56,18 +73,6 @@ public class AuthenticationService {
             throw new BusinessException("Os dados informados são inválidos");
         }
 
-        return tokenService.generateToken(user);
-    }
-
-    private void checkIfUserAlreadyExists(RegisterDTO registerDTO) {
-        userRepository.findByEmailIgnoreCase(registerDTO.email())
-                .ifPresent(user -> {
-                    throw new UserAlreadyExistsException("O E-mail informado já está sendo utilizado");
-                });
-
-        clientRepository.findByPhoneNumber(registerDTO.phoneNumber())
-                .ifPresent(user -> {
-                    throw new UserAlreadyExistsException("O telefone informado já está sendo utilizado");
-                });
+        return tokenService.generateAuthToken(user);
     }
 }

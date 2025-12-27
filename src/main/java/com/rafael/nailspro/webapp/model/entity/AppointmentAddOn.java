@@ -2,10 +2,11 @@ package com.rafael.nailspro.webapp.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @Table(name = "appointment_addons_record")
 @NoArgsConstructor
 @AllArgsConstructor

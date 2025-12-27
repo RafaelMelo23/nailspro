@@ -3,6 +3,7 @@ package com.rafael.nailspro.webapp.service.infra.security;
 import com.rafael.nailspro.webapp.model.entity.user.UserPrincipal;
 import com.rafael.nailspro.webapp.model.enums.UserRole;
 import com.rafael.nailspro.webapp.model.enums.security.TokenClaim;
+import com.rafael.nailspro.webapp.model.enums.security.TokenPurpose;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static com.rafael.nailspro.webapp.model.enums.security.TokenPurpose.AUTHENTICATION;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -27,23 +30,28 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = tokenService.recoverAndValidateToken(request);
 
         if (token != null) {
+            String tokenPurposeClaim = token.getClaim("purpose").asString();
 
-            Long userId = token.getClaim(TokenClaim.ID.getValue()).asLong();
-            String userEmail = token.getSubject();
-            UserRole userRole = UserRole.fromString(token.getClaim(TokenClaim.ROLE.getValue()).asString());
+            if (AUTHENTICATION.getValue().equalsIgnoreCase(tokenPurposeClaim)) {
 
-            UserPrincipal userPrincipal = UserPrincipal.builder()
-                    .id(userId)
-                    .email(userEmail)
-                    .userRole(userRole)
-                    .build();
+                Long userId = Long.parseLong(token.getSubject());
+                String userEmail = token.getClaim(TokenClaim.EMAIL.getValue()).asString();
+                UserRole userRole = UserRole.fromString(token.getClaim(TokenClaim.ROLE.getValue()).asString());
 
-            var authentication = new UsernamePasswordAuthenticationToken(
-                    userPrincipal,
-                    null,
-                    userPrincipal.getAuthorities());
+                UserPrincipal userPrincipal = UserPrincipal.builder()
+                        .id(userId)
+                        .email(userEmail)
+                        .userRole(userRole)
+                        .build();
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        } filterChain.doFilter(request, response);
+                var authentication = new UsernamePasswordAuthenticationToken(
+                        userPrincipal,
+                        null,
+                        userPrincipal.getAuthorities());
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
+        filterChain.doFilter(request, response);
     }
 }

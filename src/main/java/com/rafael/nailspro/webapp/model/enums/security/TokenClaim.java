@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum TokenClaim {
 
-    ID("id"),
+    EMAIL("email"),
     ROLE("role");
 
     private final String value;
