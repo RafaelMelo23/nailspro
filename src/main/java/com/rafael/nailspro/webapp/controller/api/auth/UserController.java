@@ -4,7 +4,7 @@ import com.rafael.nailspro.webapp.model.dto.auth.ChangeEmailRequestDTO;
 import com.rafael.nailspro.webapp.model.dto.auth.ChangePhoneRequestDTO;
 import com.rafael.nailspro.webapp.model.dto.auth.ResetPasswordDTO;
 import com.rafael.nailspro.webapp.model.entity.user.UserPrincipal;
-import com.rafael.nailspro.webapp.service.UserService;
+import com.rafael.nailspro.webapp.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

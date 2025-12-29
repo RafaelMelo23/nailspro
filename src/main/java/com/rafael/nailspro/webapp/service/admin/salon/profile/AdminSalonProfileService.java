@@ -16,9 +16,9 @@ public class AdminSalonProfileService {
     private final SalonProfileRepository salonProfileRepository;
     private final FileUploadService fileUploadService;
 
-    public void createOrUpdateProfile(SalonProfileDTO profile) throws IOException {
+    public void createOrUpdateProfile(Long ownerId, SalonProfileDTO profile) throws IOException {
 
-        SalonProfile salonProfile = salonProfileRepository.findById(1L)
+        SalonProfile salonProfile = salonProfileRepository.findByOwner_Id(ownerId)
                 .orElse(new SalonProfile());
 
         if (profile.tradeName() != null) {
@@ -55,12 +55,6 @@ public class AdminSalonProfileService {
         if (profile.appointmentCancelWindowInMinutes() != null) {
             salonProfile.setAppointmentCancelWindowInMinutes(profile.appointmentCancelWindowInMinutes());
         }
-    }
-
-    public SalonProfile findById(Long id) {
-
-        return salonProfileRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("Couldnt find salon profile"));
     }
 
     public void deleteSalonLogo() throws IOException {

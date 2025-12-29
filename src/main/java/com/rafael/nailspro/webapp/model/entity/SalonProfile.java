@@ -1,12 +1,19 @@
 package com.rafael.nailspro.webapp.model.entity;
 
+import com.rafael.nailspro.webapp.model.entity.user.User;
 import com.rafael.nailspro.webapp.model.enums.OperationalStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "salon_profile")
 public class SalonProfile extends BaseEntity {
@@ -48,5 +55,9 @@ public class SalonProfile extends BaseEntity {
 
     @Column(name = "domain_slug", nullable = false, unique = true, length = 40)
     private String domainSlug;
+
+    @OneToOne(optional = false, orphanRemoval = true)
+    @JoinColumn(name = "owner_id", nullable = false, unique = true)
+    private User owner;
 
 }

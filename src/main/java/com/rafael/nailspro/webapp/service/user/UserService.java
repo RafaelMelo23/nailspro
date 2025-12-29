@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.service;
+package com.rafael.nailspro.webapp.service.user;
 
 import com.rafael.nailspro.webapp.model.dto.auth.ChangeEmailRequestDTO;
 import com.rafael.nailspro.webapp.model.dto.auth.ChangePhoneRequestDTO;

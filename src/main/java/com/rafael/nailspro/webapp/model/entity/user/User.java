@@ -1,6 +1,7 @@
 package com.rafael.nailspro.webapp.model.entity.user;
 
 import com.rafael.nailspro.webapp.model.entity.BaseEntity;
+import com.rafael.nailspro.webapp.model.entity.SalonProfile;
 import com.rafael.nailspro.webapp.model.enums.UserRole;
 import com.rafael.nailspro.webapp.model.enums.UserStatus;
 import jakarta.persistence.*;
@@ -37,6 +38,9 @@ public abstract class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role", nullable = false)
     private UserRole userRole;
+
+    @OneToOne(mappedBy = "owner", orphanRemoval = true)
+    private SalonProfile salonProfile;
 
     @Override
     public String getUsername() {
