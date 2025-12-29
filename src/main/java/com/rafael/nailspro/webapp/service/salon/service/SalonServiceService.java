@@ -6,7 +6,9 @@ import com.rafael.nailspro.webapp.model.entity.AppointmentAddOn;
 import com.rafael.nailspro.webapp.model.entity.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.repository.AddOnRepository;
+import com.rafael.nailspro.webapp.model.repository.SalonProfileRepository;
 import com.rafael.nailspro.webapp.model.repository.SalonServiceRepository;
+import com.rafael.nailspro.webapp.service.infra.exception.BusinessException;
 import com.rafael.nailspro.webapp.service.infra.mapper.SalonServiceMapper;
 import com.rafael.nailspro.webapp.service.professional.ProfessionalService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class SalonServiceService {
     private final ProfessionalService professionalService;
     private final SalonServiceMapper salonServiceMapper;
     private final AddOnRepository addOnRepository;
+    private final SalonProfileRepository profileRepository;
 
     public SalonService findById(Long id) {
 
@@ -116,5 +119,11 @@ public class SalonServiceService {
                 service.getProfessionals().addAll(professionalsToAdd);
             }
         });
+    }
+
+    public Integer getSalonBufferTime(String tenantId) {
+
+        return profileRepository.findSalonProfileAppointmentBufferMinutesByTenantId(tenantId)
+                .orElseThrow(() -> new BusinessException("Salão não encontrado."));
     }
 }

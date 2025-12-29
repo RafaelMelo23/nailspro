@@ -8,9 +8,6 @@ import com.rafael.nailspro.webapp.service.infra.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,8 +53,8 @@ public class ProfessionalService {
     public void checkIfProfessionalHasTimeConflicts(UUID professionalId, TimeInterval interval) {
         if (repository.hasTimeConflicts(
                 professionalId,
-                interval.start(),
-                interval.end(),
+                interval.realStart(),
+                interval.endWithBuffer(),
                 interval.getDayOfWeek())) {
             throw new BusinessException("O profissional já possui um compromisso ou bloqueio neste horário.");
         }

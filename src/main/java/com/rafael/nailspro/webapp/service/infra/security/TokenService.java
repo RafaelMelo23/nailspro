@@ -39,6 +39,7 @@ public class TokenService {
                     .withSubject(user.getId().toString())
                     .withClaim(TokenClaim.EMAIL.getValue(), user.getEmail())
                     .withClaim(TokenClaim.ROLE.getValue(), user.getUserRole().getRole())
+                    .withClaim(TokenClaim.TENANT_ID.getValue(), user.getTenantId())
                     .withClaim(TENANT_CLAIM, user.getTenantId())
                     .withClaim(PURPOSE_CLAIM, TokenPurpose.AUTHENTICATION.getValue())
                     .withExpiresAt(generateAuthExpirationTime())

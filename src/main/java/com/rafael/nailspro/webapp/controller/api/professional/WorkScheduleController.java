@@ -23,14 +23,14 @@ public class WorkScheduleController {
     public ResponseEntity<Set<WorkScheduleRecordDTO>> getSchedules(@AuthenticationPrincipal
                                                                        UserPrincipal userPrincipal) {
 
-        return ResponseEntity.ok(workScheduleService.getWorkSchedules(userPrincipal.getId()));
+        return ResponseEntity.ok(workScheduleService.getWorkSchedules(userPrincipal.getUserId()));
     }
 
     @PostMapping
     public ResponseEntity<Void> createWorkSchedule(@RequestBody List<WorkScheduleRecordDTO> workScheduleRecordDTO,
                                                    @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        workScheduleService.registerSchedules(workScheduleRecordDTO, userPrincipal.getId());
+        workScheduleService.registerSchedules(workScheduleRecordDTO, userPrincipal.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -38,7 +38,7 @@ public class WorkScheduleController {
     public ResponseEntity<Void> modifySchedules(@RequestBody List<WorkScheduleRecordDTO> workScheduleRecordDTO,
                                                 @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        workScheduleService.modifyWeekSchedule(workScheduleRecordDTO, userPrincipal.getId());
+        workScheduleService.modifyWeekSchedule(workScheduleRecordDTO, userPrincipal.getUserId());
         return ResponseEntity.noContent().build();
     }
 
@@ -46,7 +46,7 @@ public class WorkScheduleController {
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long scheduleId,
                                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        workScheduleService.deleteSchedule(scheduleId, userPrincipal.getId());
+        workScheduleService.deleteSchedule(scheduleId, userPrincipal.getUserId());
         return ResponseEntity.noContent().build();
     }
 }

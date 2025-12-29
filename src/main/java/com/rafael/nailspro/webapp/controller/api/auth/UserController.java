@@ -21,7 +21,7 @@ public class UserController {
     public ResponseEntity<Void> updateEmail(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                             @RequestBody ChangeEmailRequestDTO dto) {
 
-        userService.updateEmail(userPrincipal.getId(), dto);
+        userService.updateEmail(userPrincipal.getUserId(), dto);
         return ResponseEntity.noContent().build();
     }
 
@@ -29,7 +29,7 @@ public class UserController {
     public ResponseEntity<Void> updatePhone(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                             @RequestBody ChangePhoneRequestDTO dto) {
 
-        userService.updatePhone(userPrincipal.getId(), dto);
+        userService.updatePhone(userPrincipal.getUserId(), dto);
         return ResponseEntity.noContent().build();
     }
 

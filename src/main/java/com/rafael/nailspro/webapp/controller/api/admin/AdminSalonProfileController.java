@@ -24,7 +24,7 @@ public class AdminSalonProfileController {
     public ResponseEntity<Void> createOrUpdateProfile(@AuthenticationPrincipal UserPrincipal user,
                                                       @RequestBody SalonProfileDTO dto) throws IOException {
 
-        adminSalonProfileService.createOrUpdateProfile(user.getId(), dto);
+        adminSalonProfileService.createOrUpdateProfile(user.getUserId(), dto);
         return ResponseEntity.ok().build();
     }
 }

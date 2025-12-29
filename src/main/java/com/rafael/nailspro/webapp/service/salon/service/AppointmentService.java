@@ -7,6 +7,7 @@ import com.rafael.nailspro.webapp.model.entity.AppointmentAddOn;
 import com.rafael.nailspro.webapp.model.entity.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.Client;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
+import com.rafael.nailspro.webapp.model.entity.user.UserPrincipal;
 import com.rafael.nailspro.webapp.model.enums.AppointmentStatus;
 import com.rafael.nailspro.webapp.model.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.service.admin.client.AdminClientService;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,22 +35,37 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
 
     @Transactional
-    public void createAppointment(AppointmentCreateDTO dto, Long clientId) {
+    public void createAppointment(AppointmentCreateDTO dto, UserPrincipal principal) {
         List<AppointmentAddOn> addOnServices = mapAddOns(dto.addOnsIds());
         SalonService mainService = findService(dto.mainServiceId());
 
-        int totalDurationInMinutes = calculateAppointmentMinutage(mainService, addOnServices);
-
-        TimeInterval interval = new TimeInterval(
-                dto.appointmentDate(),
-                dto.appointmentDate().plusMinutes(totalDurationInMinutes)
-        );
+        TimeInterval interval = calculateIntervalAndBuffer(dto, principal, mainService, addOnServices);
 
         workScheduleService.checkProfessionalAvailability(UUID.fromString(dto.professionalExternalId()), interval);
         professionalService.checkIfProfessionalHasTimeConflicts(UUID.fromString(dto.professionalExternalId()), interval);
 
-        Appointment appointment = buildAppointment(dto, clientId, interval, mainService, addOnServices);
+        Appointment appointment = buildAppointment(dto, principal.getUserId(), interval, mainService, addOnServices);
         repository.save(appointment);
+    }
+
+    private TimeInterval calculateIntervalAndBuffer(AppointmentCreateDTO dto,
+                                                                    UserPrincipal principal,
+                                                                    SalonService mainService,
+                                                                    List<AppointmentAddOn> addOnServices) {
+
+        int totalDurationInMinutes = calculateAppointmentMinutage(mainService, addOnServices);
+
+        Integer salonBufferTime = salonService.getSalonBufferTime(principal.getTenantId());
+
+        LocalDateTime start = dto.appointmentDate();
+        LocalDateTime realEnd = start.plusMinutes(totalDurationInMinutes);
+        LocalDateTime endWithBuffer = realEnd.plusMinutes(salonBufferTime);
+
+        return TimeInterval.builder()
+                .realStart(start)
+                .realEnd(realEnd)
+                .endWithBuffer(endWithBuffer)
+                .build();
     }
 
     private Appointment buildAppointment(AppointmentCreateDTO dto,
@@ -59,8 +76,8 @@ public class AppointmentService {
 
         Appointment appointment = Appointment.builder()
                 .appointmentStatus(AppointmentStatus.PENDING)
-                .startDate(interval.start())
-                .endDate(interval.end())
+                .startDate(interval.realStart())
+                .endDate(interval.realEnd())
                 .client(findClient(clientId))
                 .professional(findProfessional(dto.professionalExternalId()))
                 .mainSalonService(mainService)
@@ -69,7 +86,7 @@ public class AppointmentService {
                 .build();
 
         appointment.setTotalValue(appointment.calculateTotalValue());
-        appointment.setEndDate(interval.end());
+        appointment.setEndDate(interval.realEnd());
         return appointment;
     }
 

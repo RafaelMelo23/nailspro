@@ -25,7 +25,7 @@ public class ScheduleBlockController {
     public ResponseEntity<Void> createBlock(@RequestBody ScheduleBlockDTO blockDTO,
                                             @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        scheduleBlockService.createBlock(blockDTO, userPrincipal.getId());
+        scheduleBlockService.createBlock(blockDTO, userPrincipal.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -33,7 +33,7 @@ public class ScheduleBlockController {
     public ResponseEntity<Void> deleteBlock(@PathVariable Long blockId,
                                             @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        scheduleBlockService.deleteBlock(userPrincipal.getId(), blockId);
+        scheduleBlockService.deleteBlock(userPrincipal.getUserId(), blockId);
         return ResponseEntity.noContent().build();
     }
 
@@ -41,6 +41,6 @@ public class ScheduleBlockController {
     public ResponseEntity<List<ScheduleBlockOutDTO>> getBlocks(@PathVariable LocalDateTime dateAndTime,
                                                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        return ResponseEntity.ok(scheduleBlockService.getBlocks(userPrincipal.getId(), Optional.of(dateAndTime)));
+        return ResponseEntity.ok(scheduleBlockService.getBlocks(userPrincipal.getUserId(), Optional.of(dateAndTime)));
     }
 }

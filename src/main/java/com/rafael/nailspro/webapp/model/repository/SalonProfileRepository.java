@@ -9,5 +9,7 @@ public interface SalonProfileRepository extends JpaRepository<SalonProfile, Long
 
     Optional<SalonProfile> findByOwner_Id(Long id);
 
+    Optional<Integer> findSalonProfileAppointmentBufferMinutesByTenantId(String tenantId);
+
 
 }

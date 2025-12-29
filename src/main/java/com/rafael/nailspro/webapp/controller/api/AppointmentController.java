@@ -19,7 +19,7 @@ public class AppointmentController {
     public ResponseEntity<Void> scheduleAppointment(@RequestBody AppointmentCreateDTO appointmentDTO,
                                                     @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        service.createAppointment(appointmentDTO, userPrincipal.getId());
+        service.createAppointment(appointmentDTO, userPrincipal);
         return ResponseEntity.status(201).build();
     }
 
@@ -27,7 +27,7 @@ public class AppointmentController {
     public ResponseEntity<Void> cancelAppointment(@PathVariable Long appointmentId,
                                                   @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        service.cancelAppointmentAndFlagClient(appointmentId, userPrincipal.getId());
+        service.cancelAppointmentAndFlagClient(appointmentId, userPrincipal.getUserId());
         return ResponseEntity.noContent().build();
     }
 }

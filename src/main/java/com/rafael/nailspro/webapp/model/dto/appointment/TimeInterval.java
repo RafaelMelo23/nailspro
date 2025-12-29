@@ -1,27 +1,31 @@
 package com.rafael.nailspro.webapp.model.dto.appointment;
 
 import com.rafael.nailspro.webapp.service.infra.exception.BusinessException;
+import lombok.Builder;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public record TimeInterval(LocalDateTime start, LocalDateTime end) {
+@Builder
+public record TimeInterval(LocalDateTime realStart,
+                           LocalDateTime realEnd,
+                           LocalDateTime endWithBuffer) {
     public TimeInterval {
-        if (end.isBefore(start)) {
+        if (realEnd.isBefore(realStart)) {
             throw new BusinessException("O horário de término deve ser após o início.");
         }
     }
 
     public LocalTime getStartTimeOnly() {
-        return start.toLocalTime();
+        return realStart.toLocalTime();
     }
 
     public LocalTime getEndTimeOnly() {
-        return end.toLocalTime();
+        return realEnd.toLocalTime();
     }
 
     public DayOfWeek getDayOfWeek() {
-        return start.getDayOfWeek();
+        return realStart.getDayOfWeek();
     }
 }

@@ -16,9 +16,10 @@ import java.util.List;
 @Getter
 public class UserPrincipal implements UserDetails {
 
-    private Long id;
+    private Long userId;
     private String email;
     private UserRole userRole;
+    private String tenantId;
 
 
     @Override
