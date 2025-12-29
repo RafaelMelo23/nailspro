@@ -1,6 +1,7 @@
 package com.rafael.nailspro.webapp.model.entity.user;
 
 import com.rafael.nailspro.webapp.model.entity.Appointment;
+import com.rafael.nailspro.webapp.model.entity.SalonProfile;
 import com.rafael.nailspro.webapp.model.entity.SalonService;
 import com.rafael.nailspro.webapp.model.entity.professional.ScheduleBlock;
 import com.rafael.nailspro.webapp.model.entity.professional.WorkSchedule;
@@ -43,16 +44,18 @@ public class Professional extends User {
     @OneToMany(mappedBy = "professional")
     private List<Appointment> professionalAppointments;
 
-    @ManyToMany(mappedBy = "professionals")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "professionals")
     private Set<SalonService> salonServices = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "professional", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "professional", orphanRemoval = true)
     private Set<WorkSchedule> workSchedules = new HashSet<>();
 
-    @OneToMany(mappedBy = "professional", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "professional", orphanRemoval = true)
     private Set<ScheduleBlock> scheduleBlocks = new LinkedHashSet<>();
 
-    @PrePersist
+    @OneToOne(mappedBy = "owner", orphanRemoval = true)
+    private SalonProfile salonProfile;
+
     public void prePersist() {
         this.isActive = Boolean.TRUE;
         this.isFirstLogin = Boolean.TRUE;

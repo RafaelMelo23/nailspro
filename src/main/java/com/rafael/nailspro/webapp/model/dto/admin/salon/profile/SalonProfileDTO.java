@@ -13,5 +13,5 @@ public record SalonProfileDTO(String tradeName,
                               String socialMediaLink,
                               OperationalStatus status,
                               String warningMessage,
-                              Integer appointmentCancelWindowInMinutes) {
+                              Integer appointmentBufferMinutes) {
 }

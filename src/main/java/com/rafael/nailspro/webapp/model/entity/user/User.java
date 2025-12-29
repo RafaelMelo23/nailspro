@@ -39,9 +39,6 @@ public abstract class User extends BaseEntity implements UserDetails {
     @Column(name = "user_role", nullable = false)
     private UserRole userRole;
 
-    @OneToOne(mappedBy = "owner", orphanRemoval = true)
-    private SalonProfile salonProfile;
-
     @Override
     public String getUsername() {
         return this.email;

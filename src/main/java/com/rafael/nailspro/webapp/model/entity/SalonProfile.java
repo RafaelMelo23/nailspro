@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.model.entity;
 
+import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.entity.user.User;
 import com.rafael.nailspro.webapp.model.enums.OperationalStatus;
 import jakarta.persistence.*;
@@ -50,14 +51,50 @@ public class SalonProfile extends BaseEntity {
     @Column(name = "warning_message", length = 200)
     private String warningMessage;
 
-    @Column(name = "appointment_cancel_window_in_minutes", nullable = false)
-    private Integer appointmentCancelWindowInMinutes;
+    @Column(name = "appointment_buffer_minutes", nullable = false)
+    private Integer appointmentBufferMinutes;
 
     @Column(name = "domain_slug", nullable = false, unique = true, length = 40)
     private String domainSlug;
 
-    @OneToOne(optional = false, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
     @JoinColumn(name = "owner_id", nullable = false, unique = true)
-    private User owner;
+    private Professional owner;
 
+    @Override
+    public void prePersist() {
+        super.prePersist();
+
+        if (this.tradeName == null || this.tradeName.isBlank()) {
+            this.tradeName = "Novo Estabelecimento";
+        } else {
+            this.tradeName = this.tradeName.trim();
+        }
+
+        if (this.primaryColor == null || this.primaryColor.isBlank()) {
+            this.primaryColor = "#FB7185";
+        }
+
+        if (this.logoPath == null || this.logoPath.isBlank()) {
+            this.logoPath = "default-logo.png";
+        }
+
+        if (this.comercialPhone == null || this.comercialPhone.isBlank()) {
+            this.comercialPhone = "00000000000";
+        } else {
+            this.comercialPhone = this.comercialPhone.replaceAll("\\D", "");
+        }
+
+        if (this.fullAddress == null || this.fullAddress.isBlank()) {
+            this.fullAddress = "Endereço a preencher";
+        }
+
+        if (this.appointmentBufferMinutes == null) {
+            this.appointmentBufferMinutes = 0;
+        }
+
+        if (this.operationalStatus == null) {
+            this.operationalStatus = OperationalStatus.OPEN;
+        }
+    }
 }

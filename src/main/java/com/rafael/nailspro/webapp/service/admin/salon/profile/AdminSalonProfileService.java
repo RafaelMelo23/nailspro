@@ -52,8 +52,8 @@ public class AdminSalonProfileService {
         if (profile.status() != null) {
             salonProfile.setOperationalStatus(profile.status());
         }
-        if (profile.appointmentCancelWindowInMinutes() != null) {
-            salonProfile.setAppointmentCancelWindowInMinutes(profile.appointmentCancelWindowInMinutes());
+        if (profile.appointmentBufferMinutes() != null) {
+            salonProfile.setAppointmentBufferMinutes(profile.appointmentBufferMinutes());
         }
     }
 
