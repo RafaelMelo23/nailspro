@@ -6,6 +6,7 @@ import com.rafael.nailspro.webapp.model.repository.SalonProfileRepository;
 import com.rafael.nailspro.webapp.service.infra.files.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
@@ -16,6 +17,7 @@ public class AdminSalonProfileService {
     private final SalonProfileRepository salonProfileRepository;
     private final FileUploadService fileUploadService;
 
+    @Transactional
     public void createOrUpdateProfile(Long ownerId, SalonProfileDTO profile) throws IOException {
 
         SalonProfile salonProfile = salonProfileRepository.findByOwner_Id(ownerId)

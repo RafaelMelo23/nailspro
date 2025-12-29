@@ -15,7 +15,7 @@ import java.util.UUID;
 @Component
 public class FileUploadService {
 
-    @Value("${file.upload.dir:/uploads}")
+    @Value("${file.upload.dir:/upload}")
     private String uploadDir;
 
     private Path getUploadPath() {
