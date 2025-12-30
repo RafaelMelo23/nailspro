@@ -1,12 +1,18 @@
 package com.rafael.nailspro.webapp.controller.pages;
 
+import com.rafael.nailspro.webapp.model.entity.TenantContext;
+import com.rafael.nailspro.webapp.service.salon.service.SalonProfileService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequiredArgsConstructor
 public class PagesController {
+
+    private final SalonProfileService salonProfileService;
 
     @RequestMapping("/redefinir-senha")
     public String redefinirSenha(@RequestParam String resetToken,
@@ -14,6 +20,19 @@ public class PagesController {
 
         model.addAttribute("resetToken", resetToken);
         return "redefinir-senha";
+    }
+
+    @RequestMapping("/offline")
+    public String renderMaintenenceHtml(Model model) {
+
+        String salonOperationalMessage =
+                salonProfileService.getSalonOperationalMessageByTenantId(TenantContext.getTenant());
+
+        if (salonOperationalMessage != null) {
+            model.addAttribute("salonOperationalMessage", salonOperationalMessage);
+        }
+
+        return "maintenence-ui";
     }
 
 //    @RequestMapping("/agendar")

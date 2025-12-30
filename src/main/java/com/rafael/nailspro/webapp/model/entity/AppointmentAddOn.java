@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.model.entity;
 
+import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.service.infra.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,17 +18,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    @Autowired
-    SecurityFilter filter;
-
-    @Autowired
-    TenantFilter tenantFilter;
+    private final SecurityFilter filter;
+    private final TenantFilter tenantFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-
         int cost = 12;
         return new BCryptPasswordEncoder(cost);
     }

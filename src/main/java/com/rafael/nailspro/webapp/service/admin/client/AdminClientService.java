@@ -2,8 +2,6 @@ package com.rafael.nailspro.webapp.service.admin.client;
 
 import com.rafael.nailspro.webapp.model.dto.admin.client.ClientAppointmentDTO;
 import com.rafael.nailspro.webapp.model.dto.admin.client.ClientDTO;
-import com.rafael.nailspro.webapp.model.entity.AppointmentAddOn;
-import com.rafael.nailspro.webapp.model.entity.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.Client;
 import com.rafael.nailspro.webapp.model.enums.UserStatus;
 import com.rafael.nailspro.webapp.model.repository.AppointmentRepository;

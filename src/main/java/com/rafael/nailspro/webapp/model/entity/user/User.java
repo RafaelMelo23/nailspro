@@ -1,7 +1,6 @@
 package com.rafael.nailspro.webapp.model.entity.user;
 
 import com.rafael.nailspro.webapp.model.entity.BaseEntity;
-import com.rafael.nailspro.webapp.model.entity.SalonProfile;
 import com.rafael.nailspro.webapp.model.enums.UserRole;
 import com.rafael.nailspro.webapp.model.enums.UserStatus;
 import jakarta.persistence.*;

@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.model.entity;
 
+import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.Client;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.enums.AppointmentStatus;

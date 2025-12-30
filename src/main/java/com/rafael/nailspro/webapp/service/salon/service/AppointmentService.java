@@ -4,7 +4,7 @@ import com.rafael.nailspro.webapp.model.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.model.dto.appointment.TimeInterval;
 import com.rafael.nailspro.webapp.model.entity.Appointment;
 import com.rafael.nailspro.webapp.model.entity.AppointmentAddOn;
-import com.rafael.nailspro.webapp.model.entity.SalonService;
+import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.Client;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.entity.user.UserPrincipal;
@@ -33,6 +33,7 @@ public class AppointmentService {
     private final AdminClientService adminClientService;
     private final ClientService clientService;
     private final AppointmentRepository appointmentRepository;
+    private final SalonProfileService salonProfileService;
 
     @Transactional
     public void createAppointment(AppointmentCreateDTO dto, UserPrincipal principal) {
@@ -55,7 +56,7 @@ public class AppointmentService {
 
         int totalDurationInMinutes = calculateAppointmentMinutage(mainService, addOnServices);
 
-        Integer salonBufferTime = salonService.getSalonBufferTime(principal.getTenantId());
+        Integer salonBufferTime = salonProfileService.getSalonBufferTime(principal.getTenantId());
 
         LocalDateTime start = dto.appointmentDate();
         LocalDateTime realEnd = start.plusMinutes(totalDurationInMinutes);

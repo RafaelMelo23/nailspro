@@ -1,17 +1,13 @@
 package com.rafael.nailspro.webapp.model.entity.user;
 
 import com.rafael.nailspro.webapp.model.entity.Appointment;
-import com.rafael.nailspro.webapp.model.entity.SalonProfile;
-import com.rafael.nailspro.webapp.model.entity.SalonService;
+import com.rafael.nailspro.webapp.model.entity.salon.SalonProfile;
+import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
 import com.rafael.nailspro.webapp.model.entity.professional.ScheduleBlock;
 import com.rafael.nailspro.webapp.model.entity.professional.WorkSchedule;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
-import org.hibernate.annotations.SQLDelete;
 
 import java.util.*;
 

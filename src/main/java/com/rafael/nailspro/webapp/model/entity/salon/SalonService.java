@@ -1,5 +1,6 @@
-package com.rafael.nailspro.webapp.model.entity;
+package com.rafael.nailspro.webapp.model.entity.salon;
 
+import com.rafael.nailspro.webapp.model.entity.BaseEntity;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import jakarta.persistence.*;
 import lombok.*;
@@ -52,10 +53,8 @@ public class SalonService extends BaseEntity {
     @Column(name = "is_add_on") // todo: put nullable false
     private Boolean isAddOn = false;
 
-    @PrePersist
-    protected void onCreate() {
+    public void prePersist() {
         this.active = true;
         this.isDeleted = false;
     }
-
 }

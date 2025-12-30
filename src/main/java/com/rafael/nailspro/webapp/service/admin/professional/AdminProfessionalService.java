@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.service.admin.professional;
 
 import com.rafael.nailspro.webapp.model.dto.admin.professional.CreateProfessionalDTO;
-import com.rafael.nailspro.webapp.model.entity.SalonService;
+import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.enums.UserRole;
 import com.rafael.nailspro.webapp.model.enums.UserStatus;

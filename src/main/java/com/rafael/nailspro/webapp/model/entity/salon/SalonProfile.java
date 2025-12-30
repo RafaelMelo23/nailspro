@@ -1,7 +1,7 @@
-package com.rafael.nailspro.webapp.model.entity;
+package com.rafael.nailspro.webapp.model.entity.salon;
 
+import com.rafael.nailspro.webapp.model.entity.BaseEntity;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
-import com.rafael.nailspro.webapp.model.entity.user.User;
 import com.rafael.nailspro.webapp.model.enums.OperationalStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
