@@ -2,7 +2,7 @@ package com.rafael.nailspro.webapp.controller.api;
 
 import com.rafael.nailspro.webapp.model.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.model.entity.user.UserPrincipal;
-import com.rafael.nailspro.webapp.service.salon.service.AppointmentService;
+import com.rafael.nailspro.webapp.service.appointment.ClientAppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/appointment")
-public class AppointmentController {
+@RequestMapping("/api/v1/appointment/client")
+public class ClientAppointmentController {
 
-    private final AppointmentService service;
+    private final ClientAppointmentService service;
 
     @PostMapping
     public ResponseEntity<Void> scheduleAppointment(@RequestBody AppointmentCreateDTO appointmentDTO,
@@ -27,7 +27,7 @@ public class AppointmentController {
     public ResponseEntity<Void> cancelAppointment(@PathVariable Long appointmentId,
                                                   @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        service.cancelAppointmentAndFlagClient(appointmentId, userPrincipal.getUserId());
+        service.cancelAppointment(appointmentId, userPrincipal.getUserId());
         return ResponseEntity.noContent().build();
     }
 }

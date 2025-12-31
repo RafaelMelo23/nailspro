@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.service.salon.service;
+package com.rafael.nailspro.webapp.service.appointment;
 
 import com.rafael.nailspro.webapp.model.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.model.dto.appointment.TimeInterval;
@@ -11,52 +11,63 @@ import com.rafael.nailspro.webapp.model.entity.user.UserPrincipal;
 import com.rafael.nailspro.webapp.model.enums.AppointmentStatus;
 import com.rafael.nailspro.webapp.model.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.service.admin.client.AdminClientService;
-import com.rafael.nailspro.webapp.service.client.ClientService;
+import com.rafael.nailspro.webapp.service.infra.exception.BusinessException;
 import com.rafael.nailspro.webapp.service.professional.ProfessionalService;
-import com.rafael.nailspro.webapp.service.professional.WorkScheduleService;
+import com.rafael.nailspro.webapp.service.salon.service.SalonProfileService;
+import com.rafael.nailspro.webapp.service.salon.service.SalonServiceService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
 
-    private final AppointmentRepository repository;
+    /*
+        whats done:
+        user can register an appointment
+        user can cancel an appointment
+        admin needs to be able to see a specific users appointments
+        professionals needs to see the appointments with them
+        professionals need the APIs to change appointments statuses
+
+        what needs to be done:
+
+        users need the API to see the available times for the selected professional
+        users need to be able to see their future and past appointments
+     */
+
     private final SalonServiceService salonService;
-    private final WorkScheduleService workScheduleService;
     private final ProfessionalService professionalService;
     private final AdminClientService adminClientService;
-    private final ClientService clientService;
-    private final AppointmentRepository appointmentRepository;
+    private final AppointmentRepository repository;
     private final SalonProfileService salonProfileService;
 
-    @Transactional
-    public void createAppointment(AppointmentCreateDTO dto, UserPrincipal principal) {
-        List<AppointmentAddOn> addOnServices = mapAddOns(dto.addOnsIds());
-        SalonService mainService = findService(dto.mainServiceId());
+    Appointment findAndValidateAppointmentOwnership(Long appointmentId, Long clientId) {
+        Appointment appointment = repository.findById(appointmentId)
+                .orElseThrow(() -> new EntityNotFoundException("Appointment not found"));
 
-        TimeInterval interval = calculateIntervalAndBuffer(dto, principal, mainService, addOnServices);
+        if (!appointment.getClient().getId().equals(clientId)) {
+            throw new BusinessException("Você não pode cancelar esse horário");
+        }
 
-        workScheduleService.checkProfessionalAvailability(UUID.fromString(dto.professionalExternalId()), interval);
-        professionalService.checkIfProfessionalHasTimeConflicts(UUID.fromString(dto.professionalExternalId()), interval);
-
-        Appointment appointment = buildAppointment(dto, principal.getUserId(), interval, mainService, addOnServices);
-        repository.save(appointment);
+        appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+        return appointment;
     }
 
-    private TimeInterval calculateIntervalAndBuffer(AppointmentCreateDTO dto,
-                                                                    UserPrincipal principal,
-                                                                    SalonService mainService,
-                                                                    List<AppointmentAddOn> addOnServices) {
+    TimeInterval calculateIntervalAndBuffer(AppointmentCreateDTO dto,
+                                            UserPrincipal principal,
+                                            SalonService mainService,
+                                            List<AppointmentAddOn> addOnServices) {
 
-        int totalDurationInMinutes = calculateAppointmentMinutage(mainService, addOnServices);
+        int totalDurationInMinutes =
+                calculateAppointmentMinutage(mainService, addOnServices);
 
-        Integer salonBufferTime = salonProfileService.getSalonBufferTime(principal.getTenantId());
+        Integer salonBufferTime =
+                salonProfileService.getSalonBufferTime(principal.getTenantId());
 
         LocalDateTime start = dto.appointmentDate();
         LocalDateTime realEnd = start.plusMinutes(totalDurationInMinutes);
@@ -69,11 +80,11 @@ public class AppointmentService {
                 .build();
     }
 
-    private Appointment buildAppointment(AppointmentCreateDTO dto,
-                                         Long clientId,
-                                         TimeInterval interval,
-                                         SalonService mainService,
-                                         List<AppointmentAddOn> addOnServices) {
+    Appointment buildAppointment(AppointmentCreateDTO dto,
+                                 Long clientId,
+                                 TimeInterval interval,
+                                 SalonService mainService,
+                                 List<AppointmentAddOn> addOnServices) {
 
         Appointment appointment = Appointment.builder()
                 .appointmentStatus(AppointmentStatus.PENDING)
@@ -88,45 +99,32 @@ public class AppointmentService {
 
         appointment.setTotalValue(appointment.calculateTotalValue());
         appointment.setEndDate(interval.realEnd());
+
         return appointment;
     }
 
-    private static int calculateAppointmentMinutage(SalonService mainService, List<AppointmentAddOn> addOnServices) {
-        return mainService.getDurationMinutes() + addOnServices.stream()
+    private static int calculateAppointmentMinutage(SalonService mainService,
+                                                    List<AppointmentAddOn> addOnServices) {
+
+        return mainService.getDurationMinutes()
+                + addOnServices.stream()
                 .mapToInt(addon -> addon.getService().getDurationMinutes())
                 .sum();
     }
 
     public Client findClient(Long clientId) {
-
         return adminClientService.getClient(clientId);
     }
 
     public Professional findProfessional(String professionalExternalId) {
-
         return professionalService.findByExternalId(professionalExternalId);
     }
 
     public SalonService findService(Long serviceId) {
-
         return salonService.findById(serviceId);
     }
 
     public List<AppointmentAddOn> mapAddOns(List<Long> addOnIds) {
-
         return salonService.findAddOns(addOnIds);
-    }
-
-    public void cancelAppointment(Long appointmentId) {
-
-        appointmentRepository.updateAppointmentStatus(appointmentId, AppointmentStatus.CANCELLED);
-    }
-
-    @Transactional
-    public void cancelAppointmentAndFlagClient(Long clientId,
-                                               Long appointmentId) {
-
-        clientService.incrementClientCancelledAppointments(clientId);
-        cancelAppointment(appointmentId);
     }
 }
