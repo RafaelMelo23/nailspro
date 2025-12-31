@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.service.admin.salon.profile;
 
 import com.rafael.nailspro.webapp.model.dto.admin.salon.profile.SalonProfileDTO;
-import com.rafael.nailspro.webapp.model.entity.salon.SalonProfile;
+import com.rafael.nailspro.webapp.model.entity.profile.SalonProfile;
 import com.rafael.nailspro.webapp.model.repository.SalonProfileRepository;
 import com.rafael.nailspro.webapp.service.infra.files.FileUploadService;
 import lombok.RequiredArgsConstructor;
@@ -66,4 +66,6 @@ public class AdminSalonProfileService {
 
         fileUploadService.deleteFile(salonProfile.getLogoPath());
     }
+
+
 }

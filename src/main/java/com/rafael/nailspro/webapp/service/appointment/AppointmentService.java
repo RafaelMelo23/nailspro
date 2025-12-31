@@ -1,10 +1,10 @@
 package com.rafael.nailspro.webapp.service.appointment;
 
 import com.rafael.nailspro.webapp.model.dto.appointment.AppointmentCreateDTO;
-import com.rafael.nailspro.webapp.model.dto.appointment.TimeInterval;
-import com.rafael.nailspro.webapp.model.entity.Appointment;
-import com.rafael.nailspro.webapp.model.entity.AppointmentAddOn;
-import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
+import com.rafael.nailspro.webapp.model.entity.appointment.TimeInterval;
+import com.rafael.nailspro.webapp.model.entity.appointment.Appointment;
+import com.rafael.nailspro.webapp.model.entity.appointment.AppointmentAddOn;
+import com.rafael.nailspro.webapp.model.entity.salon.service.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.Client;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.entity.user.UserPrincipal;
@@ -19,7 +19,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -66,17 +67,17 @@ public class AppointmentService {
         int totalDurationInMinutes =
                 calculateAppointmentMinutage(mainService, addOnServices);
 
-        Integer salonBufferTime =
-                salonProfileService.getSalonBufferTime(principal.getTenantId());
+        Integer salonBufferTimeInMinutes =
+                salonProfileService.getSalonBufferTimeInMinutes(principal.getTenantId());
 
-        LocalDateTime start = dto.appointmentDate();
-        LocalDateTime realEnd = start.plusMinutes(totalDurationInMinutes);
-        LocalDateTime endWithBuffer = realEnd.plusMinutes(salonBufferTime);
+        Instant start = dto.zonedAppointmentDateTime().toInstant();
+        Instant realEnd = start.plus(totalDurationInMinutes, ChronoUnit.MINUTES);
+        Instant endWithBuffer = realEnd.plus(salonBufferTimeInMinutes, ChronoUnit.MINUTES);
 
         return TimeInterval.builder()
-                .realStart(start)
-                .realEnd(realEnd)
-                .endWithBuffer(endWithBuffer)
+                .realTimeStart(start)
+                .realTimeEnd(realEnd)
+                .endTimeWithBuffer(endWithBuffer)
                 .build();
     }
 
@@ -88,8 +89,8 @@ public class AppointmentService {
 
         Appointment appointment = Appointment.builder()
                 .appointmentStatus(AppointmentStatus.PENDING)
-                .startDate(interval.realStart())
-                .endDate(interval.realEnd())
+                .startDate(interval.realTimeStart())
+                .endDate(interval.realTimeEnd())
                 .client(findClient(clientId))
                 .professional(findProfessional(dto.professionalExternalId()))
                 .mainSalonService(mainService)
@@ -98,7 +99,7 @@ public class AppointmentService {
                 .build();
 
         appointment.setTotalValue(appointment.calculateTotalValue());
-        appointment.setEndDate(interval.realEnd());
+        appointment.setEndDate(interval.realTimeEnd());
 
         return appointment;
     }

@@ -7,11 +7,15 @@ import com.rafael.nailspro.webapp.model.enums.UserStatus;
 import com.rafael.nailspro.webapp.model.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.model.repository.ClientRepository;
 import com.rafael.nailspro.webapp.service.infra.exception.BusinessException;
+import com.rafael.nailspro.webapp.service.salon.service.SalonProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +23,7 @@ public class AdminClientService {
 
     private final ClientRepository clientRepository;
     private final AppointmentRepository appointmentRepository;
+    private final SalonProfileService salonProfileService;
 
     @Transactional
     public void changeClientStatus(Long clientId, UserStatus status) {
@@ -29,7 +34,8 @@ public class AdminClientService {
     public Page<ClientDTO> searchForClients(String clientName, Pageable pageable) {
 
         return clientRepository
-                .findByFullNameContainingIgnoreCase(clientName, pageable).map(cl -> ClientDTO.builder()
+                .findByFullNameContainingIgnoreCase(clientName, pageable)
+                .map(cl -> ClientDTO.builder()
                         .clientId(cl.getId())
                         .email(cl.getEmail())
                         .phoneNumber(cl.getPhoneNumber())
@@ -40,6 +46,8 @@ public class AdminClientService {
 
     public Page<ClientAppointmentDTO> getClientAppointments(Long clientId, Pageable pageable) {
 
+        ZoneId salonZoneId = salonProfileService.getSalonZoneId();
+
         return appointmentRepository
                 .getClientAppointmentsById(clientId, pageable)
                 .map(ap -> ClientAppointmentDTO.builder()
@@ -48,7 +56,7 @@ public class AdminClientService {
                         .professionalId(ap.getProfessional().getId())
                         .professionalName(ap.getProfessional().getFullName())
 
-                        .appointmentDate(ap.getStartDate())
+                        .startDateAndTime(ZonedDateTime.ofInstant(ap.getStartDate(), salonZoneId))
                         .status(ap.getAppointmentStatus())
 
                         .mainServiceName(ap.getMainSalonService().getName())

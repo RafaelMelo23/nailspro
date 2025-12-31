@@ -2,7 +2,7 @@ package com.rafael.nailspro.webapp.model.dto.appointment;
 
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +10,6 @@ import java.util.Optional;
 public record AppointmentCreateDTO(String professionalExternalId,
                                    Long mainServiceId,
                                    List<Long> addOnsIds,
-                                   LocalDateTime appointmentDate,
+                                   ZonedDateTime zonedAppointmentDateTime,
                                    Optional<String> observation) {
 }

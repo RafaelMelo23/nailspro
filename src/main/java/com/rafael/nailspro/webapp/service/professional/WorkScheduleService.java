@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.service.professional;
 
-import com.rafael.nailspro.webapp.model.dto.appointment.TimeInterval;
+import com.rafael.nailspro.webapp.model.entity.appointment.TimeInterval;
 import com.rafael.nailspro.webapp.model.dto.professional.schedule.WorkScheduleRecordDTO;
 import com.rafael.nailspro.webapp.model.entity.professional.WorkSchedule;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 

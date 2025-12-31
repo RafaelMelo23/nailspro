@@ -1,10 +1,10 @@
 package com.rafael.nailspro.webapp.model.repository;
 
-import com.rafael.nailspro.webapp.model.entity.salon.SalonProfile;
+import com.rafael.nailspro.webapp.model.entity.profile.SalonProfile;
 import com.rafael.nailspro.webapp.model.enums.OperationalStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
+import java.time.ZoneId;
 import java.util.Optional;
 
 public interface SalonProfileRepository extends JpaRepository<SalonProfile, Long> {
@@ -16,4 +16,6 @@ public interface SalonProfileRepository extends JpaRepository<SalonProfile, Long
     boolean existsSalonProfileByTenantIdAndOperationalStatus(String tenantId, OperationalStatus operationalStatus);
 
     Optional<String> findWarningMessageByTenantId(String tenantId);
+
+    ZoneId getZoneIdByTenantId(String tenantId);
 }

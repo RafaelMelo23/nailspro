@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.service.professional;
 
-import com.rafael.nailspro.webapp.model.dto.appointment.TimeInterval;
+import com.rafael.nailspro.webapp.model.entity.appointment.TimeInterval;
 import com.rafael.nailspro.webapp.model.dto.professional.ProfessionalSimplifiedDTO;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.repository.ProfessionalRepository;
@@ -53,8 +53,8 @@ public class ProfessionalService {
     public void checkIfProfessionalHasTimeConflicts(UUID professionalId, TimeInterval interval) {
         if (repository.hasTimeConflicts(
                 professionalId,
-                interval.realStart(),
-                interval.endWithBuffer(),
+                interval.toLocalDateTime(interval.realTimeStart()),
+                interval.toLocalDateTime(interval.endTimeWithBuffer()),
                 interval.getDayOfWeek())) {
             throw new BusinessException("O profissional já possui um compromisso ou bloqueio neste horário.");
         }

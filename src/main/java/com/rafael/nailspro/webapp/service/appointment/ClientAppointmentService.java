@@ -1,10 +1,10 @@
 package com.rafael.nailspro.webapp.service.appointment;
 
 import com.rafael.nailspro.webapp.model.dto.appointment.AppointmentCreateDTO;
-import com.rafael.nailspro.webapp.model.dto.appointment.TimeInterval;
-import com.rafael.nailspro.webapp.model.entity.Appointment;
-import com.rafael.nailspro.webapp.model.entity.AppointmentAddOn;
-import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
+import com.rafael.nailspro.webapp.model.entity.appointment.TimeInterval;
+import com.rafael.nailspro.webapp.model.entity.appointment.Appointment;
+import com.rafael.nailspro.webapp.model.entity.appointment.AppointmentAddOn;
+import com.rafael.nailspro.webapp.model.entity.salon.service.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.UserPrincipal;
 import com.rafael.nailspro.webapp.model.enums.AppointmentStatus;
 import com.rafael.nailspro.webapp.model.repository.AppointmentRepository;

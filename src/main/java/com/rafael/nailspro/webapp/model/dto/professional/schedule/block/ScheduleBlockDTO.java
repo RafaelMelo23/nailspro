@@ -1,13 +1,13 @@
 package com.rafael.nailspro.webapp.model.dto.professional.schedule.block;
 
 import lombok.Builder;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Builder
 public record ScheduleBlockDTO(
         Long id,
-        LocalDateTime dateAndStartTime,
-        LocalDateTime dateAndEndTime,
+        ZonedDateTime dateAndStartTime,
+        ZonedDateTime dateAndEndTime,
         Boolean isWholeDayBlocked,
         String reason
 ) {}

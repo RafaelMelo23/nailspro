@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.model.dto.onboarding;
 
-import com.rafael.nailspro.webapp.model.entity.salon.SalonProfile;
+import com.rafael.nailspro.webapp.model.entity.profile.SalonProfile;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import lombok.Builder;
 

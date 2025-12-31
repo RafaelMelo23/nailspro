@@ -1,8 +1,8 @@
 package com.rafael.nailspro.webapp.model.entity.user;
 
-import com.rafael.nailspro.webapp.model.entity.Appointment;
-import com.rafael.nailspro.webapp.model.entity.salon.SalonProfile;
-import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
+import com.rafael.nailspro.webapp.model.entity.appointment.Appointment;
+import com.rafael.nailspro.webapp.model.entity.profile.SalonProfile;
+import com.rafael.nailspro.webapp.model.entity.salon.service.SalonService;
 import com.rafael.nailspro.webapp.model.entity.professional.ScheduleBlock;
 import com.rafael.nailspro.webapp.model.entity.professional.WorkSchedule;
 import jakarta.persistence.*;

@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.model.repository;
 
-import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
+import com.rafael.nailspro.webapp.model.entity.salon.service.SalonService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

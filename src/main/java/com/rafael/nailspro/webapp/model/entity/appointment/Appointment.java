@@ -1,14 +1,18 @@
-package com.rafael.nailspro.webapp.model.entity;
+package com.rafael.nailspro.webapp.model.entity.appointment;
 
-import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
+import com.rafael.nailspro.webapp.model.entity.BaseEntity;
+import com.rafael.nailspro.webapp.model.entity.salon.service.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.Client;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.enums.AppointmentStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,10 +51,10 @@ public class Appointment extends BaseEntity {
     private AppointmentStatus appointmentStatus;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDateTime startDate;
+    private Instant startDate;
 
     @Column(name = "end_date", nullable = false)
-    private LocalDateTime endDate;
+    private Instant endDate;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "appointment_addon_id")

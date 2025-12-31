@@ -6,17 +6,18 @@ import com.rafael.nailspro.webapp.model.entity.professional.ScheduleBlock;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.repository.ScheduleBlockRepository;
 import com.rafael.nailspro.webapp.service.infra.exception.BusinessException;
+import com.rafael.nailspro.webapp.service.salon.service.SalonProfileService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +29,8 @@ public class ScheduleBlockService {
 
     private final ScheduleBlockRepository repository;
     private final ProfessionalService professionalService;
-    @Autowired
-    EntityManager entityManager;
+    private final EntityManager entityManager;
+    private final SalonProfileService salonProfileService;
 
     public void createBlock(ScheduleBlockDTO blockDTO, Long professionalId) {
         Professional professional = professionalService.findById(professionalId);
@@ -38,8 +39,8 @@ public class ScheduleBlockService {
                 .reason(blockDTO.reason())
                 .professional(professional)
                 .isWholeDayBlocked(blockDTO.isWholeDayBlocked())
-                .dateAndStartTime(blockDTO.dateAndStartTime())
-                .dateAndEndTime(blockDTO.dateAndEndTime())
+                .dateAndStartTime(blockDTO.dateAndStartTime().toInstant())
+                .dateAndEndTime(blockDTO.dateAndEndTime().toInstant())
                 .build();
 
         if (!block.getIsWholeDayBlocked() && block.getDateAndStartTime() == null) {
@@ -59,6 +60,8 @@ public class ScheduleBlockService {
     }
 
     public List<ScheduleBlockOutDTO> getBlocks(Long userId, Optional<LocalDateTime> from) {
+
+        ZoneId salonZoneId = salonProfileService.getSalonZoneId();
 
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ScheduleBlock> cq = cb.createQuery(ScheduleBlock.class);
@@ -86,8 +89,8 @@ public class ScheduleBlockService {
         return resultList.stream()
                 .map(sb -> ScheduleBlockOutDTO.builder()
                         .id(sb.getId())
-                        .dateAndStartTime(sb.getDateAndStartTime())
-                        .dateAndEndTime(sb.getDateAndEndTime())
+                        .dateAndStartTime(ZonedDateTime.ofInstant(sb.getDateAndStartTime(), salonZoneId))
+                        .dateAndEndTime(ZonedDateTime.ofInstant(sb.getDateAndEndTime(), salonZoneId))
                         .isWholeDayBlocked(sb.getIsWholeDayBlocked())
                         .professionalId(sb.getProfessional().getId())
                         .reason(sb.getReason())

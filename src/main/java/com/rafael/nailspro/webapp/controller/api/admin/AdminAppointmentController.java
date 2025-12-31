@@ -25,7 +25,7 @@ public class AdminAppointmentController {
     public ResponseEntity<Page<AdminUserAppointmentDTO>> listUserAppointments(
             @PathVariable Long userId,
             @PageableDefault(
-                    sort = "startDate"
+                    sort = "startDateAndTime"
             ) Pageable pageable
     ) {
         return ResponseEntity.ok(

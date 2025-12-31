@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -37,8 +38,8 @@ public class ProfessionalAppointmentService {
                         .status(ap.getAppointmentStatus())
                         .totalValue(ap.calculateTotalValue())
                         .observations(ap.getObservations())
-                        .startDate(ap.getStartDate())
-                        .endDate(ap.getEndDate())
+                        .startDate(ZonedDateTime.from(ap.getStartDate()))
+                        .endDate(ZonedDateTime.from(ap.getEndDate()))
 
                         .build()
                 )

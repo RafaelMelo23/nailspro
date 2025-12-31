@@ -2,7 +2,7 @@ package com.rafael.nailspro.webapp.service.infra.mapper;
 
 import com.rafael.nailspro.webapp.model.dto.salon.service.SalonServiceDTO;
 import com.rafael.nailspro.webapp.model.dto.salon.service.SalonServiceOutDTO;
-import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
+import com.rafael.nailspro.webapp.model.entity.salon.service.SalonService;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

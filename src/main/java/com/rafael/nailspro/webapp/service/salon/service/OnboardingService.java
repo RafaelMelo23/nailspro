@@ -2,7 +2,7 @@ package com.rafael.nailspro.webapp.service.salon.service;
 
 import com.rafael.nailspro.webapp.model.dto.onboarding.OnboardingRequestDTO;
 import com.rafael.nailspro.webapp.model.dto.onboarding.OnboardingResultDTO;
-import com.rafael.nailspro.webapp.model.entity.salon.SalonProfile;
+import com.rafael.nailspro.webapp.model.entity.profile.SalonProfile;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
 import com.rafael.nailspro.webapp.model.enums.UserRole;
 import com.rafael.nailspro.webapp.model.enums.UserStatus;

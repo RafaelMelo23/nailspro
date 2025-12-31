@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.model.entity.user;
 
-import com.rafael.nailspro.webapp.model.entity.Appointment;
+import com.rafael.nailspro.webapp.model.entity.appointment.Appointment;
 import com.rafael.nailspro.webapp.model.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;

@@ -3,20 +3,27 @@ package com.rafael.nailspro.webapp.service.admin.salon.profile;
 import com.rafael.nailspro.webapp.model.dto.appointment.AddOnDTO;
 import com.rafael.nailspro.webapp.model.dto.appointment.AdminUserAppointmentDTO;
 import com.rafael.nailspro.webapp.model.repository.AppointmentRepository;
+import com.rafael.nailspro.webapp.service.salon.service.SalonProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class AdminAppointmentService {
 
     private final AppointmentRepository repository;
+    private final SalonProfileService salonProfileService;
 
     @Transactional(readOnly = true)
     public Page<AdminUserAppointmentDTO> listUsersAppointments(Long userId, Pageable pageable) {
+
+        ZoneId salonZoneId = salonProfileService.getSalonZoneId();
 
         return repository.findByClient_Id(userId, pageable)
                 .map(ap -> AdminUserAppointmentDTO.builder()
@@ -45,8 +52,8 @@ public class AdminAppointmentService {
                         .status(ap.getAppointmentStatus())
                         .totalValue(ap.calculateTotalValue())
                         .observations(ap.getObservations())
-                        .startDate(ap.getStartDate())
-                        .endDate(ap.getEndDate())
+                        .startDateAndTime(ZonedDateTime.ofInstant(ap.getStartDate(), salonZoneId))
+                        .endDateAndTime(ZonedDateTime.ofInstant(ap.getEndDate(), salonZoneId))
                         .build()
                 );
     }

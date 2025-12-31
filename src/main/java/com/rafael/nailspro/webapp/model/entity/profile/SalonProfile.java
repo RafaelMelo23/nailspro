@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.model.entity.salon;
+package com.rafael.nailspro.webapp.model.entity.profile;
 
 import com.rafael.nailspro.webapp.model.entity.BaseEntity;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;
@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import java.time.ZoneId;
 
 @SuperBuilder
 @Getter
@@ -60,6 +62,10 @@ public class SalonProfile extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
     @JoinColumn(name = "owner_id", nullable = false, unique = true)
     private Professional owner;
+
+    //todo: add
+    @Column(name = "salon_zone_id", nullable = false)
+    private ZoneId zoneId;
 
     @Override
     public void prePersist() {

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @SuperBuilder
@@ -21,10 +21,10 @@ public class ScheduleBlock extends BaseEntity {
     private Long id;
 
     @Column(name = "date_and_start_time", nullable = false)
-    private LocalDateTime dateAndStartTime;
+    private Instant dateAndStartTime;
 
     @Column(name = "date_and_end_time", nullable = false)
-    private LocalDateTime dateAndEndTime;
+    private Instant dateAndEndTime;
 
     @Column(name = "is_whole_day_blocked")
     private Boolean isWholeDayBlocked = Boolean.FALSE;

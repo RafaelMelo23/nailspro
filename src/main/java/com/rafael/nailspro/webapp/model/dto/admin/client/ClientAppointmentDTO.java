@@ -3,7 +3,7 @@ package com.rafael.nailspro.webapp.model.dto.admin.client;
 import com.rafael.nailspro.webapp.model.enums.AppointmentStatus;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Builder
@@ -12,7 +12,8 @@ public record ClientAppointmentDTO(
         Long professionalId,
         String professionalName,
 
-        LocalDateTime appointmentDate,
+        ZonedDateTime startDateAndTime,
+        ZonedDateTime endDateAndTime,
         AppointmentStatus status,
 
         String mainServiceName,

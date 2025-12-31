@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.model.entity.salon;
+package com.rafael.nailspro.webapp.model.entity.salon.service;
 
 import com.rafael.nailspro.webapp.model.entity.BaseEntity;
 import com.rafael.nailspro.webapp.model.entity.user.Professional;

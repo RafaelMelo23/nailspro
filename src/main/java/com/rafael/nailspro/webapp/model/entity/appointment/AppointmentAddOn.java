@@ -1,6 +1,7 @@
-package com.rafael.nailspro.webapp.model.entity;
+package com.rafael.nailspro.webapp.model.entity.appointment;
 
-import com.rafael.nailspro.webapp.model.entity.salon.SalonService;
+import com.rafael.nailspro.webapp.model.entity.BaseEntity;
+import com.rafael.nailspro.webapp.model.entity.salon.service.SalonService;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

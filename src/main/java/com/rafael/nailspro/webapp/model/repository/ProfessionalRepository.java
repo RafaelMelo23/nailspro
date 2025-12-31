@@ -43,8 +43,8 @@ public interface ProfessionalRepository extends JpaRepository<Professional, Long
                         )
             """)
     boolean hasTimeConflicts(@Param("externalId") UUID professionalId,
-                             @Param("startDate") LocalDateTime startDate,
-                             @Param("endDate") LocalDateTime endDate,
+                             @Param("startDateAndTime") LocalDateTime startDate,
+                             @Param("endDateAndTime") LocalDateTime endDate,
                              @Param("day") DayOfWeek day);
 
     Professional findByExternalId(UUID externalId);
