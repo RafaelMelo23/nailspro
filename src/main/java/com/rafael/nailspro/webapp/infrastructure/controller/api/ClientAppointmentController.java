@@ -3,6 +3,7 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.domain.user.UserPrincipal;
 import com.rafael.nailspro.webapp.application.client.ClientAppointmentUseCase;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,5 +30,13 @@ public class ClientAppointmentController {
 
         service.cancelAppointment(appointmentId, userPrincipal.getUserId());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/schedules/{professionalExternalId}")
+    public ResponseEntity<ProfessionalAvailabilityDTO> findAvailableProfessionalTimes(
+            @PathVariable String professionalExternalId,
+            @RequestParam int serviceDurationInSeconds) {
+
+        return ResponseEntity.ok(service.findAvailableTimes(professionalExternalId, serviceDurationInSeconds));
     }
 }

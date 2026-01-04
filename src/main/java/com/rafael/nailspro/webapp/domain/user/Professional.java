@@ -22,7 +22,7 @@ import java.util.*;
 @Setter @Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "professionals")
+@Table(name = "professional")
 @PrimaryKeyJoinColumn(name = "user_id")
 public class Professional extends User {
 

@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.domain.admin.client;
+package com.rafael.nailspro.webapp.application.admin.client;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.client.ClientAppointmentDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.client.ClientDTO;

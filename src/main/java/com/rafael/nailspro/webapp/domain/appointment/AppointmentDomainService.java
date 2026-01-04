@@ -7,7 +7,7 @@ import com.rafael.nailspro.webapp.domain.user.Client;
 import com.rafael.nailspro.webapp.domain.user.Professional;
 import com.rafael.nailspro.webapp.domain.user.UserPrincipal;
 import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
-import com.rafael.nailspro.webapp.domain.admin.client.AdminClientService;
+import com.rafael.nailspro.webapp.application.admin.client.AdminClientService;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import com.rafael.nailspro.webapp.application.service.SalonProfileService;
 import com.rafael.nailspro.webapp.application.service.SalonServiceService;

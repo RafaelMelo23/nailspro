@@ -11,6 +11,6 @@ import java.util.Optional;
 public record SalonServiceDTO(Long id,
                               String name,
                               Integer value,
-                              Long durationInSeconds,
+                              Integer durationInSeconds,
                               String description,
                               Optional<List<Long>> professionals) {}

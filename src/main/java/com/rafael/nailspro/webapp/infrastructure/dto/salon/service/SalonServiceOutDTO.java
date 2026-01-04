@@ -9,7 +9,7 @@ import java.util.Set;
 public record SalonServiceOutDTO(Long id,
                                  String name,
                                  Integer value,
-                                 Long durationInSeconds,
+                                 Integer durationInSeconds,
                                  String description,
                                  Set<ProfessionalSimplifiedDTO> professionals,
                                  Boolean isActive) {

@@ -33,7 +33,7 @@ public class SalonService extends BaseEntity {
     private Integer nailCount;
 
     @Column(name = "duration_in_seconds", nullable = false)
-    private Long durationInSeconds;
+    private Integer durationInSeconds;
 
     @Column(name = "value", nullable = false)
     private Integer value;

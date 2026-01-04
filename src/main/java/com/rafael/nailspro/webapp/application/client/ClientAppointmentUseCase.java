@@ -12,6 +12,7 @@ import com.rafael.nailspro.webapp.domain.service.SalonService;
 import com.rafael.nailspro.webapp.domain.user.Professional;
 import com.rafael.nailspro.webapp.domain.user.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentTimesDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.SimpleBusyInterval;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.contract.BusyInterval;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 @Service
@@ -72,15 +75,15 @@ public class ClientAppointmentUseCase {
 
 
     @Transactional(readOnly = true)
-    public List<ProfessionalAvailabilityDTO> findAvailableTimes(Long professionalId,
-                                                                long serviceDurationInSeconds) {
+    public ProfessionalAvailabilityDTO findAvailableTimes(String professionalExternalId,
+                                                          int serviceDurationInSeconds) {
         ZoneId salonZoneId = salonProfileService.getSalonZoneId();
-        Professional professional = professionalDomainService.findById(professionalId);
+        Professional professional = professionalDomainService.findByExternalId(professionalExternalId);
 
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = YearMonth.from(startDate).atEndOfMonth();
 
-        return startDate.datesUntil(endDate.plusDays(1))
+        List<AppointmentTimesDTO> possibleAppointmentDates = startDate.datesUntil(endDate.plusDays(1))
                 .map(date -> findProfessionalDailyAvailability(
                         professional,
                         date,
@@ -89,12 +92,14 @@ public class ClientAppointmentUseCase {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
+
+        return new ProfessionalAvailabilityDTO(salonZoneId, possibleAppointmentDates);
     }
 
-    private Optional<ProfessionalAvailabilityDTO> findProfessionalDailyAvailability(Professional professional,
-                                                                                    LocalDate date,
-                                                                                    ZoneId salonZoneId,
-                                                                                    Long serviceDurationInSeconds) {
+    private Optional<AppointmentTimesDTO> findProfessionalDailyAvailability(Professional professional,
+                                                                            LocalDate date,
+                                                                            ZoneId salonZoneId,
+                                                                            Integer serviceDurationInSeconds) {
 
         Optional<WorkSchedule> scheduleOpt = professional.getWorkSchedules().stream()
                 .filter(ws -> ws.getDayOfWeek() == date.getDayOfWeek())
@@ -105,51 +110,76 @@ public class ClientAppointmentUseCase {
         }
 
         WorkSchedule schedule = scheduleOpt.get();
-        LocalTime workStart = schedule.getWorkStart();
-        LocalTime workEnd = schedule.getWorkEnd();
 
         List<BusyInterval> busyIntervals = calculateOccupiedIntervals(professional, date, salonZoneId);
 
-        List<ZonedDateTime> availableTimes = new ArrayList<>();
-        for (BusyInterval busyInterval : busyIntervals) {
+        List<LocalTime> availableTimes = new ArrayList<>();
 
-            while (workStart.plusSeconds(serviceDurationInSeconds).isBefore(busyInterval.getEnd()) ||
-                    workStart.plusSeconds(serviceDurationInSeconds).equals(busyInterval.getEnd())) {
+        LocalTime cursor = schedule.getWorkStart();
 
-                addAvailableTime(date, salonZoneId, workStart, availableTimes);
+        for (BusyInterval interval : busyIntervals) {
+            if (cursor.isBefore(interval.getStart())) {
+                processTimeSlotGaps(cursor, interval.getStart(), serviceDurationInSeconds, availableTimes);
+            }
 
-                workStart = workStart.plusSeconds(serviceDurationInSeconds);
+            if (interval.getEnd().isAfter(cursor)) {
+                cursor = interval.getEnd();
             }
         }
 
-        while (workStart.plusSeconds(serviceDurationInSeconds).isBefore(workEnd) ||
-                workStart.plusSeconds(serviceDurationInSeconds).equals(workEnd)) {
-
-            addAvailableTime(date, salonZoneId, workStart, availableTimes);
-            workStart = workStart.plusSeconds(serviceDurationInSeconds);
+        if (cursor.isBefore(schedule.getWorkEnd())) {
+            processTimeSlotGaps(cursor, schedule.getWorkEnd(), serviceDurationInSeconds, availableTimes);
         }
 
-        return Optional.of(new ProfessionalAvailabilityDTO(
+        return Optional.of(new AppointmentTimesDTO(
                 date,
-                scheduleOpt.get().getDayOfWeek(),
                 availableTimes
         ));
     }
 
-    private static void addAvailableTime(LocalDate date,
-                                         ZoneId salonZoneId,
-                                         LocalTime workStart,
-                                         List<ZonedDateTime> availableTimes) {
+    private void processTimeSlotGaps(LocalTime gapStart,
+                                     LocalTime gapEnd,
+                                     int duration,
+                                     List<LocalTime> suggestions) {
 
+        final long LARGE_GAP_THRESHOLD = TimeUnit.HOURS.toSeconds(3);
 
-        LocalDateTime availableDate = LocalDateTime.of(date, workStart);
-        availableTimes.add(ZonedDateTime.of(availableDate, salonZoneId));
+        long gapSize = ChronoUnit.SECONDS.between(gapStart, gapEnd);
+        if (gapSize < duration) return;
+
+        suggestions.add(gapStart);
+
+        LocalTime backLoadSlot = gapEnd.minusSeconds(duration);
+
+        if (!backLoadSlot.equals(gapStart)) {
+            suggestions.add(backLoadSlot);
+        }
+
+        if (gapSize >= LARGE_GAP_THRESHOLD) {
+            LocalTime candidate = gapStart.plusHours(1);
+
+            while (candidate.plusSeconds(duration).isBefore(gapEnd)) {
+
+                if (!candidate.equals(backLoadSlot)) {
+                    suggestions.add(candidate);
+                }
+                candidate = candidate.plusHours(1);
+            }
+        }
     }
 
     private List<BusyInterval> calculateOccupiedIntervals(Professional professional,
                                                           LocalDate date,
                                                           ZoneId salonZoneId) {
         Integer salonBufferInMinutes = salonProfileService.getSalonBufferTimeInMinutes(TenantContext.getTenant());
+
+        Stream<BusyInterval> lunchBreak = professional.getWorkSchedules().stream()
+                .filter(ws -> ws.getDayOfWeek() == date.getDayOfWeek())
+                .map(ws -> SimpleBusyInterval.builder()
+                        .start(ws.getLunchBreakStartTime())
+                        .end(ws.getLunchBreakEndTime())
+                        .build()
+                );
 
         Stream<BusyInterval> appointments = professional.getProfessionalAppointments().stream()
                 .filter(ap -> date.equals(LocalDate.ofInstant(ap.getStartDate(), salonZoneId)))
@@ -167,7 +197,9 @@ public class ClientAppointmentUseCase {
                         .build()
                 );
 
-        return Stream.concat(appointments, blocks)
+        Stream<BusyInterval> concat = Stream.concat(lunchBreak, appointments);
+
+        return Stream.concat(concat, blocks)
                 .sorted(Comparator.comparing(BusyInterval::getStart))
                 .toList();
     }

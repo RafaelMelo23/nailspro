@@ -2,7 +2,7 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
 import com.rafael.nailspro.webapp.application.professional.ScheduleBlockService;
 import com.rafael.nailspro.webapp.application.professional.WorkScheduleService;
-import com.rafael.nailspro.webapp.domain.admin.professional.AdminProfessionalService;
+import com.rafael.nailspro.webapp.application.admin.professional.AdminProfessionalService;
 import com.rafael.nailspro.webapp.domain.professional.ProfessionalDomainService;
 import com.rafael.nailspro.webapp.domain.user.Professional;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.professional.CreateProfessionalDTO;

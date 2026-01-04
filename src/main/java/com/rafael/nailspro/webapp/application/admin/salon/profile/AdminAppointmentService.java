@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.domain.admin.salon.profile;
+package com.rafael.nailspro.webapp.application.admin.salon.profile;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AddOnDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AdminUserAppointmentDTO;

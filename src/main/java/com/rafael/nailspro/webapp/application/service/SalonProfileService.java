@@ -34,6 +34,8 @@ public class SalonProfileService {
 
     public ZoneId getSalonZoneId() {
 
-        return repository.getZoneIdByTenantId(TenantContext.getTenant());
+        return repository.fetchZoneIdByTenantId(TenantContext.getTenant())
+                .map(ZoneId::of)
+                .orElseThrow(() -> new BusinessException("Fuso horário não encontrado."));
     }
 }

@@ -3,7 +3,7 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.client.ClientAppointmentDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.client.ClientDTO;
 import com.rafael.nailspro.webapp.domain.enums.UserStatus;
-import com.rafael.nailspro.webapp.domain.admin.client.AdminClientService;
+import com.rafael.nailspro.webapp.application.admin.client.AdminClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

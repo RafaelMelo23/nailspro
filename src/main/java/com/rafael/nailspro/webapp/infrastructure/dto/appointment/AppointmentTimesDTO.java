@@ -1,0 +1,11 @@
+package com.rafael.nailspro.webapp.infrastructure.dto.appointment;
+
+import lombok.Builder;
+
+import java.time.*;
+import java.util.List;
+
+@Builder
+public record AppointmentTimesDTO(LocalDate date,
+                                  List<LocalTime> availableTimes) {
+}

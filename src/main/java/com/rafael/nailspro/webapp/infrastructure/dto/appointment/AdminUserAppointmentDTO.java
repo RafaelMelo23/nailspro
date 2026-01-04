@@ -25,7 +25,7 @@ public record AdminUserAppointmentDTO(
         // Main service
         Long mainServiceId,
         String mainServiceName,
-        Long mainServiceDurationInSeconds,
+        Integer mainServiceDurationInSeconds,
         Integer mainServiceValue,
 
         // Add-ons

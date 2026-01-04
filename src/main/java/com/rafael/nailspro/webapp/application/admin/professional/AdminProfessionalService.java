@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.domain.admin.professional;
+package com.rafael.nailspro.webapp.application.admin.professional;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.professional.CreateProfessionalDTO;
 import com.rafael.nailspro.webapp.domain.service.SalonService;
