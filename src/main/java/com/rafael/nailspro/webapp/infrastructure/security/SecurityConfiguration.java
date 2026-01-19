@@ -30,12 +30,12 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -51,7 +51,8 @@ public class SecurityConfiguration {
                         // APIs
                         .requestMatchers("/api/internal/**",
                                 "/api/v1/auth/login",
-                                "/api/v1/auth/register").permitAll()
+                                "/api/v1/auth/register",
+                                "/api/v1/webhook/**").permitAll()
 
                         // User/Anonymous Pages
                         .requestMatchers(HttpMethod.GET,

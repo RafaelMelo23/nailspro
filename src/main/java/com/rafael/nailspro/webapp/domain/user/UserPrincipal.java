@@ -1,9 +1,9 @@
 package com.rafael.nailspro.webapp.domain.user;
 
 import com.rafael.nailspro.webapp.domain.enums.UserRole;
+import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Getter;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

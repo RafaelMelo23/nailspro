@@ -19,6 +19,12 @@ public class SalonMaintenanceFilter extends OncePerRequestFilter {
     private final SalonProfileService salonProfileService;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.startsWith("/api/v1/webhook");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
@@ -30,14 +36,16 @@ public class SalonMaintenanceFilter extends OncePerRequestFilter {
                 path.contains("/js/") ||
                 path.contains("/entrar");
 
-
-        if (!isWhitelisted && !salonProfileService.isSalonOpenByTenantId(TenantContext.getTenant())) {
+        if (TenantContext.getTenant() != null &&
+                !isWhitelisted &&
+                !salonProfileService.isSalonOpenByTenantId(TenantContext.getTenant())) {
 
             request.getRequestDispatcher("/offline")
                     .forward(request, response);
 
             return;
         }
+
 
         filterChain.doFilter(request, response);
     }
