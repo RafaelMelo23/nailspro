@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.domain;
+package com.rafael.nailspro.webapp.domain.tenant;
 
 public class TenantContext {
 

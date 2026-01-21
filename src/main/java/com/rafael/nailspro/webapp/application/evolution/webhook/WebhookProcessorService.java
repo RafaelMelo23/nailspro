@@ -2,7 +2,6 @@ package com.rafael.nailspro.webapp.application.evolution.webhook;
 
 import com.rafael.nailspro.webapp.domain.enums.EvolutionEvent;
 import com.rafael.nailspro.webapp.domain.webhook.WebhookStrategy;
-import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.EvolutionWebhookDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ProfessionalRepository extends JpaRepository<Professional, Long> {
@@ -47,4 +48,8 @@ public interface ProfessionalRepository extends JpaRepository<Professional, Long
                              @Param("day") DayOfWeek day);
 
     Professional findByExternalId(UUID externalId);
+
+    @Query("SELECT sp.owner from SalonProfile sp WHERE sp.tenantId = :id")
+    Optional<Professional> findSalonOwnerByTenantId(@Param("id") String tenantId);
+
 }

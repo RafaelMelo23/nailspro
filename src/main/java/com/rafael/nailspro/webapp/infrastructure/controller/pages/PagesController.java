@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.pages;
 
-import com.rafael.nailspro.webapp.domain.TenantContext;
+import com.rafael.nailspro.webapp.domain.tenant.TenantContext;
 import com.rafael.nailspro.webapp.application.service.SalonProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

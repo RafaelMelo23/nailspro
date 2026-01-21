@@ -1,7 +1,8 @@
 package com.rafael.nailspro.webapp.application.service;
 
-import com.rafael.nailspro.webapp.domain.TenantContext;
+import com.rafael.nailspro.webapp.domain.tenant.TenantContext;
 import com.rafael.nailspro.webapp.domain.enums.OperationalStatus;
+import com.rafael.nailspro.webapp.domain.profile.SalonProfile;
 import com.rafael.nailspro.webapp.domain.profile.SalonProfileRepository;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,11 @@ import java.time.ZoneId;
 public class SalonProfileService {
 
     private final SalonProfileRepository repository;
+
+    public SalonProfile getSalonProfileByTenantId(String tenantId) {
+
+        return repository.findByTenantId(tenantId);
+    }
 
     public boolean isSalonOpenByTenantId(String tenantId) {
 

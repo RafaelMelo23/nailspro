@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.domain.whatsapp;
+package com.rafael.nailspro.webapp.application.whatsapp;
 
 public interface WhatsappProvider {
 

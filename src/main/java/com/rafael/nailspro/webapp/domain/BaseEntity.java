@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.domain;
 
+import com.rafael.nailspro.webapp.domain.tenant.TenantContext;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

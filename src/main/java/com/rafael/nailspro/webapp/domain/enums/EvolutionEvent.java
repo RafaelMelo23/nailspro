@@ -11,7 +11,7 @@ public enum EvolutionEvent {
     CONNECTION_UPDATE("CONNECTION_UPDATE"),
 
     // Eventos de Mensagem (Cuidado com o volume aqui!)
-    MESSAGES_UPDATE("MESSAGES_UPDATE"), // Status (lida, entregue)
+    // MESSAGES_UPDATE("MESSAGES_UPDATE"), // Status (lida, entregue)
     SEND_MESSAGE("SEND_MESSAGE");
 
     private final String value;

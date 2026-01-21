@@ -1,7 +1,8 @@
-package com.rafael.nailspro.webapp.application.messages;
+package com.rafael.nailspro.webapp.infrastructure.whatsapp.evolution;
 
 import com.rafael.nailspro.webapp.domain.enums.EvolutionEvent;
-import com.rafael.nailspro.webapp.domain.whatsapp.WhatsappProvider;
+import com.rafael.nailspro.webapp.application.whatsapp.WhatsappProvider;
+import com.rafael.nailspro.webapp.domain.tenant.TenantInstance;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.CreateInstanceRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.SendTextRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "whatsapp.provider", havingValue = "evolution", matchIfMissing = true)
-public class EvolutionClient implements WhatsappProvider {
+public class EvolutionWhatsappService implements WhatsappProvider {
 
     /*
         - configurar webhook pro evolution nos informar dos envios das mensagens
@@ -71,7 +72,7 @@ public class EvolutionClient implements WhatsappProvider {
         return CreateInstanceRequestDTO.builder()
                 .token(globalApiKey)
                 .events(eventosDesejados)
-                .instanceName("tenant_" + tenantId)
+                .instanceName(TenantInstance.format(tenantId))
                 .webhookByEvents(false)
                 .webhook(webhookUrl)
                 .number(null)

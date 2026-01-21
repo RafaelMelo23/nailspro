@@ -2,7 +2,7 @@ package com.rafael.nailspro.webapp.application.client;
 
 import com.rafael.nailspro.webapp.application.professional.WorkScheduleService;
 import com.rafael.nailspro.webapp.application.service.SalonProfileService;
-import com.rafael.nailspro.webapp.domain.TenantContext;
+import com.rafael.nailspro.webapp.domain.tenant.TenantContext;
 import com.rafael.nailspro.webapp.domain.appointment.*;
 import com.rafael.nailspro.webapp.domain.client.ClientDomainService;
 import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
