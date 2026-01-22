@@ -1,13 +1,13 @@
 package com.rafael.nailspro.webapp.application.service;
 
-import com.rafael.nailspro.webapp.domain.professional.ProfessionalDomainService;
+import com.rafael.nailspro.webapp.domain.model.AppointmentAddOn;
+import com.rafael.nailspro.webapp.domain.model.Professional;
+import com.rafael.nailspro.webapp.domain.model.SalonService;
+import com.rafael.nailspro.webapp.domain.repository.AddOnRepository;
+import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
+import com.rafael.nailspro.webapp.domain.repository.SalonServiceRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.salon.service.SalonServiceDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.salon.service.SalonServiceOutDTO;
-import com.rafael.nailspro.webapp.domain.appointment.AppointmentAddOn;
-import com.rafael.nailspro.webapp.domain.service.SalonService;
-import com.rafael.nailspro.webapp.domain.user.Professional;
-import com.rafael.nailspro.webapp.domain.appointment.AddOnRepository;
-import com.rafael.nailspro.webapp.domain.service.SalonServiceRepository;
 import com.rafael.nailspro.webapp.infrastructure.mapper.SalonServiceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class SalonServiceService {
 
     private final SalonServiceRepository salonServiceRepository;
-    private final ProfessionalDomainService professionalDomainService;
+    private final ProfessionalRepository professionalRepository;
     private final SalonServiceMapper salonServiceMapper;
     private final AddOnRepository addOnRepository;
 
@@ -53,13 +53,10 @@ public class SalonServiceService {
     }
 
     private Set<Professional> getProfessionals(SalonServiceDTO salonServiceDTO) {
-        Set<Professional> professionalsThatOfferSuchService = new HashSet<>();
-
-        if (salonServiceDTO.professionals().isPresent()) {
-            professionalsThatOfferSuchService = professionalDomainService.findAllById
-                    (salonServiceDTO.professionals().get());
-        }
-        return professionalsThatOfferSuchService;
+        return salonServiceDTO.professionals()
+                .filter(ids -> !ids.isEmpty())
+                .map(ids -> new HashSet<>(professionalRepository.findAllById(ids)))
+                .orElse(new HashSet<>());
     }
 
     public List<SalonServiceOutDTO> getServices() {
@@ -112,7 +109,7 @@ public class SalonServiceService {
                     .toList();
 
             if (!idsToAdd.isEmpty()) {
-                Set<Professional> professionalsToAdd = professionalDomainService.findAllById(idsToAdd);
+                Set<Professional> professionalsToAdd = new HashSet<>(professionalRepository.findAllById(idsToAdd));
                 service.getProfessionals().addAll(professionalsToAdd);
             }
         });

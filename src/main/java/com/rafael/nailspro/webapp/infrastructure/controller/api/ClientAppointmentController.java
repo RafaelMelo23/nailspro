@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
-import com.rafael.nailspro.webapp.domain.user.UserPrincipal;
+import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.application.client.ClientAppointmentUseCase;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
 import lombok.RequiredArgsConstructor;

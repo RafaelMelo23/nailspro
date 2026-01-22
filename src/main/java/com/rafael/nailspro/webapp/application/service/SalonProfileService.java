@@ -1,9 +1,9 @@
 package com.rafael.nailspro.webapp.application.service;
 
-import com.rafael.nailspro.webapp.domain.tenant.TenantContext;
+import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import com.rafael.nailspro.webapp.domain.enums.OperationalStatus;
-import com.rafael.nailspro.webapp.domain.profile.SalonProfile;
-import com.rafael.nailspro.webapp.domain.profile.SalonProfileRepository;
+import com.rafael.nailspro.webapp.domain.model.SalonProfile;
+import com.rafael.nailspro.webapp.domain.repository.SalonProfileRepository;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

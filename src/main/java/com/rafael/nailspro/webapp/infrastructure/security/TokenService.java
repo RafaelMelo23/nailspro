@@ -7,7 +7,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.ResetPasswordDTO;
-import com.rafael.nailspro.webapp.domain.user.User;
+import com.rafael.nailspro.webapp.domain.model.User;
 import com.rafael.nailspro.webapp.domain.enums.security.TokenClaim;
 import com.rafael.nailspro.webapp.domain.enums.security.TokenPurpose;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;

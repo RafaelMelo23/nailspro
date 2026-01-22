@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.rafael.nailspro.webapp.domain.tenant.TenantContext;
+import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,8 +1,8 @@
 package com.rafael.nailspro.webapp.application.admin.salon.profile;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.salon.profile.SalonProfileDTO;
-import com.rafael.nailspro.webapp.domain.profile.SalonProfile;
-import com.rafael.nailspro.webapp.domain.profile.SalonProfileRepository;
+import com.rafael.nailspro.webapp.domain.model.SalonProfile;
+import com.rafael.nailspro.webapp.domain.repository.SalonProfileRepository;
 import com.rafael.nailspro.webapp.infrastructure.files.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

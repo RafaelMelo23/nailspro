@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.mapper;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.ProfessionalSimplifiedDTO;
-import com.rafael.nailspro.webapp.domain.user.Professional;
+import com.rafael.nailspro.webapp.domain.model.Professional;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;

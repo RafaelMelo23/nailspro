@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.professional;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAppointmentScheduleDTO;
-import com.rafael.nailspro.webapp.domain.user.UserPrincipal;
+import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.application.professional.ProfessionalAppointmentUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;

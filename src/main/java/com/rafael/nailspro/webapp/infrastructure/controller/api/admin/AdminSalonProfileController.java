@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.salon.profile.SalonProfileDTO;
-import com.rafael.nailspro.webapp.domain.user.UserPrincipal;
+import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.application.admin.salon.profile.AdminSalonProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

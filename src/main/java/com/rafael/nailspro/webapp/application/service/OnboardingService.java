@@ -2,12 +2,12 @@ package com.rafael.nailspro.webapp.application.service;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.onboarding.OnboardingRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.onboarding.OnboardingResultDTO;
-import com.rafael.nailspro.webapp.domain.profile.SalonProfile;
-import com.rafael.nailspro.webapp.domain.user.Professional;
+import com.rafael.nailspro.webapp.domain.model.SalonProfile;
+import com.rafael.nailspro.webapp.domain.model.Professional;
 import com.rafael.nailspro.webapp.domain.enums.UserRole;
 import com.rafael.nailspro.webapp.domain.enums.UserStatus;
-import com.rafael.nailspro.webapp.domain.professional.ProfessionalRepository;
-import com.rafael.nailspro.webapp.domain.profile.SalonProfileRepository;
+import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
+import com.rafael.nailspro.webapp.domain.repository.SalonProfileRepository;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

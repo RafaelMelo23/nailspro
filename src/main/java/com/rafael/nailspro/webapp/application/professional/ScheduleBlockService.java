@@ -1,13 +1,13 @@
 package com.rafael.nailspro.webapp.application.professional;
 
-import com.rafael.nailspro.webapp.domain.professional.ProfessionalDomainService;
+import com.rafael.nailspro.webapp.application.service.SalonProfileService;
+import com.rafael.nailspro.webapp.domain.model.Professional;
+import com.rafael.nailspro.webapp.domain.model.ScheduleBlock;
+import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
+import com.rafael.nailspro.webapp.domain.repository.ScheduleBlockRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.block.ScheduleBlockDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.block.ScheduleBlockOutDTO;
-import com.rafael.nailspro.webapp.domain.professional.ScheduleBlock;
-import com.rafael.nailspro.webapp.domain.user.Professional;
-import com.rafael.nailspro.webapp.domain.professional.ScheduleBlockRepository;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
-import com.rafael.nailspro.webapp.application.service.SalonProfileService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -29,12 +29,13 @@ import java.util.stream.Collectors;
 public class ScheduleBlockService {
 
     private final ScheduleBlockRepository repository;
-    private final ProfessionalDomainService professionalReadService;
+    private final ProfessionalRepository professionalRepository;
     private final EntityManager entityManager;
     private final SalonProfileService salonProfileService;
 
     public void createBlock(ScheduleBlockDTO blockDTO, Long professionalId) {
-        Professional professional = professionalReadService.findById(professionalId);
+        Professional professional = professionalRepository.findById(professionalId)
+                .orElseThrow(() -> new BusinessException("Profissional não encontrado(a)"));
 
         ScheduleBlock block = ScheduleBlock.builder()
                 .reason(blockDTO.reason())

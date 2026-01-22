@@ -2,7 +2,7 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api.professional;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.block.ScheduleBlockDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.block.ScheduleBlockOutDTO;
-import com.rafael.nailspro.webapp.domain.user.UserPrincipal;
+import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.application.professional.ScheduleBlockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

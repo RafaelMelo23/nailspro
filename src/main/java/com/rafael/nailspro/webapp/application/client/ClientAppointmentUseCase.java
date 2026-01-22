@@ -1,20 +1,21 @@
 package com.rafael.nailspro.webapp.application.client;
 
+import com.rafael.nailspro.webapp.application.appointment.AppointmentService;
+import com.rafael.nailspro.webapp.application.professional.ProfessionalAppointmentUseCase;
 import com.rafael.nailspro.webapp.application.professional.WorkScheduleService;
 import com.rafael.nailspro.webapp.application.service.SalonProfileService;
-import com.rafael.nailspro.webapp.domain.tenant.TenantContext;
-import com.rafael.nailspro.webapp.domain.appointment.*;
-import com.rafael.nailspro.webapp.domain.client.ClientDomainService;
+import com.rafael.nailspro.webapp.domain.model.Appointment;
+import com.rafael.nailspro.webapp.domain.model.AppointmentAddOn;
+import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
+import com.rafael.nailspro.webapp.domain.repository.ClientRepository;
+import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.*;
+import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
-import com.rafael.nailspro.webapp.domain.professional.ProfessionalDomainService;
-import com.rafael.nailspro.webapp.domain.professional.WorkSchedule;
-import com.rafael.nailspro.webapp.domain.service.SalonService;
-import com.rafael.nailspro.webapp.domain.user.Professional;
-import com.rafael.nailspro.webapp.domain.user.UserPrincipal;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentTimesDTO;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.SimpleBusyInterval;
+import com.rafael.nailspro.webapp.domain.model.WorkSchedule;
+import com.rafael.nailspro.webapp.domain.model.SalonService;
+import com.rafael.nailspro.webapp.domain.model.Professional;
+import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.contract.BusyInterval;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,31 +31,32 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ClientAppointmentUseCase {
 
-    private final ClientDomainService clientDomainService;
+    private final ClientRepository clientRepository;
     private final AppointmentRepository repository;
-    private final AppointmentDomainService appointmentDomainService;
+    private final AppointmentService appointmentService;
     private final WorkScheduleService workScheduleService;
-    private final ProfessionalDomainService professionalDomainService;
+    private final ProfessionalAppointmentUseCase professionalAppointmentUseCase;
+    private final ProfessionalRepository professionalRepository;
     private final SalonProfileService salonProfileService;
 
     @Transactional
     public void createAppointment(AppointmentCreateDTO dto, UserPrincipal principal) {
-        List<AppointmentAddOn> addOnServices = appointmentDomainService.mapAddOns(dto.addOnsIds());
-        SalonService mainService = appointmentDomainService.findService(dto.mainServiceId());
+        List<AppointmentAddOn> addOnServices = appointmentService.mapAddOns(dto.addOnsIds());
+        SalonService mainService = appointmentService.findService(dto.mainServiceId());
 
-        TimeInterval interval = appointmentDomainService.calculateIntervalAndBuffer(dto, principal, mainService, addOnServices);
+        TimeInterval interval = appointmentService.calculateIntervalAndBuffer(dto, principal, mainService, addOnServices);
 
         workScheduleService.checkProfessionalAvailability(
                 UUID.fromString(dto.professionalExternalId()),
                 interval
         );
 
-        professionalDomainService.checkIfProfessionalHasTimeConflicts(
+        professionalAppointmentUseCase.checkIfProfessionalHasTimeConflicts(
                 UUID.fromString(dto.professionalExternalId()),
                 interval
         );
 
-        Appointment appointment = appointmentDomainService.buildAppointment(
+        Appointment appointment = appointmentService.buildAppointment(
                 dto,
                 principal.getUserId(),
                 interval,
@@ -67,18 +69,17 @@ public class ClientAppointmentUseCase {
 
     @Transactional
     public void cancelAppointment(Long appointmentId, Long clientId) {
-        Appointment appointment = appointmentDomainService.findAndValidateAppointmentOwnership(appointmentId, clientId);
+        Appointment appointment = appointmentService.findAndValidateAppointmentOwnership(appointmentId, clientId);
         appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
 
-        clientDomainService.incrementClientCancelledAppointments(clientId);
+        clientRepository.incrementCanceledAppointments(clientId);
     }
-
 
     @Transactional(readOnly = true)
     public ProfessionalAvailabilityDTO findAvailableTimes(String professionalExternalId,
                                                           int serviceDurationInSeconds) {
         ZoneId salonZoneId = salonProfileService.getSalonZoneId();
-        Professional professional = professionalDomainService.findByExternalId(professionalExternalId);
+        Professional professional = professionalRepository.findByExternalId(UUID.fromString(professionalExternalId));
 
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = YearMonth.from(startDate).atEndOfMonth();

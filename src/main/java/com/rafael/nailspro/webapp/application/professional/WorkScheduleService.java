@@ -1,11 +1,11 @@
 package com.rafael.nailspro.webapp.application.professional;
 
-import com.rafael.nailspro.webapp.domain.appointment.TimeInterval;
-import com.rafael.nailspro.webapp.domain.professional.ProfessionalDomainService;
+import com.rafael.nailspro.webapp.domain.model.Professional;
+import com.rafael.nailspro.webapp.domain.model.WorkSchedule;
+import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
+import com.rafael.nailspro.webapp.domain.repository.WorkScheduleRepository;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.TimeInterval;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.WorkScheduleRecordDTO;
-import com.rafael.nailspro.webapp.domain.professional.WorkSchedule;
-import com.rafael.nailspro.webapp.domain.user.Professional;
-import com.rafael.nailspro.webapp.domain.professional.WorkScheduleRepository;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,13 +21,14 @@ import java.util.stream.Collectors;
 public class WorkScheduleService {
 
     private final WorkScheduleRepository repository;
-    private final ProfessionalDomainService professionalDomainService;
+    private final ProfessionalRepository professionalRepository;
 
     @Transactional
     public void registerSchedules(List<WorkScheduleRecordDTO> workScheduleDTO, Long professionalId) {
         Set<WorkSchedule> schedulesToBeSaved = new HashSet<>();
 
-        Professional professional = professionalDomainService.findById(professionalId);
+        Professional professional = professionalRepository.findById(professionalId)
+                .orElseThrow(() -> new BusinessException("Professional não encontrado(a)"));
 
         Set<DayOfWeek> professionalCurrentSchedule = getProfessionalCurrentSchedule(professional);
 

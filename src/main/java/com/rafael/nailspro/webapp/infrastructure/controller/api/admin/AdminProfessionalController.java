@@ -1,10 +1,10 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
+import com.rafael.nailspro.webapp.application.admin.professional.AdminProfessionalService;
 import com.rafael.nailspro.webapp.application.professional.ScheduleBlockService;
 import com.rafael.nailspro.webapp.application.professional.WorkScheduleService;
-import com.rafael.nailspro.webapp.application.admin.professional.AdminProfessionalService;
-import com.rafael.nailspro.webapp.domain.professional.ProfessionalDomainService;
-import com.rafael.nailspro.webapp.domain.user.Professional;
+import com.rafael.nailspro.webapp.domain.model.Professional;
+import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.professional.CreateProfessionalDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.WorkScheduleRecordDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.block.ScheduleBlockOutDTO;
@@ -24,7 +24,7 @@ import java.util.Set;
 public class AdminProfessionalController {
 
     private final AdminProfessionalService adminProfessionalService;
-    private final ProfessionalDomainService professionalReadService;
+    private final ProfessionalRepository professionalRepository;
     private final WorkScheduleService workScheduleService;
     private final ScheduleBlockService scheduleBlockService;
 
@@ -49,9 +49,9 @@ public class AdminProfessionalController {
     //todo: perhaps change it to a more suitable DTO
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<Set<Professional>> getAllProfessionals() {
+    public ResponseEntity<List<Professional>> getAllProfessionals() {
 
-        return ResponseEntity.ok(professionalReadService.findAll());
+        return ResponseEntity.ok(professionalRepository.findAll());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
