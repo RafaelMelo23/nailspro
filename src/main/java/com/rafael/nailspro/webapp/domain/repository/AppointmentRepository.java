@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,5 +23,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     Page<Appointment> findByClient_Id(Long userId, Pageable pageable);
 
-    List<Appointment> findByProfessional_IdAndStartDateBetween(Long professionalId, LocalDateTime startDateAfter, LocalDateTime startDateBefore);
+    List<Appointment> findByProfessional_IdAndStartDateBetween(Long professionalId,
+                                                               LocalDateTime startDateAfter,
+                                                               LocalDateTime startDateBefore);
+
+    List<Appointment> findByStartDateIsGreaterThanEqual(Instant threshHold);
+
+    List<Appointment> findByStartDateBetween(Instant start, Instant end);
 }

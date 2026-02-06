@@ -3,7 +3,6 @@ package com.rafael.nailspro.webapp.application.whatsapp.webhook;
 import com.rafael.nailspro.webapp.application.professional.ProfessionalReadService;
 import com.rafael.nailspro.webapp.application.sse.EvolutionConnectionNotificationService;
 import com.rafael.nailspro.webapp.domain.enums.EvolutionEvent;
-import com.rafael.nailspro.webapp.shared.tenant.TenantInstance;
 import com.rafael.nailspro.webapp.domain.model.Professional;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.QrCodeData;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.EvolutionWebhookResponse;
@@ -22,7 +21,7 @@ public class QrCodeUpdatedUseCase implements WebhookStrategy {
         if (payload instanceof EvolutionWebhookResponse<?> evolutionWebhookResponse &&
                 evolutionWebhookResponse.T() instanceof QrCodeData qrCodeData) {
 
-            String tenantId = TenantInstance.fromRawString(evolutionWebhookResponse.instance());
+            String tenantId = evolutionWebhookResponse.instance();
             Professional salonOwner = professionalReadService.findByTenantId(tenantId);
 
             connectionNotificationService.buildAndSend(salonOwner.getId(), qrCodeData);

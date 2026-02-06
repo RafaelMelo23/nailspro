@@ -23,7 +23,7 @@ public class AdminAppointmentService {
     @Transactional(readOnly = true)
     public Page<AdminUserAppointmentDTO> listUsersAppointments(Long userId, Pageable pageable) {
 
-        ZoneId salonZoneId = salonProfileService.getSalonZoneId();
+        ZoneId salonZoneId = salonProfileService.getSalonZoneIdByContext();
 
         return repository.findByClient_Id(userId, pageable)
                 .map(ap -> AdminUserAppointmentDTO.builder()

@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.infrastructure.dto.appointment;
+package com.rafael.nailspro.webapp.infrastructure.dto.appointment.date;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.contract.BusyInterval;
 import lombok.Builder;

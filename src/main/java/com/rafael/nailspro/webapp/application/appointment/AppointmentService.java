@@ -8,7 +8,7 @@ import com.rafael.nailspro.webapp.domain.model.*;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.TimeInterval;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,20 +22,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
-
-    /*
-        whats done:
-        user can register an appointment
-        user can cancel an appointment
-        admin needs to be able to see a specific users appointments
-        professionals needs to see the appointments with them
-        professionals need the APIs to change appointments statuses
-
-        what needs to be done:
-
-        users need the API to see the available times for the selected professional
-        users need to be able to see their future and past appointments
-     */
 
     private final SalonServiceService salonService;
     private final ProfessionalRepository professionalRepository;
@@ -81,6 +67,7 @@ public class AppointmentService {
                                         Long clientId,
                                         TimeInterval interval,
                                         SalonService mainService,
+                                        String salonTradeName,
                                         List<AppointmentAddOn> addOnServices) {
 
         Appointment appointment = Appointment.builder()
@@ -92,6 +79,7 @@ public class AppointmentService {
                 .mainSalonService(mainService)
                 .addOns(addOnServices)
                 .observations(dto.observation().get())
+                .salonTradeName(salonTradeName)
                 .build();
 
         appointment.setTotalValue(appointment.calculateTotalValue());
@@ -107,6 +95,12 @@ public class AppointmentService {
                 + addOnServices.stream()
                 .mapToLong(addon -> addon.getService().getDurationInSeconds())
                 .sum();
+    }
+
+    public Appointment findById(Long id) {
+
+        return repository.findById(id)
+                .orElseThrow(() -> new BusinessException("Não foi possível encontrar o agendamento especificado"));
     }
 
     public Client findClient(Long clientId) {

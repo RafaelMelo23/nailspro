@@ -63,7 +63,7 @@ public class SecurityConfiguration {
 
                         .anyRequest().authenticated())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(tenantFilter, SecurityFilter.class)
+                // .addFilterAfter(tenantFilter, SecurityFilter.class)
                 .build();
     }
 }

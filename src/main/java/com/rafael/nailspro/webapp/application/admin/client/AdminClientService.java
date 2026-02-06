@@ -46,7 +46,7 @@ public class AdminClientService {
 
     public Page<ClientAppointmentDTO> getClientAppointments(Long clientId, Pageable pageable) {
 
-        ZoneId salonZoneId = salonProfileService.getSalonZoneId();
+        ZoneId salonZoneId = salonProfileService.getSalonZoneIdByContext();
 
         return appointmentRepository
                 .getClientAppointmentsById(clientId, pageable)

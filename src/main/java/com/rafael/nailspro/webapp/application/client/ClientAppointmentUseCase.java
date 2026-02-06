@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.application.client;
 
+import com.rafael.nailspro.webapp.application.appointment.AppointmentEventListener;
 import com.rafael.nailspro.webapp.application.appointment.AppointmentService;
 import com.rafael.nailspro.webapp.application.professional.ProfessionalAppointmentUseCase;
 import com.rafael.nailspro.webapp.application.professional.WorkScheduleService;
@@ -10,6 +11,8 @@ import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.domain.repository.ClientRepository;
 import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.*;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.SimpleBusyInterval;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
 import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
 import com.rafael.nailspro.webapp.domain.model.WorkSchedule;
@@ -38,12 +41,12 @@ public class ClientAppointmentUseCase {
     private final ProfessionalAppointmentUseCase professionalAppointmentUseCase;
     private final ProfessionalRepository professionalRepository;
     private final SalonProfileService salonProfileService;
+    private final AppointmentEventListener eventListener;
 
     @Transactional
     public void createAppointment(AppointmentCreateDTO dto, UserPrincipal principal) {
         List<AppointmentAddOn> addOnServices = appointmentService.mapAddOns(dto.addOnsIds());
         SalonService mainService = appointmentService.findService(dto.mainServiceId());
-
         TimeInterval interval = appointmentService.calculateIntervalAndBuffer(dto, principal, mainService, addOnServices);
 
         workScheduleService.checkProfessionalAvailability(
@@ -56,15 +59,19 @@ public class ClientAppointmentUseCase {
                 interval
         );
 
+        String salonTradeName = salonProfileService.getSalonTradeName(TenantContext.getTenant());
+
         Appointment appointment = appointmentService.buildAppointment(
                 dto,
                 principal.getUserId(),
                 interval,
                 mainService,
+                salonTradeName,
                 addOnServices
         );
 
-        repository.save(appointment);
+        Appointment bookedAppointment = repository.save(appointment);
+        eventListener.handleBookedAppointment(bookedAppointment.getId());
     }
 
     @Transactional
@@ -78,7 +85,7 @@ public class ClientAppointmentUseCase {
     @Transactional(readOnly = true)
     public ProfessionalAvailabilityDTO findAvailableTimes(String professionalExternalId,
                                                           int serviceDurationInSeconds) {
-        ZoneId salonZoneId = salonProfileService.getSalonZoneId();
+        ZoneId salonZoneId = salonProfileService.getSalonZoneIdByContext();
         Professional professional = professionalRepository.findByExternalId(UUID.fromString(professionalExternalId));
 
         LocalDate startDate = LocalDate.now();

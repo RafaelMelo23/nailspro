@@ -2,6 +2,10 @@ package com.rafael.nailspro.webapp.shared.tenant;
 
 public class TenantContext {
 
+    private TenantContext() {
+
+    }
+
     private static final ThreadLocal<String> currentTenant = new ThreadLocal<>();
 
     public static void clear() {

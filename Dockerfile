@@ -1,5 +1,5 @@
 
-FROM eclipse-temurin:21-jdk-alpine
+FROM amazoncorretto:21-alpine
 
 WORKDIR /app
 

@@ -5,7 +5,7 @@ import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalApp
 import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.application.appointment.AppointmentService;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.TimeInterval;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

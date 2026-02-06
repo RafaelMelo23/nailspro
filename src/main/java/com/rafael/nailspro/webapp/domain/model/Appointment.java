@@ -26,7 +26,7 @@ public class Appointment extends BaseEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
+    private Client client; // todo: verify that the number is correctly normalized in a pattern thats expected from all throughout the application
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "professional_id", nullable = false)
@@ -52,9 +52,16 @@ public class Appointment extends BaseEntity {
     @Column(name = "end_date", nullable = false)
     private Instant endDate;
 
+    @Column(name = "salon_trade_name")
+    private String salonTradeName;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "appointment_addon_id")
     private List<AppointmentAddOn> addOns = new ArrayList<>();
+
+    @OneToOne(orphanRemoval = true)
+    @JoinColumn(name = "appointment_notification_id")
+    private AppointmentNotification appointmentNotification;
 
     public Integer calculateTotalValue() {
         Integer mainValue = this.mainSalonService.getValue();
@@ -65,5 +72,4 @@ public class Appointment extends BaseEntity {
 
         return mainValue + addOnsValue;
     }
-
 }

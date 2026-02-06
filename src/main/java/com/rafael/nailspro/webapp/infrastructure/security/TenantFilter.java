@@ -28,7 +28,7 @@ public class TenantFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String tenantId = null;
+        String tenantId;
 
         try {
             DecodedJWT token = tokenService.recoverAndValidateToken(request);

@@ -23,6 +23,7 @@ public interface SalonProfileRepository extends JpaRepository<SalonProfile, Long
     @Query("SELECT s.zoneId FROM SalonProfile s WHERE s.tenantId = :tenantId")
     Optional<String> fetchZoneIdByTenantId(@Param("tenantId") String tenantId);
 
-
     SalonProfile findByTenantId(String tenantId);
+
+    Optional<String> findTradeNameByTenantId(String tenantId);
 }

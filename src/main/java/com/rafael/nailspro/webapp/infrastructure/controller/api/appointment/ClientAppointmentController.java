@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.infrastructure.controller.api;
+package com.rafael.nailspro.webapp.infrastructure.controller.api.appointment;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
@@ -24,7 +24,7 @@ public class ClientAppointmentController {
         return ResponseEntity.status(201).build();
     }
 
-    @PatchMapping("/{appointmentId}")
+    @PatchMapping("/{appointmentId}") // todo: add feat of not striking user if the app date is too far away
     public ResponseEntity<Void> cancelAppointment(@PathVariable Long appointmentId,
                                                   @AuthenticationPrincipal UserPrincipal userPrincipal) {
 

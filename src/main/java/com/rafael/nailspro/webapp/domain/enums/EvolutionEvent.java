@@ -10,7 +10,6 @@ public enum EvolutionEvent {
     QRCODE_UPDATED("QRCODE_UPDATED"), // check
     CONNECTION_UPDATE("CONNECTION_UPDATE"),
 
-    // Eventos de Mensagem (Cuidado com o volume aqui!)
     // MESSAGES_UPDATE("MESSAGES_UPDATE"), // Status (lida, entregue)
     SEND_MESSAGE("SEND_MESSAGE");
 

@@ -63,7 +63,7 @@ public class ScheduleBlockService {
 
     public List<ScheduleBlockOutDTO> getBlocks(Long userId, Optional<LocalDateTime> from) {
 
-        ZoneId salonZoneId = salonProfileService.getSalonZoneId();
+        ZoneId salonZoneId = salonProfileService.getSalonZoneIdByContext();
 
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ScheduleBlock> cq = cb.createQuery(ScheduleBlock.class);

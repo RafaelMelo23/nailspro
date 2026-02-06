@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.application.service;
 
+import com.rafael.nailspro.webapp.domain.model.BaseEntity;
 import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import com.rafael.nailspro.webapp.domain.enums.OperationalStatus;
 import com.rafael.nailspro.webapp.domain.model.SalonProfile;
@@ -21,6 +22,11 @@ public class SalonProfileService {
         return repository.findByTenantId(tenantId);
     }
 
+    public String getTenantId(BaseEntity baseEntity) {
+
+        return baseEntity.getTenantId();
+    }
+
     public boolean isSalonOpenByTenantId(String tenantId) {
 
         return repository.existsSalonProfileByTenantIdAndOperationalStatus(tenantId, OperationalStatus.OPEN);
@@ -38,10 +44,24 @@ public class SalonProfileService {
                 .orElseThrow(() -> new BusinessException("Salão não encontrado."));
     }
 
-    public ZoneId getSalonZoneId() {
+    public ZoneId getSalonZoneIdByContext() {
 
         return repository.fetchZoneIdByTenantId(TenantContext.getTenant())
                 .map(ZoneId::of)
                 .orElseThrow(() -> new BusinessException("Fuso horário não encontrado."));
     }
+
+    public ZoneId getSalonZoneId(String tenantId) {
+
+        return repository.fetchZoneIdByTenantId(tenantId)
+                .map(ZoneId::of)
+                .orElseThrow(() -> new BusinessException("Fuso horário não encontrado."));
+    }
+
+    public String getSalonTradeName(String tenantId) {
+
+        return repository.findTradeNameByTenantId(tenantId)
+                .orElseThrow(() -> new BusinessException("Não foi possível encontrar o salão"));
+    }
+
 }

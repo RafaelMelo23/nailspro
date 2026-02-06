@@ -8,6 +8,9 @@ services:
       - "8080:8080"
     environment:
       - DB_URL=jdbc:postgresql://host.docker.internal:5432/nailspro
+      - EVO_URL=http://evolution:8080
+      - EVO_API_KEY=random_key
+      - EVO_WEBHOOK_URL=http://app:8080/api/v1/webhook
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -18,19 +21,19 @@ services:
     ports:
       - "8081:8080"
     environment:
+      - AUTHENTICATION_API_KEY=random_key
+      - AUTHENTICATION_TYPE=apikey
       - DATABASE_ENABLED=true
       - DATABASE_PROVIDER=postgresql
       - DATABASE_CONNECTION_URI=postgresql://evolution_user:123@evolution-db:5432/evolution?schema=public
       - DATABASE_CONNECTION_CLIENT_NAME=evolution_exchange
       - CACHE_REDIS_ENABLED=false
-      - AUTHENTICATION_API_KEY=mude-me
       - GENERATE_SWAGGER=true
       - CONFIG_SESSION_PHONE_CLIENT=Evolution
       - OPERAÇÃO_SWAGGER=true
       - SWAGGER_ENABLED=true
-      - SERVER_URL=http://localhost:8081
+      - SERVER_URL=http://evolution:8081
       - CONFIG_SESSION_PHONE_VERSION=2.3000.1031221906
-      - SERVER_URL=http://localhost:8081
       - NODE_OPTIONS=--dns-result-order=ipv4first
     networks:
       - app-network

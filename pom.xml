@@ -53,6 +53,15 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!-- Source: https://mvnrepository.com/artifact/org.jobrunr/jobrunr -->
+        <dependency>
+            <groupId>org.jobrunr</groupId>
+            <artifactId>jobrunr</artifactId>
+            <version>8.4.1</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
