@@ -24,7 +24,7 @@ public class ClientAppointmentController {
         return ResponseEntity.status(201).build();
     }
 
-    @PatchMapping("/{appointmentId}") // todo: add feat of not striking user if the app date is too far away
+    @PatchMapping("/{appointmentId}")
     public ResponseEntity<Void> cancelAppointment(@PathVariable Long appointmentId,
                                                   @AuthenticationPrincipal UserPrincipal userPrincipal) {
 

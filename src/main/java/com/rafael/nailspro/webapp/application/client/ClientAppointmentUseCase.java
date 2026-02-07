@@ -79,7 +79,11 @@ public class ClientAppointmentUseCase {
         Appointment appointment = appointmentService.findAndValidateAppointmentOwnership(appointmentId, clientId);
         appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
 
-        clientRepository.incrementCanceledAppointments(clientId);
+        Instant twoDaysFromNow = Instant.now().plus(2, ChronoUnit.DAYS);
+
+        if (appointment.getStartDate().isBefore(twoDaysFromNow)) {
+            clientRepository.incrementCanceledAppointments(clientId);
+        }
     }
 
     @Transactional(readOnly = true)
