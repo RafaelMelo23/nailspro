@@ -67,7 +67,7 @@ public class AppointmentService {
                                         Long clientId,
                                         TimeInterval interval,
                                         SalonService mainService,
-                                        String salonTradeName,
+                                        SalonProfile salonProfile,
                                         List<AppointmentAddOn> addOnServices) {
 
         Appointment appointment = Appointment.builder()
@@ -79,7 +79,8 @@ public class AppointmentService {
                 .mainSalonService(mainService)
                 .addOns(addOnServices)
                 .observations(dto.observation().get())
-                .salonTradeName(salonTradeName)
+                .salonTradeName(salonProfile.getTradeName())
+                .salonZoneIdZ(salonProfile.getZoneId())
                 .build();
 
         appointment.setTotalValue(appointment.calculateTotalValue());

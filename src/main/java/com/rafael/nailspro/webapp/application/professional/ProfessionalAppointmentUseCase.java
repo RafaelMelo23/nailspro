@@ -6,8 +6,10 @@ import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.application.appointment.AppointmentService;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.event.AppointmentFinishedEvent;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ public class ProfessionalAppointmentUseCase {
     private final AppointmentRepository appointmentRepository;
     private final AppointmentService appointmentService;
     private final ProfessionalRepository repository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public List<ProfessionalAppointmentScheduleDTO> findProfessionalAppointmentsByDay(Long professionalId,
@@ -63,6 +66,8 @@ public class ProfessionalAppointmentUseCase {
         var appointment = appointmentService.findAndValidateAppointmentOwnership(appointmentId, clientId);
 
         appointment.setAppointmentStatus(AppointmentStatus.FINISHED);
+
+        eventPublisher.publishEvent(new AppointmentFinishedEvent(appointmentId));
     }
 
     @Transactional

@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,9 @@ public class Appointment extends BaseEntity {
 
     @Column(name = "salon_trade_name")
     private String salonTradeName;
+
+    @Column(name = "salon_zone_id")
+    private ZoneId salonZoneId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "appointment_addon_id")

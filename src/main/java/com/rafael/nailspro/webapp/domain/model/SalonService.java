@@ -42,6 +42,17 @@ public class SalonService extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
+    // todo: include these 3 new attributes in the creation of a service
+
+    @Column(name = "maintenance_interval_days")
+    private Integer maintenanceIntervalDays;
+
+    @Column(name = "requires_loyalty")
+    private Boolean requiresLoyalty = false;
+
+    @Column(name = "booking_horizon_days")
+    private Integer bookingHorizonDays;
+
     @ManyToMany
     @JoinTable(name = "service_professionals",
             joinColumns = @JoinColumn(name = "salonService_id"),

@@ -1,26 +1,24 @@
 package com.rafael.nailspro.webapp.application.client;
 
-import com.rafael.nailspro.webapp.application.appointment.AppointmentEventListener;
 import com.rafael.nailspro.webapp.application.appointment.AppointmentService;
+import com.rafael.nailspro.webapp.application.appointment.BookingPolicyManager;
 import com.rafael.nailspro.webapp.application.professional.ProfessionalAppointmentUseCase;
 import com.rafael.nailspro.webapp.application.professional.WorkScheduleService;
 import com.rafael.nailspro.webapp.application.service.SalonProfileService;
-import com.rafael.nailspro.webapp.domain.model.Appointment;
-import com.rafael.nailspro.webapp.domain.model.AppointmentAddOn;
+import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
+import com.rafael.nailspro.webapp.domain.model.*;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.domain.repository.ClientRepository;
 import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.*;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentTimesDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.contract.BusyInterval;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.SimpleBusyInterval;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
 import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
-import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
-import com.rafael.nailspro.webapp.domain.model.WorkSchedule;
-import com.rafael.nailspro.webapp.domain.model.SalonService;
-import com.rafael.nailspro.webapp.domain.model.Professional;
-import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.contract.BusyInterval;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +39,8 @@ public class ClientAppointmentUseCase {
     private final ProfessionalAppointmentUseCase professionalAppointmentUseCase;
     private final ProfessionalRepository professionalRepository;
     private final SalonProfileService salonProfileService;
-    private final AppointmentEventListener eventListener;
+    private final BookingPolicyManager bookingPolicyManager;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void createAppointment(AppointmentCreateDTO dto, UserPrincipal principal) {
@@ -59,19 +58,19 @@ public class ClientAppointmentUseCase {
                 interval
         );
 
-        String salonTradeName = salonProfileService.getSalonTradeName(TenantContext.getTenant());
+        bookingPolicyManager.validate(mainService, dto.zonedAppointmentDateTime().toLocalDateTime(), principal.getUserId());
 
         Appointment appointment = appointmentService.buildAppointment(
                 dto,
                 principal.getUserId(),
                 interval,
                 mainService,
-                salonTradeName,
+                salonProfileService.getSalonProfileByTenantId(TenantContext.getTenant()),
                 addOnServices
         );
 
         Appointment bookedAppointment = repository.save(appointment);
-        eventListener.handleBookedAppointment(bookedAppointment.getId());
+        eventPublisher.publishEvent(bookedAppointment.getId());
     }
 
     @Transactional

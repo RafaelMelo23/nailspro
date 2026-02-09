@@ -1,7 +1,7 @@
-package com.rafael.nailspro.webapp.application.notification;
+package com.rafael.nailspro.webapp.application.messages;
 
 import com.rafael.nailspro.webapp.domain.model.Appointment;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.notification.AppointmentMessageInfoDTO;
+import com.rafael.nailspro.webapp.domain.model.Client;
 import com.rafael.nailspro.webapp.infrastructure.helper.DateAndZoneHelper;
 import com.rafael.nailspro.webapp.infrastructure.helper.TenantUrlProvider;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class AppointmentMessageBuilder {
     }
 
     private String formatConfirmationTemplate(Appointment appointment, String allServices) {
-        String firstName = extractFirstName(appointment.getClient().getFullName());
+        String firstName = Client.extractFirstName(appointment.getClient().getFullName());
 
         ZonedDateTime appointmentTime =
                 dateHelper.toZonedDateTime(appointment.getStartDate(), appointment.getTenantId());
@@ -74,14 +74,8 @@ public class AppointmentMessageBuilder {
         );
     }
 
-    private static String extractFirstName(String fullName) {
-        if (fullName == null || fullName.isEmpty()) return "cliente";
-
-        return fullName.split("\\s+")[0];
-    }
-
     public String buildAppointmentReminderMessage(Appointment appointment) {
-        String firstName = extractFirstName(appointment.getClient().getFullName());
+        String firstName = Client.extractFirstName(appointment.getClient().getFullName());
 
         return """
             Olá, %s! 🕒

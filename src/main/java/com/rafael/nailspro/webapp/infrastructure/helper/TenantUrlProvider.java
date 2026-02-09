@@ -16,6 +16,7 @@ public class TenantUrlProvider {
     private String domain;
 
     private static final String CLIENT_MANAGE_APPOINTMENTS_PAGE_URL = "todo/{id}/cancelar"; //todo
+    private static final String BOOK_APPOINTMENT_PAGE_URL = ""; //todo
 
     public String buildBaseUrl(String tenantId) {
 
@@ -37,6 +38,14 @@ public class TenantUrlProvider {
         return UriComponentsBuilder.fromUriString(baseUrl)
                 .path(CLIENT_MANAGE_APPOINTMENTS_PAGE_URL)
                 .buildAndExpand(appointmentId)
+                .toUriString();
+    }
+
+    public String buildBookAppointmentUrl(String tenantId) {
+        String baseUrl = buildBaseUrl(tenantId);
+
+        return UriComponentsBuilder.fromUriString(baseUrl)
+                .path(BOOK_APPOINTMENT_PAGE_URL)
                 .toUriString();
     }
 }

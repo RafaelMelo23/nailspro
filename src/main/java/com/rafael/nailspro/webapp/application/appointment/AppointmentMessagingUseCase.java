@@ -1,11 +1,9 @@
 package com.rafael.nailspro.webapp.application.appointment;
 
-import com.rafael.nailspro.webapp.application.notification.AppointmentMessageBuilder;
+import com.rafael.nailspro.webapp.application.messages.AppointmentMessageBuilder;
 import com.rafael.nailspro.webapp.application.whatsapp.WhatsappProvider;
 import com.rafael.nailspro.webapp.domain.model.AppointmentNotification;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentNotificationRepository;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.notification.AppointmentMessageInfoDTO;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.notification.WhatsappMessageRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Async;

@@ -37,4 +37,10 @@ public class Client extends User {
         if (this.missedAppointments == null) this.missedAppointments = 0;
         if (this.canceledAppointments == null) this.setCanceledAppointments(0);
     }
+
+    public static String extractFirstName(String fullName) {
+        if (fullName == null || fullName.isEmpty()) return "cliente";
+
+        return fullName.split("\\s+")[0];
+    }
 }
