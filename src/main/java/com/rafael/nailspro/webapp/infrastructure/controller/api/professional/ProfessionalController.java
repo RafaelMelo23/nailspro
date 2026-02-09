@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.professional;
 
+import com.rafael.nailspro.webapp.application.professional.ProfessionalQueryService;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.ProfessionalSimplifiedDTO;
-import com.rafael.nailspro.webapp.application.professional.ProfessionalReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +15,11 @@ import java.util.List;
 @RequestMapping("/api/v1/professional")
 public class ProfessionalController {
 
-    private final ProfessionalReadService professionalReadService;
+    private final ProfessionalQueryService professionalQueryService;
 
     @GetMapping("/simplified")
     public ResponseEntity<List<ProfessionalSimplifiedDTO>> getProfessionals() {
 
-        return ResponseEntity.ok(professionalReadService.findAllSimplified());
+        return ResponseEntity.ok(professionalQueryService.findAllSimplified());
     }
 }

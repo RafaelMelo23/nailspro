@@ -1,9 +1,9 @@
 package com.rafael.nailspro.webapp.application.admin.salon.profile;
 
+import com.rafael.nailspro.webapp.application.service.SalonProfileService;
+import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AddOnDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AdminUserAppointmentDTO;
-import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
-import com.rafael.nailspro.webapp.application.service.SalonProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

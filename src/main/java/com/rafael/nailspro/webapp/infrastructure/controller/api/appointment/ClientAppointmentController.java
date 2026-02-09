@@ -1,8 +1,8 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.appointment;
 
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
-import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.application.client.ClientAppointmentUseCase;
+import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

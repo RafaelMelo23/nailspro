@@ -10,9 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 public interface ProfessionalRepository extends JpaRepository<Professional, Long> {
@@ -38,8 +36,8 @@ public interface ProfessionalRepository extends JpaRepository<Professional, Long
             EXISTS (
             SELECT 1 From ScheduleBlock sb
             WHERE sb.professional = p
-            AND sb.dateAndStartTime < :endDate
-            AND sb.dateAndEndTime > :startDate
+            AND sb.dateStartTime < :endDate
+            AND sb.dateEndTime > :startDate
                 )
             )
                         )

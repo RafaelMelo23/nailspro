@@ -1,12 +1,12 @@
 package com.rafael.nailspro.webapp.application.auth;
 
-import com.rafael.nailspro.webapp.infrastructure.dto.auth.LoginDTO;
-import com.rafael.nailspro.webapp.infrastructure.dto.auth.RegisterDTO;
+import com.rafael.nailspro.webapp.domain.enums.UserStatus;
 import com.rafael.nailspro.webapp.domain.model.Client;
 import com.rafael.nailspro.webapp.domain.model.User;
-import com.rafael.nailspro.webapp.domain.enums.UserStatus;
 import com.rafael.nailspro.webapp.domain.repository.ClientRepository;
 import com.rafael.nailspro.webapp.domain.repository.UserRepository;
+import com.rafael.nailspro.webapp.infrastructure.dto.auth.LoginDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.auth.RegisterDTO;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import com.rafael.nailspro.webapp.infrastructure.exception.UserAlreadyExistsException;
 import com.rafael.nailspro.webapp.infrastructure.security.TokenService;

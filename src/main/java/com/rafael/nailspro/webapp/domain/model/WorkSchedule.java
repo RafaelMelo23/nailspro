@@ -1,6 +1,7 @@
 package com.rafael.nailspro.webapp.domain.model;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.WorkScheduleRecordDTO;
+import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -11,7 +12,8 @@ import java.time.LocalTime;
 
 @Entity
 @SuperBuilder
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(
@@ -59,5 +61,27 @@ public class WorkSchedule extends BaseEntity {
         if (dto.lunchBreakStartTime() != null) this.lunchBreakStartTime = dto.lunchBreakStartTime();
         if (dto.lunchBreakEndTime() != null) this.lunchBreakEndTime = dto.lunchBreakEndTime();
         if (dto.isActive() != null) this.isActive = dto.isActive();
+    }
+
+    @Builder
+    public WorkSchedule(DayOfWeek dayOfWeek, LocalTime workStart, LocalTime workEnd,
+                        LocalTime lunchBreakStartTime, LocalTime lunchBreakEndTime,
+                        Boolean isActive, Professional professional) {
+
+        validateTimes(workStart, workEnd, dayOfWeek);
+
+        this.dayOfWeek = dayOfWeek;
+        this.workStart = workStart;
+        this.workEnd = workEnd;
+        this.lunchBreakStartTime = lunchBreakStartTime;
+        this.lunchBreakEndTime = lunchBreakEndTime;
+        this.isActive = isActive;
+        this.professional = professional;
+    }
+
+    private void validateTimes(LocalTime start, LocalTime end, DayOfWeek day) {
+        if (end.isBefore(start)) {
+            throw new BusinessException("Horário de término não pode ser menor que o de início na " + day);
+        }
     }
 }

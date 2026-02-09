@@ -1,19 +1,20 @@
 package com.rafael.nailspro.webapp.application.professional;
 
-import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAppointmentScheduleDTO;
+import com.rafael.nailspro.webapp.application.appointment.AppointmentService;
 import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
-import com.rafael.nailspro.webapp.application.appointment.AppointmentService;
+import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAppointmentScheduleDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.event.AppointmentFinishedEvent;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
+import com.rafael.nailspro.webapp.infrastructure.mapper.ProfessionalMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.*;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,29 +29,13 @@ public class ProfessionalAppointmentUseCase {
 
     @Transactional(readOnly = true)
     public List<ProfessionalAppointmentScheduleDTO> findProfessionalAppointmentsByDay(Long professionalId,
-                                                                                      LocalDateTime start,
-                                                                                      LocalDateTime end) {
+                                                                                      ZonedDateTime start,
+                                                                                      ZonedDateTime end) {
+
         return appointmentRepository
-                .findByProfessional_IdAndStartDateBetween(professionalId, start, end)
+                .findByProfessional_IdAndStartDateBetween(professionalId, start.toInstant(), end.toInstant())
                 .stream()
-                .map(ap -> ProfessionalAppointmentScheduleDTO.builder()
-                        .appointmentId(ap.getId())
-
-                        .clientId(ap.getClient().getId())
-                        .clientName(ap.getClient().getFullName())
-                        .clientPhoneNumber(ap.getClient().getPhoneNumber())
-                        .clientMissedAppointments(ap.getClient().getMissedAppointments())
-                        .clientCanceledAppointments(ap.getClient().getCanceledAppointments())
-
-
-                        .status(ap.getAppointmentStatus())
-                        .totalValue(ap.calculateTotalValue())
-                        .observations(ap.getObservations())
-                        .startDate(ZonedDateTime.from(ap.getStartDate()))
-                        .endDate(ZonedDateTime.from(ap.getEndDate()))
-
-                        .build()
-                )
+                .map(ProfessionalMapper::toScheduleDTO)
                 .toList();
     }
 

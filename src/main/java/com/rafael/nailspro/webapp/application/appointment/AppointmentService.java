@@ -80,7 +80,7 @@ public class AppointmentService {
                 .addOns(addOnServices)
                 .observations(dto.observation().get())
                 .salonTradeName(salonProfile.getTradeName())
-                .salonZoneIdZ(salonProfile.getZoneId())
+                .salonZoneId(salonProfile.getZoneId())
                 .build();
 
         appointment.setTotalValue(appointment.calculateTotalValue());

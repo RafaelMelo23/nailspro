@@ -1,8 +1,8 @@
 package com.rafael.nailspro.webapp.infrastructure.security;
 
-import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.domain.enums.UserRole;
 import com.rafael.nailspro.webapp.domain.enums.security.TokenClaim;
+import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

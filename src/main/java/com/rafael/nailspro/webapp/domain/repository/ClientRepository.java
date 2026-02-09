@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.domain.repository;
 
-import com.rafael.nailspro.webapp.domain.model.Client;
 import com.rafael.nailspro.webapp.domain.enums.UserStatus;
+import com.rafael.nailspro.webapp.domain.model.Client;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

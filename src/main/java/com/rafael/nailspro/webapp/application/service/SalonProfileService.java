@@ -1,11 +1,11 @@
 package com.rafael.nailspro.webapp.application.service;
 
-import com.rafael.nailspro.webapp.domain.model.BaseEntity;
-import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import com.rafael.nailspro.webapp.domain.enums.OperationalStatus;
+import com.rafael.nailspro.webapp.domain.model.BaseEntity;
 import com.rafael.nailspro.webapp.domain.model.SalonProfile;
 import com.rafael.nailspro.webapp.domain.repository.SalonProfileRepository;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
+import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -57,11 +57,4 @@ public class SalonProfileService {
                 .map(ZoneId::of)
                 .orElseThrow(() -> new BusinessException("Fuso horário não encontrado."));
     }
-
-    public String getSalonTradeName(String tenantId) {
-
-        return repository.findTradeNameByTenantId(tenantId)
-                .orElseThrow(() -> new BusinessException("Não foi possível encontrar o salão"));
-    }
-
 }

@@ -1,6 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.block;
 
 import lombok.Builder;
+
 import java.time.ZonedDateTime;
 
 @Builder

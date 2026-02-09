@@ -47,7 +47,7 @@ public class BookingPolicyManager {
         if (service.getMaintenanceIntervalDays() == null) return;
 
         Appointment lastAppointment =
-                appointmentRepository.findFirstByClientIdAndTenantIdOrderByStartDateDesc(clientId)
+                appointmentRepository.findFirstByClientIdOrderByStartDateDesc(clientId)
                         .orElseThrow(() -> new BusinessException(
                                 "Este serviço de manutenção exige um histórico de aplicação prévio"));
 

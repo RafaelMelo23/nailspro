@@ -30,7 +30,6 @@ services:
       - CACHE_REDIS_ENABLED=false
       - GENERATE_SWAGGER=true
       - CONFIG_SESSION_PHONE_CLIENT=Evolution
-      - OPERAÇÃO_SWAGGER=true
       - SWAGGER_ENABLED=true
       - SERVER_URL=http://evolution:8081
       - CONFIG_SESSION_PHONE_VERSION=2.3000.1031221906
@@ -49,7 +48,7 @@ services:
       - "5433:5432"
     environment:
       - POSTGRES_USER=evolution_user
-      - POSTGRES_PASSWORD=123
+      - POSTGRES_PASSWORD=${DB_EVOLUTION}
       - POSTGRES_DB=evolution
     networks:
       - app-network

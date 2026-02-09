@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.application.professional;
 
-import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
 import com.rafael.nailspro.webapp.domain.model.Professional;
+import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.ProfessionalSimplifiedDTO;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProfessionalReadService {
+public class ProfessionalQueryService {
 
     private final ProfessionalRepository repository;
 

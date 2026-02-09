@@ -8,18 +8,14 @@ import com.rafael.nailspro.webapp.domain.repository.ScheduleBlockRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.block.ScheduleBlockDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.block.ScheduleBlockOutDTO;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,26 +26,13 @@ public class ScheduleBlockService {
 
     private final ScheduleBlockRepository repository;
     private final ProfessionalRepository professionalRepository;
-    private final EntityManager entityManager;
     private final SalonProfileService salonProfileService;
 
     public void createBlock(ScheduleBlockDTO blockDTO, Long professionalId) {
         Professional professional = professionalRepository.findById(professionalId)
                 .orElseThrow(() -> new BusinessException("Profissional não encontrado(a)"));
 
-        ScheduleBlock block = ScheduleBlock.builder()
-                .reason(blockDTO.reason())
-                .professional(professional)
-                .isWholeDayBlocked(blockDTO.isWholeDayBlocked())
-                .dateAndStartTime(blockDTO.dateAndStartTime().toInstant())
-                .dateAndEndTime(blockDTO.dateAndEndTime().toInstant())
-                .build();
-
-        if (!block.getIsWholeDayBlocked() && block.getDateAndStartTime() == null) {
-            throw new BusinessException("Data e hora de início são obrigatórias para bloqueios totais.");
-        }
-
-        repository.save(block);
+        repository.save(ScheduleBlock.createBlock(blockDTO, professional));
     }
 
     public void deleteBlock(Long professionalId, Long blockId) {
@@ -61,38 +44,19 @@ public class ScheduleBlockService {
         });
     }
 
-    public List<ScheduleBlockOutDTO> getBlocks(Long userId, Optional<LocalDateTime> from) {
-
+    @Transactional(readOnly = true)
+    public List<ScheduleBlockOutDTO> getBlocks(Long professionalId, Optional<LocalDateTime> from) {
         ZoneId salonZoneId = salonProfileService.getSalonZoneIdByContext();
 
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<ScheduleBlock> cq = cb.createQuery(ScheduleBlock.class);
-        Root<ScheduleBlock> root = cq.from(ScheduleBlock.class);
+        Instant fromInstant = from
+                .map(f -> f.atZone(salonZoneId).toInstant())
+                .orElse(Instant.MIN);
 
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.add(
-                cb.equal(
-                        root.get("professional").get("id"),
-                        userId
-                )
-        );
-
-        from.ifPresent(localDateTime -> predicates.add(
-                cb.greaterThanOrEqualTo(
-                        root.get("dateAndStartTime"),
-                        localDateTime
-                )
-        ));
-
-        cq.where(cb.and(predicates.toArray(new Predicate[0])));
-
-        List<ScheduleBlock> resultList = entityManager.createQuery(cq).getResultList();
-
-        return resultList.stream()
+        return repository.findByProfessional_IdAndDateStartTimeGreaterThanEqual(professionalId, fromInstant).stream()
                 .map(sb -> ScheduleBlockOutDTO.builder()
                         .id(sb.getId())
-                        .dateAndStartTime(ZonedDateTime.ofInstant(sb.getDateAndStartTime(), salonZoneId))
-                        .dateAndEndTime(ZonedDateTime.ofInstant(sb.getDateAndEndTime(), salonZoneId))
+                        .dateAndStartTime(ZonedDateTime.ofInstant(sb.getDateStartTime(), salonZoneId))
+                        .dateAndEndTime(ZonedDateTime.ofInstant(sb.getDateEndTime(), salonZoneId))
                         .isWholeDayBlocked(sb.getIsWholeDayBlocked())
                         .professionalId(sb.getProfessional().getId())
                         .reason(sb.getReason())

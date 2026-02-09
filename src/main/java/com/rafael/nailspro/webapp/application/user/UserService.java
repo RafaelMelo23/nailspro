@@ -1,12 +1,12 @@
 package com.rafael.nailspro.webapp.application.user;
 
-import com.rafael.nailspro.webapp.infrastructure.dto.auth.ChangeEmailRequestDTO;
-import com.rafael.nailspro.webapp.infrastructure.dto.auth.ChangePhoneRequestDTO;
-import com.rafael.nailspro.webapp.infrastructure.dto.auth.ResetPasswordDTO;
 import com.rafael.nailspro.webapp.domain.model.Client;
 import com.rafael.nailspro.webapp.domain.model.User;
 import com.rafael.nailspro.webapp.domain.repository.ClientRepository;
 import com.rafael.nailspro.webapp.domain.repository.UserRepository;
+import com.rafael.nailspro.webapp.infrastructure.dto.auth.ChangeEmailRequestDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.auth.ChangePhoneRequestDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.auth.ResetPasswordDTO;
 import com.rafael.nailspro.webapp.infrastructure.email.EmailService;
 import com.rafael.nailspro.webapp.infrastructure.email.template.EmailTemplateBuilder;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;

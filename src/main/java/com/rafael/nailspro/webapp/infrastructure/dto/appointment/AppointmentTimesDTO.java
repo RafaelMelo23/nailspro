@@ -2,7 +2,8 @@ package com.rafael.nailspro.webapp.infrastructure.dto.appointment;
 
 import lombok.Builder;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Builder

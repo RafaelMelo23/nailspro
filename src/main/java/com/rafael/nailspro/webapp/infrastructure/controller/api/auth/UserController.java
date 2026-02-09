@@ -1,10 +1,10 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.auth;
 
+import com.rafael.nailspro.webapp.application.user.UserService;
+import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.ChangeEmailRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.ChangePhoneRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.ResetPasswordDTO;
-import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
-import com.rafael.nailspro.webapp.application.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,8 +1,8 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.auth;
 
+import com.rafael.nailspro.webapp.application.auth.AuthenticationService;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.LoginDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.RegisterDTO;
-import com.rafael.nailspro.webapp.application.auth.AuthenticationService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

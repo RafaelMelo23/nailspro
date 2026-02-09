@@ -1,8 +1,8 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.professional;
 
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAppointmentScheduleDTO;
-import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.application.professional.ProfessionalAppointmentUseCase;
+import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAppointmentScheduleDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
@@ -24,8 +24,8 @@ public class ProfessionalAppointmentController {
     @GetMapping
     public ResponseEntity<List<ProfessionalAppointmentScheduleDTO>> findByDay(
             @AuthenticationPrincipal UserPrincipal principal,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime end
     ) {
         return ResponseEntity.ok(
                 service.findProfessionalAppointmentsByDay(

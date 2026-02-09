@@ -1,8 +1,8 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
+import com.rafael.nailspro.webapp.application.service.SalonServiceService;
 import com.rafael.nailspro.webapp.infrastructure.dto.salon.service.SalonServiceDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.salon.service.SalonServiceOutDTO;
-import com.rafael.nailspro.webapp.application.service.SalonServiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

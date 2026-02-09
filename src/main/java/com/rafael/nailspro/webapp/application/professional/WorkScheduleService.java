@@ -25,10 +25,7 @@ public class WorkScheduleService {
 
     @Transactional
     public void registerSchedules(List<WorkScheduleRecordDTO> workScheduleDTO, Long professionalId) {
-        Set<WorkSchedule> schedulesToBeSaved = new HashSet<>();
-
-        Professional professional = professionalRepository.findById(professionalId)
-                .orElseThrow(() -> new BusinessException("Professional não encontrado(a)"));
+        Professional professional = professionalRepository.findById(professionalId).orElseThrow(() -> new BusinessException("Professional não encontrado(a)"));
 
         Set<DayOfWeek> professionalCurrentSchedule = getProfessionalCurrentSchedule(professional);
 
@@ -36,33 +33,29 @@ public class WorkScheduleService {
                 .filter(ws -> !professionalCurrentSchedule.contains(ws.dayOfWeek()))
                 .collect(Collectors.toSet());
 
-        schedules.forEach(sch -> {
-            if (sch.endTime().isBefore(sch.startTime())) {
-                throw new BusinessException("Horário de término não pode ser menor que o de início na " + sch.dayOfWeek());
-            }
-
-            schedulesToBeSaved.add(WorkSchedule.builder()
-                    .dayOfWeek(sch.dayOfWeek())
-                    .workStart(sch.startTime())
-                    .workEnd(sch.endTime())
-                    .lunchBreakStartTime(sch.lunchBreakStartTime())
-                    .lunchBreakEndTime(sch.lunchBreakEndTime())
-                    .isActive(true)
-                    .professional(professional)
-                    .build());
-        });
+        List<WorkSchedule> toSave = schedules
+                .stream()
+                .map((WorkScheduleRecordDTO dto) ->
+                        WorkSchedule.builder()
+                                .dayOfWeek(dto.dayOfWeek())
+                                .workStart(dto.startTime())
+                                .workEnd(dto.endTime())
+                                .lunchBreakStartTime(dto.lunchBreakStartTime())
+                                .lunchBreakEndTime(dto.lunchBreakEndTime())
+                                .isActive(true)
+                                .professional(professional)
+                                .build())
+                .collect(Collectors.toList());
 
         try {
-            repository.saveAll(schedulesToBeSaved);
+            repository.saveAll(toSave);
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Erro: Você já possui horários cadastrados para um ou mais dos dias selecionados.");
         }
     }
 
     private Set<DayOfWeek> getProfessionalCurrentSchedule(Professional professional) {
-         return professional.getWorkSchedules().stream()
-                .map(WorkSchedule::getDayOfWeek)
-                .collect(Collectors.toSet());
+        return professional.getWorkSchedules().stream().map(WorkSchedule::getDayOfWeek).collect(Collectors.toSet());
     }
 
     @Transactional
@@ -72,23 +65,26 @@ public class WorkScheduleService {
                 throw new BusinessException("ID é obrigatório para atualizar um horário existente.");
             }
 
-            WorkSchedule schedule = repository.findById(dto.id())
-                    .orElseThrow(() -> new BusinessException("Horário não encontrado no sistema."));
+            List<WorkSchedule> workSchedules = repository.findAllById(dtos.stream().map(WorkScheduleRecordDTO::id).toList());
 
-            if (!Objects.equals(schedule.getProfessional().getId(), professionalId)) {
-                throw new BusinessException("Essa operação não é permitida.");
+            if (!workSchedules.stream().allMatch(sch -> professionalId.equals(sch.getProfessional().getId()))) {
+                throw new BusinessException("Essa operação não é permitida ou não foi encontrada");
             }
 
-            schedule.updateFromDto(dto);
-            repository.save(schedule);
+            Map<Long, WorkScheduleRecordDTO> dtoMap = dtos.stream()
+                    .collect(Collectors.toMap(WorkScheduleRecordDTO::id, dtoToMap -> dtoToMap));
+
+            workSchedules.forEach(ws -> {
+                WorkScheduleRecordDTO wsrDTO = dtoMap.get(ws.getId());
+                ws.updateFromDto(wsrDTO);
+            });
         }
     }
 
     @Transactional
     public void deleteSchedule(Long scheduleId, Long professionalId) {
 
-        WorkSchedule schedule = repository.findById(scheduleId)
-                .orElseThrow(() -> new BusinessException("Horário não encontrado no sistema."));
+        WorkSchedule schedule = repository.findById(scheduleId).orElseThrow(() -> new BusinessException("Horário não encontrado no sistema."));
 
         if (!Objects.equals(schedule.getProfessional().getId(), professionalId)) {
             throw new BusinessException("Essa operação não é permitida.");
@@ -104,25 +100,11 @@ public class WorkScheduleService {
             throw new BusinessException("Nenhum cronograma de trabalho encontrado para este profissional.");
         }
 
-        return schedules.stream()
-                .map(wsc -> new WorkScheduleRecordDTO(
-                        wsc.getId(),
-                        wsc.getDayOfWeek(),
-                        wsc.getWorkStart(),
-                        wsc.getWorkEnd(),
-                        wsc.getLunchBreakStartTime(),
-                        wsc.getLunchBreakEndTime(),
-                        wsc.getIsActive()
-                ))
-                .collect(Collectors.toSet());
+        return schedules.stream().map(wsc -> new WorkScheduleRecordDTO(wsc.getId(), wsc.getDayOfWeek(), wsc.getWorkStart(), wsc.getWorkEnd(), wsc.getLunchBreakStartTime(), wsc.getLunchBreakEndTime(), wsc.getIsActive())).collect(Collectors.toSet());
     }
 
     public void checkProfessionalAvailability(UUID professionalExternalId, TimeInterval interval) {
-        if (!repository.checkIfProfessionalIsAvailable(
-                professionalExternalId,
-                interval.getStartTimeOnly(),
-                interval.getEndTimeOnly(),
-                interval.getDayOfWeek())) {
+        if (!repository.checkIfProfessionalIsAvailable(professionalExternalId, interval.getStartTimeOnly(), interval.getEndTimeOnly(), interval.getDayOfWeek())) {
             throw new BusinessException("O profissional não está disponível neste período.");
         }
     }
