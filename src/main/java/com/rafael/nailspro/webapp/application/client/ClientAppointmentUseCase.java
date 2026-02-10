@@ -10,12 +10,15 @@ import com.rafael.nailspro.webapp.domain.model.*;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.domain.repository.ClientRepository;
 import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
+import com.rafael.nailspro.webapp.domain.repository.SalonServiceRepository;
 import com.rafael.nailspro.webapp.domain.service.AvailabilityDomainService;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentTimesDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.booking.AppointmentBookedEvent;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.booking.AppointmentTimeWindow;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
+import com.rafael.nailspro.webapp.infrastructure.dto.professional.FindProfessionalAvailabilityDTO;
 import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,8 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,7 @@ public class ClientAppointmentUseCase {
     private final ApplicationEventPublisher eventPublisher;
     private final ProfessionalRepository professionalRepository;
     private final AvailabilityDomainService availabilityDomainService;
+    private final SalonServiceRepository salonServiceRepository;
 
     @Transactional
     public void createAppointment(AppointmentCreateDTO dto, UserPrincipal principal) {
@@ -89,19 +91,22 @@ public class ClientAppointmentUseCase {
     }
 
     @Transactional(readOnly = true)
-    public ProfessionalAvailabilityDTO findAvailableTimes(String professionalExternalId, int serviceDurationInSeconds) {
+    public ProfessionalAvailabilityDTO findAvailableTimes(FindProfessionalAvailabilityDTO dto,
+                                                          Long clientId) {
+
         SalonProfile salonProfile = salonProfileService.getSalonProfileByTenantId(TenantContext.getTenant());
-        Professional professional = professionalRepository.findByExternalId(UUID.fromString(professionalExternalId));
+        Professional professional = professionalRepository.findByExternalId(UUID.fromString(dto.professionalExternalId()));
+        List<SalonService> services = salonServiceRepository.findAllById(dto.servicesIds());
 
-        LocalDate startDate = LocalDate.now();
-        LocalDate endDate = YearMonth.from(startDate).atEndOfMonth();
+        AppointmentTimeWindow appointmentTimeWindow =
+                bookingPolicyManager.calculateAllowedWindows(services, clientId);
 
-        List<AppointmentTimesDTO> possibleAppointmentDates = startDate.datesUntil(endDate.plusDays(1))
+        List<AppointmentTimesDTO> possibleAppointmentDates = appointmentTimeWindow.start().datesUntil(appointmentTimeWindow.end())
                 .map(date -> availabilityDomainService.findProfessionalDailyAvailability(
                         professional,
                         date,
                         salonProfile,
-                        serviceDurationInSeconds))
+                        dto.serviceDurationInSeconds()))
                 .flatMap(Optional::stream)
                 .toList();
 

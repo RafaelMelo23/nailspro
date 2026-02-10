@@ -65,6 +65,15 @@ public class SalonProfile extends BaseEntity {
     @Column(name = "salon_zone_id", nullable = false)
     private ZoneId zoneId;
 
+    @Column(name = "is_loyal_clientele_prioritized", nullable = false)
+    private Boolean isLoyalClientelePrioritized = false;
+
+    @Column(name = "loyal_client_booking_window_days")
+    private Integer loyalClientBookingWindowDays;
+
+    @Column(name = "standard_booking_window")
+    private Integer standardBookingWindow;
+
     @Override
     public void prePersist() {
         super.prePersist();

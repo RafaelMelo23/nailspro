@@ -50,7 +50,7 @@ public class ProfessionalAppointmentUseCase {
     public void finishAppointment(Long appointmentId, Long clientId) {
         var appointment = appointmentService.findAndValidateAppointmentOwnership(appointmentId, clientId);
 
-        appointment.setAppointmentStatus(AppointmentStatus.FINISHED);
+        appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
 
         eventPublisher.publishEvent(new AppointmentFinishedEvent(appointmentId));
     }

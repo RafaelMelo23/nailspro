@@ -1,5 +1,6 @@
 package com.rafael.nailspro.webapp.domain.repository;
 
+import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
 import com.rafael.nailspro.webapp.domain.model.Appointment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +26,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     Optional<Appointment> findFirstByClientIdAndProfessional_ExternalIdOrderByStartDateDesc(Long clientId, UUID professionalId);
 
     Optional<Appointment> findFirstByClientIdOrderByStartDateDesc(Long clientId);
+
+    double countByClientIdAndAppointmentStatus(Long clientId, AppointmentStatus attr0);
 }

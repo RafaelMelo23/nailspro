@@ -53,9 +53,6 @@ public class SalonService extends BaseEntity {
     @Column(name = "requires_loyalty")
     private Boolean requiresLoyalty = false;
 
-    @Column(name = "booking_horizon_days")
-    private Integer bookingHorizonDays;
-
     @ManyToMany
     @JoinTable(name = "service_professionals",
             joinColumns = @JoinColumn(name = "salonService_id"),
