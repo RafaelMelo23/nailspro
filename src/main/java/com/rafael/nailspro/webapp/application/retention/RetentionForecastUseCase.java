@@ -14,8 +14,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.rafael.nailspro.webapp.domain.enums.RetentionStatus.EXPIRED;
-import static com.rafael.nailspro.webapp.domain.enums.RetentionStatus.FAILED_TO_SEND;
+import static com.rafael.nailspro.webapp.domain.enums.RetentionStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,12 +46,18 @@ public class RetentionForecastUseCase {
     }
 
     @Transactional
-    public void expireForecast(RetentionForecast forecast) {
+    public void markForecastAsExpired(RetentionForecast forecast) {
         if (forecast.getPredictedReturnDate().isAfter(Instant.now())) {
             throw new IllegalStateException("Can't expire an still active forecast");
         }
 
         forecast.setStatus(EXPIRED);
+    }
+
+    @Transactional
+    public void markForecastAsConverted(RetentionForecast forecast) {
+
+        forecast.setStatus(CONVERTED);
     }
 
     @Transactional

@@ -23,6 +23,6 @@ public class RetentionExpiredScheduleUseCase {
         List<RetentionForecast> expiredForecasts =
                 repository.findAllExpiredPredictedForecastsAndNotInStatus(Instant.now(), RetentionStatus.EXPIRED);
 
-        expiredForecasts.forEach(retentionForecastUseCase::expireForecast);
+        expiredForecasts.forEach(retentionForecastUseCase::markForecastAsExpired);
     }
 }
