@@ -10,9 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.rafael.nailspro.webapp.domain.enums.RetentionStatus.EXPIRED;
 import static com.rafael.nailspro.webapp.domain.enums.RetentionStatus.FAILED_TO_SEND;
 
 @Service
@@ -44,7 +46,17 @@ public class RetentionForecastUseCase {
         }
     }
 
-    public void sendForecastMessage(RetentionForecast retentionForecast) {
+    @Transactional
+    public void expireForecast(RetentionForecast forecast) {
+        if (forecast.getPredictedReturnDate().isAfter(Instant.now())) {
+            throw new IllegalStateException("Can't expire an still active forecast");
+        }
+
+        forecast.setStatus(EXPIRED);
+    }
+
+    @Transactional
+    public void sendMaintenanceMessage(RetentionForecast retentionForecast) {
 
         try {
             String message = messageBuilder.buildRetentionMessage(retentionForecast);
