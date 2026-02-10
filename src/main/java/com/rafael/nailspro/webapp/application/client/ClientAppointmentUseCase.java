@@ -14,6 +14,7 @@ import com.rafael.nailspro.webapp.domain.service.AvailabilityDomainService;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentTimesDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.booking.AppointmentBookedEvent;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
 import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +73,7 @@ public class ClientAppointmentUseCase {
         );
 
         Appointment bookedAppointment = repository.save(appointment);
-        eventPublisher.publishEvent(bookedAppointment.getId());
+        eventPublisher.publishEvent(new AppointmentBookedEvent(bookedAppointment.getId()));
     }
 
     @Transactional
