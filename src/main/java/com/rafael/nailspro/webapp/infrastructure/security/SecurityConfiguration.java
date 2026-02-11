@@ -58,7 +58,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET,
                                 "/entrar",
                                 "/cadastro",
-                                "/agendar")
+                                "/agendar",
+                                "/actuator/health")
                         .permitAll()
 
                         .anyRequest().authenticated())
