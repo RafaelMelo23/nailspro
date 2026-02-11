@@ -60,4 +60,4 @@ O projeto utiliza o seguinte arquivo:
 
 Para subir a aplicação:
 
-** docker compose -f docker-compose.gh.yml up --build**
+**docker compose -f docker-compose.gh.yml up --build**
