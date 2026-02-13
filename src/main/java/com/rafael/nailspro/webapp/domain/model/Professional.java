@@ -45,7 +45,7 @@ public class Professional extends User {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "professionals")
     private Set<SalonService> salonServices = new LinkedHashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "professional", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "professional", orphanRemoval = true)
     private Set<WorkSchedule> workSchedules = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "professional", orphanRemoval = true)
@@ -58,40 +58,5 @@ public class Professional extends User {
         this.isActive = Boolean.TRUE;
         this.isFirstLogin = Boolean.TRUE;
         this.externalId = UUID.randomUUID();
-    }
-
-    public List<BusyInterval> getBusyIntervals(LocalDate date,
-                                               ZoneId salonZoneId,
-                                               int salonBufferInMinutes) {
-
-        Stream<BusyInterval> lunchBreak = this.getWorkSchedules().stream()
-                .filter(ws -> ws.getDayOfWeek() == date.getDayOfWeek())
-                .map(ws -> SimpleBusyInterval.builder()
-                        .start(ws.getLunchBreakStartTime())
-                        .end(ws.getLunchBreakEndTime())
-                        .build()
-                );
-
-        Stream<BusyInterval> appointments = this.getProfessionalAppointments().stream()
-                .filter(ap -> date.equals(LocalDate.ofInstant(ap.getStartDate(), salonZoneId)))
-                .map(ap -> SimpleBusyInterval.builder()
-                        .start(LocalTime.ofInstant(ap.getStartDate(), salonZoneId))
-                        .end(LocalTime.ofInstant(ap.getEndDate(), salonZoneId).plusMinutes(salonBufferInMinutes))
-                        .build()
-                );
-
-        Stream<BusyInterval> blocks = this.getScheduleBlocks().stream()
-                .filter(sb -> date.equals(LocalDate.ofInstant(sb.getDateStartTime(), salonZoneId)))
-                .map(sb -> SimpleBusyInterval.builder()
-                        .start(LocalTime.ofInstant(sb.getDateStartTime(), salonZoneId))
-                        .end(LocalTime.ofInstant(sb.getDateEndTime(), salonZoneId))
-                        .build()
-                );
-
-        Stream<BusyInterval> concat = Stream.concat(lunchBreak, appointments);
-
-        return Stream.concat(concat, blocks)
-                .sorted(Comparator.comparing(BusyInterval::getStart))
-                .toList();
     }
 }

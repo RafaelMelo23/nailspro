@@ -101,15 +101,12 @@ public class ClientAppointmentUseCase {
         AppointmentTimeWindow appointmentTimeWindow =
                 bookingPolicyManager.calculateAllowedWindows(services, clientId);
 
-        List<AppointmentTimesDTO> possibleAppointmentDates = appointmentTimeWindow.start().datesUntil(appointmentTimeWindow.end())
-                .map(date -> availabilityDomainService.findProfessionalDailyAvailability(
-                        professional,
-                        date,
-                        salonProfile,
-                        dto.serviceDurationInSeconds()))
-                .flatMap(Optional::stream)
-                .toList();
+        List<AppointmentTimesDTO> availableTimes = availabilityDomainService.findAvailableTimes(
+                professional,
+                appointmentTimeWindow,
+                salonProfile,
+                dto.serviceDurationInSeconds());
 
-        return new ProfessionalAvailabilityDTO(salonProfile.getZoneId(), possibleAppointmentDates);
+        return new ProfessionalAvailabilityDTO(salonProfile.getZoneId(), availableTimes);
     }
 }

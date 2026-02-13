@@ -23,7 +23,8 @@ public class AppointmentNotification {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @OneToOne(mappedBy = "appointmentNotification", orphanRemoval = true)
+    @ManyToOne
+    @JoinColumn(name = "appointment_external_id")
     private Appointment appointment;
 
     @Enumerated(EnumType.STRING)

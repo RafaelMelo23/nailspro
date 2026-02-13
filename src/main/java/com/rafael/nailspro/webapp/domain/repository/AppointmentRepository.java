@@ -5,6 +5,8 @@ import com.rafael.nailspro.webapp.domain.model.Appointment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
 import java.util.List;
@@ -28,4 +30,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     Optional<Appointment> findFirstByClientIdOrderByStartDateDesc(Long clientId);
 
     double countByClientIdAndAppointmentStatus(Long clientId, AppointmentStatus attr0);
+
+
+    @Query("SELECT a FROM Appointment a WHERE a.professional.id = :id " +
+            "AND a.startDate < :endRange AND a.endDate > :startRange")
+    List<Appointment> findBusyAppointmentsInRange(@Param("id") Long professionalId,
+                                                  @Param("startRange") Instant startRange,
+                                                  @Param("endRange") Instant endRange);
+
 }

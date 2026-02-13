@@ -92,7 +92,7 @@ public class BookingPolicyManager {
         LocalDate startDate = determineStartDate(services, clientId);
 
         int windowDays;
-        if (profile.getIsLoyalClientelePrioritized()) {
+        if (Boolean.TRUE.equals(profile.getIsLoyalClientelePrioritized())) {
             windowDays = isLoyalClient(clientId) ?
                     profile.getLoyalClientBookingWindowDays() :
                     profile.getStandardBookingWindow();

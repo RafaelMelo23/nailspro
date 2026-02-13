@@ -25,15 +25,15 @@ public class Appointment extends BaseEntity {
     @Column(name = "externalId", nullable = false)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client; // todo: verify that the number is correctly normalized in a pattern thats expected from all throughout the application
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "professional_id", nullable = false)
     private Professional professional;
 
-    @OneToOne(optional = false, orphanRemoval = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "main_service_id", nullable = false)
     private SalonService mainSalonService;
 
@@ -59,13 +59,13 @@ public class Appointment extends BaseEntity {
     @Column(name = "salon_zone_id")
     private ZoneId salonZoneId;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "appointment_addon_id")
     private List<AppointmentAddOn> addOns = new ArrayList<>();
 
-    @OneToOne(orphanRemoval = true)
-    @JoinColumn(name = "appointment_notification_id")
-    private AppointmentNotification appointmentNotification;
+    @OneToMany(mappedBy = "appointment", orphanRemoval = true)
+    private List<AppointmentNotification> appointmentNotifications = new ArrayList<>();
+
 
     public Integer calculateTotalValue() {
         Integer mainValue = this.mainSalonService.getValue();
