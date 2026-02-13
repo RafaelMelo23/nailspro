@@ -56,8 +56,8 @@ Verifique se está tudo instalado:
 
 O projeto utiliza o seguinte arquivo:
 
-**docker-compose.gh.yml**
+**docker-compose.yml**
 
 Para subir a aplicação:
 
-**docker compose -f docker-compose.gh.yml up --build**
+**docker compose up**
