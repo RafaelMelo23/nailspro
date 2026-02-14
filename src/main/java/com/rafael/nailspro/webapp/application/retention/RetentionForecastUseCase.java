@@ -7,6 +7,7 @@ import com.rafael.nailspro.webapp.domain.model.AppointmentAddOn;
 import com.rafael.nailspro.webapp.domain.model.RetentionForecast;
 import com.rafael.nailspro.webapp.domain.repository.RetentionForecastRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,9 +61,10 @@ public class RetentionForecastUseCase {
         forecast.setStatus(CONVERTED);
     }
 
-    @Transactional
-    public void sendMaintenanceMessage(RetentionForecast retentionForecast) {
-
+    @Async("messagingExecutor")
+    public void sendMaintenanceMessage(Long retentionForecastId) {
+        RetentionForecast retentionForecast = repository.findById(retentionForecastId)
+                .orElseThrow(() -> new IllegalArgumentException("Can't find retention forecast with id: " + retentionForecastId));
         try {
             String message = messageBuilder.buildRetentionMessage(retentionForecast);
 

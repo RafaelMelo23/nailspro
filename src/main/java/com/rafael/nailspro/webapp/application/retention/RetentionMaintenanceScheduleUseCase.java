@@ -28,6 +28,6 @@ public class RetentionMaintenanceScheduleUseCase {
         List<RetentionForecast> forecasts =
                 repository.findAllPredictedForecastsBetween(now, twoDaysFromNow, List.of(PENDING, FAILED_TO_SEND));
 
-        forecasts.forEach(retentionForecastUseCase::sendMaintenanceMessage);
+        forecasts.forEach(fr -> retentionForecastUseCase.sendMaintenanceMessage(fr.getId()));
     }
 }
