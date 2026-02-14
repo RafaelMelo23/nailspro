@@ -38,4 +38,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
                                                   @Param("startRange") Instant startRange,
                                                   @Param("endRange") Instant endRange);
 
+    @Query("""
+    SELECT CASE WHEN COUNT(ap) > 0 THEN TRUE ELSE FALSE END
+    FROM Appointment ap WHERE ap.mainSalonService.maintenanceIntervalDays != NULL
+    AND ap.client.id = :clientId""")
+    boolean clientBookedServiceRequiringMaintenance(@Param("clientId") Long clientId);
+
 }

@@ -26,9 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -63,7 +63,7 @@ public class ClientAppointmentUseCase {
                 interval
         );
 
-        bookingPolicyManager.validate(mainService, dto.zonedAppointmentDateTime().toLocalDateTime(), principal.getUserId());
+        bookingPolicyManager.validate(dto.zonedAppointmentDateTime().toLocalDateTime(), principal.getUserId());
 
         Appointment appointment = appointmentService.buildAppointment(
                 dto,
@@ -107,6 +107,14 @@ public class ClientAppointmentUseCase {
                 salonProfile,
                 dto.serviceDurationInSeconds());
 
-        return new ProfessionalAvailabilityDTO(salonProfile.getZoneId(), availableTimes);
+
+        ZonedDateTime recommendedDate = // todo: add front-end logic so that it considers only dates != today as recommended
+                bookingPolicyManager.calculateEarliestRecommendedDate(clientId).atZone(salonProfile.getZoneId());
+
+        return ProfessionalAvailabilityDTO.builder()
+                .appointmentTimesDTOList(availableTimes)
+                .zoneId(salonProfile.getZoneId())
+                .earliestRecommendedDate(recommendedDate)
+                .build();
     }
 }
