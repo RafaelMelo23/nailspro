@@ -18,7 +18,7 @@ public class RetentionListener {
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void createForecast(AppointmentFinishedEvent event) {
+    public void onFinished(AppointmentFinishedEvent event) {
         Appointment appointment = appointmentService.findById(event.appointmentId());
 
         boolean hasMaintenanceInterval =

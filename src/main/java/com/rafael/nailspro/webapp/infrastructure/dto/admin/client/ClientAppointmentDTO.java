@@ -3,6 +3,7 @@ package com.rafael.nailspro.webapp.infrastructure.dto.admin.client;
 import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
 import lombok.Builder;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public record ClientAppointmentDTO(
 
         String mainServiceName,
         List<String> addOnServiceNames,
-        Integer totalValue,
+        BigDecimal totalValue,
 
         String observations
 ) {

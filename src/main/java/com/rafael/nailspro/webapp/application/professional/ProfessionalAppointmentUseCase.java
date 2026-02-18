@@ -6,7 +6,9 @@ import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAppointmentScheduleDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.event.AppointmentCancelledEvent;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.event.AppointmentFinishedEvent;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.event.AppointmentMissedEvent;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import com.rafael.nailspro.webapp.infrastructure.mapper.ProfessionalMapper;
 import lombok.RequiredArgsConstructor;
@@ -40,27 +42,54 @@ public class ProfessionalAppointmentUseCase {
     }
 
     @Transactional
-    public void confirmAppointment(Long appointmentId, Long clientId) {
+    public void markAppointmentAsConfirmed(Long appointmentId, Long clientId) {
         var appointment = appointmentService.findAndValidateAppointmentOwnership(appointmentId, clientId);
 
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
     }
 
     @Transactional
-    public void finishAppointment(Long appointmentId, Long clientId) {
+    public void markAppointmentAsFinished(Long appointmentId, Long clientId) {
         var appointment = appointmentService.findAndValidateAppointmentOwnership(appointmentId, clientId);
 
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
 
-        eventPublisher.publishEvent(new AppointmentFinishedEvent(appointmentId));
+        eventPublisher.publishEvent(new AppointmentFinishedEvent(
+                appointment.getId(),
+                appointment.getClient().getId(),
+                appointment.getTenantId(),
+                appointment.getTotalValue(),
+                appointment.getEndDate().atZone(appointment.getSalonZoneId())
+        ));
     }
 
     @Transactional
-    public void cancelAppointment(Long appointmentId, Long clientId) {
+    public void markAppointmentAsCancelled(Long appointmentId, Long clientId) {
         var appointment = appointmentService.findAndValidateAppointmentOwnership(appointmentId, clientId);
 
         appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+
+        eventPublisher.publishEvent(new AppointmentCancelledEvent(
+                appointment.getId(),
+                appointment.getTenantId(),
+                appointment.getClient().getId()
+        ));
     }
+
+    @Transactional
+    public void markAppointmentAsMissed(Long appointmentId, Long clientId) {
+        var appointment = appointmentService.findAndValidateAppointmentOwnership(appointmentId, clientId);
+
+        appointment.setAppointmentStatus(AppointmentStatus.MISSED);
+
+        eventPublisher.publishEvent(new AppointmentMissedEvent(
+                appointment.getId(),
+                appointment.getTenantId(),
+                appointment.getClient().getId()
+        ));
+    }
+
+
 
     public void checkIfProfessionalHasTimeConflicts(UUID professionalId, TimeInterval interval) {
         if (repository.hasTimeConflicts(

@@ -41,7 +41,7 @@ public class ProfessionalAppointmentController {
             @PathVariable Long appointmentId,
             @RequestParam Long clientId
     ) {
-        service.confirmAppointment(appointmentId, clientId);
+        service.markAppointmentAsConfirmed(appointmentId, clientId);
         return ResponseEntity.noContent().build();
     }
 
@@ -50,7 +50,7 @@ public class ProfessionalAppointmentController {
             @PathVariable Long appointmentId,
             @RequestParam Long clientId
     ) {
-        service.finishAppointment(appointmentId, clientId);
+        service.markAppointmentAsFinished(appointmentId, clientId);
         return ResponseEntity.noContent().build();
     }
 
@@ -59,7 +59,16 @@ public class ProfessionalAppointmentController {
             @PathVariable Long appointmentId,
             @RequestParam Long clientId
     ) {
-        service.cancelAppointment(appointmentId, clientId);
+        service.markAppointmentAsCancelled(appointmentId, clientId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{appointmentId}/miss")
+    public ResponseEntity<Void> missedAppointment(
+            @PathVariable Long appointmentId,
+            @RequestParam Long clientId
+    ) {
+        service.markAppointmentAsMissed(appointmentId, clientId);
         return ResponseEntity.noContent().build();
     }
 }

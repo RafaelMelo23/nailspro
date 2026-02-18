@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +40,7 @@ public class Appointment extends BaseEntity {
     private SalonService mainSalonService;
 
     @Column(name = "total_value", nullable = false)
-    private Integer totalValue;
+    private BigDecimal totalValue;
 
     @Column(name = "observations", length = 120)
     private String observations;
@@ -67,13 +69,19 @@ public class Appointment extends BaseEntity {
     private List<AppointmentNotification> appointmentNotifications = new ArrayList<>();
 
 
-    public Integer calculateTotalValue() {
-        Integer mainValue = this.mainSalonService.getValue();
+    public BigDecimal calculateTotalValue() {
 
-        Integer addOnsValue = this.addOns.stream()
-                .mapToInt(addon -> addon.getQuantity() * addon.getService().getValue())
-                .sum();
+        BigDecimal mainValue = BigDecimal.valueOf(this.mainSalonService.getValue());
 
-        return mainValue + addOnsValue;
+        BigDecimal addOnsValue = this.addOns.stream()
+                .map(addon -> BigDecimal.valueOf(addon.getService().getValue())
+                        .multiply(BigDecimal.valueOf(addon.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return mainValue.add(addOnsValue);
+    }
+
+    public ZonedDateTime getZonedEndDate(ZoneId zoneId) {
+        return endDate.atZone(zoneId);
     }
 }

@@ -28,6 +28,9 @@ public class Client extends User {
     @Column(name = "phone_number", nullable = false, unique = true, length = 13)
     private String phoneNumber;
 
+    @OneToOne(mappedBy = "client", orphanRemoval = true)
+    private ClientAuditMetrics clientAuditMetrics;
+
     @Override
     public void prePersist() {
         super.prePersist();

@@ -4,19 +4,17 @@ import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 
+
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @SuperBuilder
-@Getter
+@Getter @Setter
 @MappedSuperclass
 @FilterDef(
         name = "tenantFilter",

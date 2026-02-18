@@ -1,4 +1,11 @@
 package com.rafael.nailspro.webapp.infrastructure.dto.appointment.event;
 
-public record AppointmentFinishedEvent(Long appointmentId) {
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+
+public record AppointmentFinishedEvent(Long appointmentId,
+                                       Long clientId,
+                                       String tenantId,
+                                       BigDecimal totalValue,
+                                       ZonedDateTime completionDate) {
 }
