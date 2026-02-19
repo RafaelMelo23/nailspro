@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.application.appointment;
 
-import com.rafael.nailspro.webapp.application.admin.client.AdminClientService;
+import com.rafael.nailspro.webapp.application.admin.client.ClientService;
 import com.rafael.nailspro.webapp.application.salon.service.SalonProfileService;
 import com.rafael.nailspro.webapp.application.salon.service.SalonServiceService;
 import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
@@ -25,7 +25,7 @@ public class AppointmentService {
 
     private final SalonServiceService salonService;
     private final ProfessionalRepository professionalRepository;
-    private final AdminClientService adminClientService;
+    private final ClientService clientService;
     private final AppointmentRepository repository;
     private final SalonProfileService salonProfileService;
 
@@ -105,7 +105,7 @@ public class AppointmentService {
     }
 
     public Client findClient(Long clientId) {
-        return adminClientService.getClient(clientId);
+        return clientService.getClient(clientId);
     }
 
     public Professional findProfessional(String professionalExternalId) {

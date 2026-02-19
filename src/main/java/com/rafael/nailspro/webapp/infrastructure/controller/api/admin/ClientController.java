@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
-import com.rafael.nailspro.webapp.application.admin.client.AdminClientService;
+import com.rafael.nailspro.webapp.application.admin.client.ClientService;
 import com.rafael.nailspro.webapp.domain.enums.UserStatus;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.client.ClientAppointmentDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.client.ClientDTO;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/client")
-public class AdminClientController {
+public class ClientController {
 
-    private final AdminClientService adminClientService;
+    private final ClientService clientService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/status/{userId}/{userStatus}")
@@ -24,7 +24,7 @@ public class AdminClientController {
             @PathVariable Long userId,
             @PathVariable UserStatus userStatus) {
 
-        adminClientService.changeClientStatus(userId, userStatus);
+        clientService.changeClientStatus(userId, userStatus);
         return ResponseEntity.noContent().build();
     }
 
@@ -35,7 +35,7 @@ public class AdminClientController {
             Pageable pageable) {
 
         Page<ClientDTO> clients =
-                adminClientService.searchForClients(name, pageable);
+                clientService.searchForClients(name, pageable);
 
         return ResponseEntity.ok(clients);
     }
@@ -47,7 +47,7 @@ public class AdminClientController {
             Pageable pageable) {
 
         Page<ClientAppointmentDTO> appointments =
-                adminClientService.getClientAppointments(clientId, pageable);
+                clientService.getClientAppointments(clientId, pageable);
 
         return ResponseEntity.ok(appointments);
     }

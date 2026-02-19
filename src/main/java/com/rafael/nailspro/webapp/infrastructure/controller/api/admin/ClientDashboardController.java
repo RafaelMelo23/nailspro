@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/v1/admin/dashboard/clients")
-public class AdminClientDashboardController {
+public class ClientDashboardController {
 
     private final ClientDashboardService service;
 

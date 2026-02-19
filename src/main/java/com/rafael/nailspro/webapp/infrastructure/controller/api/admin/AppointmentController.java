@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
-import com.rafael.nailspro.webapp.application.admin.salon.profile.AdminAppointmentService;
+import com.rafael.nailspro.webapp.application.admin.salon.profile.AppointmentService;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AdminUserAppointmentDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/v1/admin/appointments")
-public class AdminAppointmentController {
+public class AppointmentController {
 
-    private final AdminAppointmentService service;
+    private final AppointmentService service;
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<Page<AdminUserAppointmentDTO>> listUserAppointments(

@@ -19,7 +19,7 @@ import java.time.ZonedDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class AdminClientService {
+public class ClientService {
 
     private final ClientRepository clientRepository;
     private final AppointmentRepository appointmentRepository;

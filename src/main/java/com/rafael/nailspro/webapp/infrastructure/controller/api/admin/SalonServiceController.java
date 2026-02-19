@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/salon/service")
-public class AdminSalonServiceController {
+public class SalonServiceController {
 
     private final SalonServiceService salonService;
 
