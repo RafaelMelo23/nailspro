@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.application.client;
+package com.rafael.nailspro.webapp.application.salon.service;
 
 import com.rafael.nailspro.webapp.domain.model.SalonDailyRevenue;
 import com.rafael.nailspro.webapp.domain.repository.SalonDailyRevenueRepository;

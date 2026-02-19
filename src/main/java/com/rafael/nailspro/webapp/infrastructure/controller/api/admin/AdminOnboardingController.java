@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
-import com.rafael.nailspro.webapp.application.service.OnboardingService;
+import com.rafael.nailspro.webapp.application.salon.service.OnboardingService;
 import com.rafael.nailspro.webapp.infrastructure.dto.onboarding.OnboardingRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.onboarding.OnboardingResultDTO;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;

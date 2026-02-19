@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.application.service;
+package com.rafael.nailspro.webapp.application.salon.service;
 
 import com.rafael.nailspro.webapp.domain.model.AppointmentAddOn;
 import com.rafael.nailspro.webapp.domain.model.Professional;

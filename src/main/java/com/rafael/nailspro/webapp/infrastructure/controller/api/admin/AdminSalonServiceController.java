@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
-import com.rafael.nailspro.webapp.application.service.SalonServiceService;
+import com.rafael.nailspro.webapp.application.salon.service.SalonServiceService;
 import com.rafael.nailspro.webapp.infrastructure.dto.salon.service.SalonServiceDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.salon.service.SalonServiceOutDTO;
 import lombok.RequiredArgsConstructor;

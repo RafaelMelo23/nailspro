@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.application.admin.professional;
 
-import com.rafael.nailspro.webapp.application.service.SalonServiceService;
+import com.rafael.nailspro.webapp.application.salon.service.SalonServiceService;
 import com.rafael.nailspro.webapp.domain.enums.UserRole;
 import com.rafael.nailspro.webapp.domain.enums.UserStatus;
 import com.rafael.nailspro.webapp.domain.model.Professional;
