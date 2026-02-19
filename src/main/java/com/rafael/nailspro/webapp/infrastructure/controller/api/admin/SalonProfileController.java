@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
-import com.rafael.nailspro.webapp.application.admin.salon.profile.SalonProfileService;
+import com.rafael.nailspro.webapp.application.admin.salon.profile.SalonProfileManagementService;
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.salon.profile.SalonProfileDTO;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +18,13 @@ import java.io.IOException;
 @RequestMapping("/api/v1/admin/salon/profile")
 public class SalonProfileController {
 
-    private final SalonProfileService salonProfileService;
+    private final SalonProfileManagementService salonProfileManagementService;
 
     @PostMapping
     public ResponseEntity<Void> createOrUpdateProfile(@AuthenticationPrincipal UserPrincipal user,
                                                       @RequestBody SalonProfileDTO dto) throws IOException {
 
-        salonProfileService.createOrUpdateProfile(user.getUserId(), dto);
+        salonProfileManagementService.createOrUpdateProfile(user.getUserId(), dto);
         return ResponseEntity.ok().build();
     }
 }

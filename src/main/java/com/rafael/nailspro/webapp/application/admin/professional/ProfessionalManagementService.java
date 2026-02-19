@@ -17,7 +17,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class ProfessionalService {
+public class ProfessionalManagementService {
 
     private final ProfessionalRepository professionalRepository;
     private final SalonServiceService salonServiceService;

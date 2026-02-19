@@ -19,19 +19,19 @@ import java.time.ZonedDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class ClientService {
+public class ClientManagementService {
 
     private final ClientRepository clientRepository;
     private final AppointmentRepository appointmentRepository;
     private final SalonProfileService salonProfileService;
 
     @Transactional
-    public void changeClientStatus(Long clientId, UserStatus status) {
+    public void updateClientStatus(Long clientId, UserStatus status) {
 
-        clientRepository.changeClientStatus(clientId, status);
+        clientRepository.updateClientStatus(clientId, status);
     }
 
-    public Page<ClientDTO> searchForClients(String clientName, Pageable pageable) {
+    public Page<ClientDTO> findClientsForManagement(String clientName, Pageable pageable) {
 
         return clientRepository
                 .findByFullNameContainingIgnoreCase(clientName, pageable)
@@ -44,7 +44,7 @@ public class ClientService {
                         .build());
     }
 
-    public Page<ClientAppointmentDTO> getClientAppointments(Long clientId, Pageable pageable) {
+    public Page<ClientAppointmentDTO> getClientAppointmentHistory(Long clientId, Pageable pageable) {
 
         ZoneId salonZoneId = salonProfileService.getSalonZoneIdByContext();
 

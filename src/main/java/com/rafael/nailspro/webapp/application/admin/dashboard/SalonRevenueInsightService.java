@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SalonRevenueDashboardService {
+public class SalonRevenueInsightService {
 
     private final SalonDailyRevenueRepository repository;
 

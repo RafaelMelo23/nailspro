@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class AppointmentService {
+public class AppointmentAuditService {
 
     private final AppointmentRepository repository;
     private final SalonProfileService salonProfileService;

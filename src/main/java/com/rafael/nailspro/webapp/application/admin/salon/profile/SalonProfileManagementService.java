@@ -12,7 +12,7 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class SalonProfileService {
+public class SalonProfileManagementService {
 
     private final SalonProfileRepository salonProfileRepository;
     private final FileUploadService fileUploadService;

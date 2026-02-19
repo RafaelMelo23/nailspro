@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
-import com.rafael.nailspro.webapp.application.admin.professional.ProfessionalService;
+import com.rafael.nailspro.webapp.application.admin.professional.ProfessionalManagementService;
 import com.rafael.nailspro.webapp.application.professional.ScheduleBlockService;
 import com.rafael.nailspro.webapp.application.professional.WorkScheduleService;
 import com.rafael.nailspro.webapp.domain.model.Professional;
@@ -23,7 +23,7 @@ import java.util.Set;
 @RequestMapping("/api/v1/admin/professional")
 public class ProfessionalController {
 
-    private final ProfessionalService professionalService;
+    private final ProfessionalManagementService professionalManagementService;
     private final ProfessionalRepository professionalRepository;
     private final WorkScheduleService workScheduleService;
     private final ScheduleBlockService scheduleBlockService;
@@ -33,7 +33,7 @@ public class ProfessionalController {
     public ResponseEntity<Void> createProfessional(
             @RequestBody CreateProfessionalDTO professionalDTO) {
 
-        professionalService.createProfessional(professionalDTO);
+        professionalManagementService.createProfessional(professionalDTO);
         return ResponseEntity.status(201).build();
     }
 
@@ -42,7 +42,7 @@ public class ProfessionalController {
     public ResponseEntity<Void> deactivateProfessional(
             @PathVariable Long id) {
 
-        professionalService.deactivateProfessional(id);
+        professionalManagementService.deactivateProfessional(id);
         return ResponseEntity.noContent().build();
     }
 

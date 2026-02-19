@@ -23,7 +23,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     SET c.status = :status
     WHERE c.id = :id
 """)
-    void changeClientStatus(@Param("id") Long clientId, @Param("status") UserStatus status);
+    void updateClientStatus(@Param("id") Long clientId, @Param("status") UserStatus status);
 
     Page<Client> findByFullNameContainingIgnoreCase(String name, Pageable pageable);
 

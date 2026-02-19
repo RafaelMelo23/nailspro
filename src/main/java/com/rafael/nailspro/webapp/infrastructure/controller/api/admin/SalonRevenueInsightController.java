@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
-import com.rafael.nailspro.webapp.application.admin.dashboard.SalonRevenueDashboardService;
+import com.rafael.nailspro.webapp.application.admin.dashboard.SalonRevenueInsightService;
 import com.rafael.nailspro.webapp.infrastructure.dto.dashboard.SalonDashboardDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/admin/dashboard/salon")
+@RequestMapping("/api/v1/admin/insight/salon")
 @RequiredArgsConstructor
-public class SalonRevenueDashboardController {
+public class SalonRevenueInsightController {
 
-    private final SalonRevenueDashboardService dashboardService;
+    private final SalonRevenueInsightService dashboardService;
 
     @GetMapping("/revenue")
     public ResponseEntity<SalonDashboardDTO> getMonthlyRevenue() {

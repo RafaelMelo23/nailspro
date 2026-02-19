@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
-import com.rafael.nailspro.webapp.application.admin.dashboard.ClientDashboardService;
+import com.rafael.nailspro.webapp.application.admin.dashboard.ClientInsightService;
 import com.rafael.nailspro.webapp.infrastructure.dto.client.AdminClientCrmDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
-@RequestMapping("/api/v1/admin/dashboard/clients")
-public class ClientDashboardController {
+@RequestMapping("/api/v1/admin/insight/clients")
+public class ClientInsightController {
 
-    private final ClientDashboardService service;
+    private final ClientInsightService service;
 
     @GetMapping("/{clientId}")
     public ResponseEntity<AdminClientCrmDTO> getClientDashboardInfo(
