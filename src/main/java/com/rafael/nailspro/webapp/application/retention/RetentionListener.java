@@ -13,7 +13,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class RetentionListener {
 
-    private final RetentionForecastUseCase forecastUseCase;
+    private final VisitPredictionService forecastUseCase;
     private final AppointmentService appointmentService;
 
     @Async

@@ -12,9 +12,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RetentionExpiredScheduleUseCase {
+public class ExpiredPredictionService {
 
-    private final RetentionForecastUseCase retentionForecastUseCase;
+    private final VisitPredictionService visitPredictionService;
     private final RetentionForecastRepository repository;
 
     @Scheduled(cron = "0 0 0 * * *")
@@ -23,6 +23,6 @@ public class RetentionExpiredScheduleUseCase {
         List<RetentionForecast> expiredForecasts =
                 repository.findAllExpiredPredictedForecastsAndNotInStatus(Instant.now(), RetentionStatus.EXPIRED);
 
-        expiredForecasts.forEach(retentionForecastUseCase::markForecastAsExpired);
+        expiredForecasts.forEach(visitPredictionService::markForecastAsExpired);
     }
 }

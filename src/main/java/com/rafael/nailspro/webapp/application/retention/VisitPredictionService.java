@@ -19,7 +19,7 @@ import static com.rafael.nailspro.webapp.domain.enums.RetentionStatus.*;
 
 @Service
 @RequiredArgsConstructor
-public class RetentionForecastUseCase {
+public class VisitPredictionService {
 
     private final RetentionForecastRepository repository;
     private final RetentionMessageBuilder messageBuilder;

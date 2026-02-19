@@ -15,9 +15,9 @@ import static com.rafael.nailspro.webapp.domain.enums.RetentionStatus.PENDING;
 
 @Component
 @RequiredArgsConstructor
-public class RetentionMaintenanceScheduleUseCase {
+public class FollowUpAutomationService {
 
-    private final RetentionForecastUseCase retentionForecastUseCase;
+    private final VisitPredictionService visitPredictionService;
     private final RetentionForecastRepository repository;
 
     @Scheduled(cron = "0 30 9 * * *")
@@ -28,6 +28,6 @@ public class RetentionMaintenanceScheduleUseCase {
         List<RetentionForecast> forecasts =
                 repository.findAllPredictedForecastsBetween(now, twoDaysFromNow, List.of(PENDING, FAILED_TO_SEND));
 
-        forecasts.forEach(fr -> retentionForecastUseCase.sendMaintenanceMessage(fr.getId()));
+        forecasts.forEach(fr -> visitPredictionService.sendMaintenanceMessage(fr.getId()));
     }
 }
