@@ -68,6 +68,7 @@ public class AppointmentService {
                                         TimeInterval interval,
                                         SalonService mainService,
                                         SalonProfile salonProfile,
+                                        Professional professional,
                                         List<AppointmentAddOn> addOnServices) {
 
         Appointment appointment = Appointment.builder()
@@ -75,7 +76,7 @@ public class AppointmentService {
                 .startDate(interval.realTimeStart())
                 .endDate(interval.realTimeEnd())
                 .client(findClient(clientId))
-                .professional(findProfessional(dto.professionalExternalId()))
+                .professional(professional)
                 .mainSalonService(mainService)
                 .addOns(addOnServices)
                 .observations(dto.observation().get())
@@ -108,8 +109,8 @@ public class AppointmentService {
         return clientManagementService.getClient(clientId);
     }
 
-    public Professional findProfessional(String professionalExternalId) {
-        return professionalRepository.findByExternalId(UUID.fromString(professionalExternalId));
+    public Professional findProfessionalAndLock(String professionalExternalId) {
+        return professionalRepository.findByExternalIdWithPessimisticLock(UUID.fromString(professionalExternalId));
     }
 
     public SalonService findService(Long serviceId) {

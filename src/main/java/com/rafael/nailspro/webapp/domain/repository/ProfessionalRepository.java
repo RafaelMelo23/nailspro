@@ -2,10 +2,8 @@ package com.rafael.nailspro.webapp.domain.repository;
 
 import com.rafael.nailspro.webapp.domain.model.Professional;
 import jakarta.persistence.LockModeType;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import jakarta.persistence.QueryHint;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
 import java.time.DayOfWeek;
@@ -47,11 +45,15 @@ public interface ProfessionalRepository extends JpaRepository<Professional, Long
                              @Param("endDateAndTime") LocalDateTime endDate,
                              @Param("day") DayOfWeek day);
 
-    Professional findByExternalId(UUID externalId);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value = "2000")})
+    @Query("SELECT p FROM Professional p WHERE p.externalId = :id")
+    Professional findByExternalIdWithPessimisticLock(UUID externalId);
 
     @Query("SELECT sp.owner from SalonProfile sp WHERE sp.tenantId = :id")
     Optional<Professional> findSalonOwnerByTenantId(@Param("id") String tenantId);
 
 
+    Optional<Professional> findByExternalId(UUID uuid);
 
 }

@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.appointment;
 
-import com.rafael.nailspro.webapp.application.client.ClientAppointmentUseCase;
+import com.rafael.nailspro.webapp.application.client.ClientAppointmentBookingUseCase;
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/booking")
 public class ClientBookingController {
 
-    private final ClientAppointmentUseCase service;
+    private final ClientAppointmentBookingUseCase service;
 
     @PostMapping
     public ResponseEntity<Void> bookAppointment(@RequestBody AppointmentCreateDTO appointmentDTO,
