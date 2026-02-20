@@ -12,10 +12,20 @@ public class EvolutionConnectionNotificationService {
 
     private final SseService sseService;
 
-    public void buildAndSend(Long professionalId, Object data) {
+    public void notifyQrCodeUpdate(Long professionalId, Object data) {
 
         SsePayloadDTO payload = SsePayloadDTO.builder()
                 .sseEventType(SseEventType.QR_CODE_UPDATE)
+                .data(data)
+                .build();
+
+        sseService.sendEventToUser(professionalId, payload);
+    }
+
+    public void notifyInstanceDisconnected(Long professionalId, Object data) {
+
+        SsePayloadDTO payload = SsePayloadDTO.builder()
+                .sseEventType(SseEventType.CONNECTION_UPDATE)
                 .data(data)
                 .build();
 

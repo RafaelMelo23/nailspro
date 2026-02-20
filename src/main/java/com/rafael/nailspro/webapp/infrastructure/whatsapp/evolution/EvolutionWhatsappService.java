@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.whatsapp.evolution;
 
 import com.rafael.nailspro.webapp.application.whatsapp.WhatsappProvider;
-import com.rafael.nailspro.webapp.domain.enums.EvolutionEvent;
+import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionEvent;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.CreateInstanceRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.SendTextRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Log4j2
 @Service
@@ -37,8 +38,9 @@ public class EvolutionWhatsappService implements WhatsappProvider {
     @Value("${evolution.webhook.url}")
     private String webhookUrl;
 
-    public void prepareAndConnect(String tenantId, String phoneNumber) {
-        deleteInstance(tenantId);
+    public void prepareAndConnect(String tenantId, String phoneNumber) throws InterruptedException {
+        logout(tenantId);
+        TimeUnit.MILLISECONDS.sleep(800);
         createInstance(tenantId);
         instanceConnect(tenantId, Optional.of(phoneNumber));
     }
@@ -69,7 +71,8 @@ public class EvolutionWhatsappService implements WhatsappProvider {
                 .webhookByEvents(false)
                 .webhook(webhookUrl)
                 .number(null)
-                .qrcode(true).build();
+                .qrcode(true)
+                .build();
     }
 
     public String instanceConnect(String instanceName, Optional<String> phoneNumber) {
@@ -80,7 +83,9 @@ public class EvolutionWhatsappService implements WhatsappProvider {
         }
 
         HttpEntity<Void> request = new HttpEntity<>(getHeaders());
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+        ResponseEntity<String> response =
+                restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+
         return response.getBody();
     }
 
@@ -92,7 +97,9 @@ public class EvolutionWhatsappService implements WhatsappProvider {
                 message
         );
 
-        HttpEntity<SendTextRequestDTO> request = new HttpEntity<>(body, getHeaders());
+        HttpEntity<SendTextRequestDTO> request =
+                new HttpEntity<>(body, getHeaders());
+
         restTemplate.postForEntity(url, request, String.class);
     }
 
@@ -104,11 +111,20 @@ public class EvolutionWhatsappService implements WhatsappProvider {
                 message
         );
 
-        HttpEntity<SendTextRequestDTO> requestBody = new HttpEntity<>(bodyDTO, getHeaders());
+        HttpEntity<SendTextRequestDTO> requestBody =
+                new HttpEntity<>(bodyDTO, getHeaders());
+
         return restTemplate.postForObject(url, requestBody, Map.class);
     }
 
     public void deleteInstance(String instanceName) {
+        String url = evolutionApiBaseUrl + "/instance/delete/" + instanceName;
+
+        HttpEntity<Void> request = new HttpEntity<>(getHeaders());
+        restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+    }
+
+    public void logout(String instanceName) {
         String url = evolutionApiBaseUrl + "/instance/logout/" + instanceName;
 
         HttpEntity<Void> request = new HttpEntity<>(getHeaders());
@@ -124,6 +140,8 @@ public class EvolutionWhatsappService implements WhatsappProvider {
 
     private String formatPhoneNumber(String phoneNumber) {
         String cleanNumber = phoneNumber.replaceAll("\\D", "");
-        return cleanNumber.startsWith("55") ? cleanNumber : "55" + cleanNumber;
+        return cleanNumber.startsWith("55")
+                ? cleanNumber
+                : "55" + cleanNumber;
     }
 }

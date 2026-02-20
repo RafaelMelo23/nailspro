@@ -52,7 +52,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/internal/**",
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/register",
-                                "/api/v1/webhook/**").permitAll()
+                                "/api/v1/webhook/**",
+                        "/evolution-test").permitAll() //todo: remember to remove the test page
 
                         // User/Anonymous Pages
                         .requestMatchers(HttpMethod.GET,

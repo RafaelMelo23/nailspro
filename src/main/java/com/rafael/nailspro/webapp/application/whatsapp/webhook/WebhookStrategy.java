@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.application.whatsapp.webhook;
 
-import com.rafael.nailspro.webapp.domain.enums.EvolutionEvent;
+import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionEvent;
 
 public interface WebhookStrategy {
 

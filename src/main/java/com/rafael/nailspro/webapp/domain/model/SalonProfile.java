@@ -1,6 +1,7 @@
 package com.rafael.nailspro.webapp.domain.model;
 
 import com.rafael.nailspro.webapp.domain.enums.OperationalStatus;
+import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionConnectionState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @SuperBuilder
@@ -74,6 +76,16 @@ public class SalonProfile extends BaseEntity {
     @Column(name = "standard_booking_window")
     private Integer standardBookingWindow;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "evolution_connection_state", nullable = false)
+    private EvolutionConnectionState evolutionConnectionState;
+
+    @Column(name = "whatsapp_last_reset_at")
+    private LocalDateTime whatsappLastResetAt;
+
+    @Column(name = "last_pairing_code")
+    private String lastPairingCode;
+
     @Override
     public void prePersist() {
         super.prePersist();
@@ -108,6 +120,10 @@ public class SalonProfile extends BaseEntity {
 
         if (this.operationalStatus == null) {
             this.operationalStatus = OperationalStatus.OPEN;
+        }
+
+        if (this.evolutionConnectionState == null) {
+            this.evolutionConnectionState = EvolutionConnectionState.CLOSE;
         }
     }
 }

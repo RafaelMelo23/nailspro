@@ -19,7 +19,13 @@ public class SalonProfileService {
 
     public SalonProfile getSalonProfileByTenantId(String tenantId) {
 
-        return repository.findByTenantId(tenantId);
+        return repository.findByTenantId(tenantId)
+                .orElseThrow(() -> new BusinessException("Salão não encontrado"));
+    }
+
+    public void save(SalonProfile salonProfile) {
+
+        repository.save(salonProfile);
     }
 
     public String getTenantId(BaseEntity baseEntity) {
@@ -56,5 +62,11 @@ public class SalonProfileService {
         return repository.fetchZoneIdByTenantId(tenantId)
                 .map(ZoneId::of)
                 .orElseThrow(() -> new BusinessException("Fuso horário não encontrado."));
+    }
+
+    public SalonProfile findWithOwnerByTenantId(String tenantId) {
+
+        return repository.findByTenantIdWithOwner(tenantId)
+                .orElseThrow(() -> new BusinessException("Salão não encontrado"));
     }
 }

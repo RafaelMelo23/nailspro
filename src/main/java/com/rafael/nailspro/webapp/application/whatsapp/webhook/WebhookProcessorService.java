@@ -1,8 +1,9 @@
 package com.rafael.nailspro.webapp.application.whatsapp.webhook;
 
-import com.rafael.nailspro.webapp.domain.enums.EvolutionEvent;
+import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionEvent;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.EvolutionWebhookResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -19,9 +20,12 @@ public class WebhookProcessorService {
                 .collect(Collectors.toMap(WebhookStrategy::getSupportedTypeEvent, Function.identity()));
     }
 
+    @Transactional
     public void handleWebhook(EvolutionWebhookResponse<?> webhookDTO) {
+        WebhookStrategy handler = strategyMap.get(webhookDTO.event());
 
-        WebhookStrategy handler = strategyMap.get(EvolutionEvent.valueOf(webhookDTO.event()));
+        System.out.println("Received Events: " + webhookDTO.event());
+        System.out.println("Registered Strategies: " + strategyMap.keySet());
 
         handler.process(webhookDTO);
     }
