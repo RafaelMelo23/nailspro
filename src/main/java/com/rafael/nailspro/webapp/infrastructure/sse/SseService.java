@@ -44,4 +44,12 @@ public class SseService {
             }
         }
     }
+
+    public void removeEmitter(Long userId) {
+        SseEmitter emitter = emitters.remove(userId);
+
+        if (emitter != null) {
+            emitter.complete();
+        }
+    }
 }

@@ -5,6 +5,7 @@ import com.rafael.nailspro.webapp.domain.enums.EvolutionEvent;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.CreateInstanceRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.SendTextRequestDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Slf4j
+@Log4j2
 @Service
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "whatsapp.provider", havingValue = "evolution", matchIfMissing = true)

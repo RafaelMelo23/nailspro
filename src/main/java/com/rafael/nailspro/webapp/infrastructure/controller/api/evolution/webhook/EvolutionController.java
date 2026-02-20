@@ -17,6 +17,7 @@ public class EvolutionController {
 
     private final EvolutionWhatsappService evolutionService;
 
+    // todo: remove this
     @PostMapping
     public ResponseEntity<Map<String, Object>> sendMessage(
             @RequestParam String message,
