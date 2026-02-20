@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/client")
-public class ClientController {
+public class ClientManagementController {
 
     private final ClientManagementService clientManagementService;
 

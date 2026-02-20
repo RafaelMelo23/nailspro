@@ -21,7 +21,7 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/professional")
-public class ProfessionalController {
+public class ProfessionalManagementController {
 
     private final ProfessionalManagementService professionalManagementService;
     private final ProfessionalRepository professionalRepository;

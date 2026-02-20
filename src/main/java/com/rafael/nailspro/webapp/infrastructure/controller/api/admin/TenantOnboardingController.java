@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/internal/onboard")
-public class OnboardingController {
+public class TenantOnboardingController {
 
     @Value("${internal.api.key}")
     private String key;

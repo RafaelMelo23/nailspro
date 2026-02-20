@@ -6,7 +6,6 @@ import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.CreateIn
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.SendTextRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpEntity;
@@ -37,6 +36,12 @@ public class EvolutionWhatsappService implements WhatsappProvider {
 
     @Value("${evolution.webhook.url}")
     private String webhookUrl;
+
+    public void prepareAndConnect(String tenantId, String phoneNumber) {
+        deleteInstance(tenantId);
+        createInstance(tenantId);
+        instanceConnect(tenantId, Optional.of(phoneNumber));
+    }
 
     public String createInstance(String tenantId) {
         String url = evolutionApiBaseUrl + "/instance/create/";
@@ -103,7 +108,7 @@ public class EvolutionWhatsappService implements WhatsappProvider {
         return restTemplate.postForObject(url, requestBody, Map.class);
     }
 
-    public void logout(String instanceName) {
+    public void deleteInstance(String instanceName) {
         String url = evolutionApiBaseUrl + "/instance/logout/" + instanceName;
 
         HttpEntity<Void> request = new HttpEntity<>(getHeaders());

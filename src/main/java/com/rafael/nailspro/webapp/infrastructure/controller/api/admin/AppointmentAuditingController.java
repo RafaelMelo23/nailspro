@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/v1/admin/appointments")
-public class AppointmentController {
+public class AppointmentAuditingController {
 
     private final AppointmentAuditService service;
 
