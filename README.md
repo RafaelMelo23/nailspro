@@ -12,7 +12,11 @@ utilizando uma arquitetura moderna e escalável.
 🚀 O que mudou? (Últimas Atualizações)
 --------------------------------------
 
-*   **Módulo de CRM & Retenção:** Agora o sistema prevê quando um cliente deve retornar e agenda lembretes automáticos.
+*   **Feature de Retenção** Agora o sistema prevê quando um cliente deve retornar e envia um convite de agendamento com antecedência.
+
+*   **Módulo de CRM**: Módulo de auditoria do cliente, com informações de total gasto no salão, faltas, cancelamentos, etc.
+
+* **Lógica de agendamento**: Agora é possível que o tenant priorize cliente leais, aumentando a agenda visível para esses, e diminuindo-a para novos clientes, facilitando o manejo da agenda e priorizando recorrência.
 
 *   **Dashboards de Auditoria:** Implementação de serviços de auditoria para faturamento diário e métricas de comportamento do cliente.
 
