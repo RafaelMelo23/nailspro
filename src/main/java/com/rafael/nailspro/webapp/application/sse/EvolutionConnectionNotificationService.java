@@ -31,4 +31,14 @@ public class EvolutionConnectionNotificationService {
 
         sseService.sendEventToUser(professionalId, payload);
     }
+
+    public void notifyInstanceConnected(Long professionalId, Object data) {
+
+        SsePayloadDTO payload = SsePayloadDTO.builder()
+                .sseEventType(SseEventType.CONNECTION_UPDATE)
+                .data(data)
+                .build();
+
+        sseService.sendEventToUser(professionalId, payload);
+    }
 }

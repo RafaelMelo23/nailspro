@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionConnectionState.CLOSE;
+import static com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionConnectionState.OPEN;
 
 @Slf4j
 @Service
@@ -48,9 +49,27 @@ public class ConnectionUpdatedUseCase implements WebhookStrategy {
                     return;
                 }
 
-                handleDisconnection(salon);
+                switch (connectionData.state()) {
+                    case OPEN -> {
+                        if (shouldIgnoreClose(salon)) {
+                            log.info("Ignoring inconsistent CLOSE event for tenant: {}", tenantId);
+                            return;
+                        }
+                        handleOpenConnection(salon);
+                    }
+                    case CLOSE -> handleDisconnection(salon);
+                    case CONNECTING -> {
+                    }
+                }
             }
         }
+    }
+
+    private boolean shouldIgnoreClose(SalonProfile salon) {
+        if (salon.getWhatsappLastResetAt() == null) return false;
+
+        return salon.getWhatsappLastResetAt()
+                .isAfter(LocalDateTime.now().minusSeconds(45));
     }
 
     private boolean isUnderCooldown(SalonProfile salon) {
@@ -58,6 +77,20 @@ public class ConnectionUpdatedUseCase implements WebhookStrategy {
 
         return salon.getWhatsappLastResetAt()
                 .isAfter(LocalDateTime.now().minusMinutes(2));
+    }
+
+    private void handleOpenConnection(SalonProfile salon) {
+        String tenantId = salon.getTenantId();
+        Long ownerId = salon.getOwner().getId();
+
+        salon.setEvolutionConnectionState(OPEN);
+        salonProfileService.save(salon);
+
+        connectionNotificationService.notifyInstanceDisconnected(
+                ownerId,
+                "Whatsapp instance connected");
+
+        log.info("SSE notification sent to owner ID: {} regarding instance {} connection.", ownerId, tenantId);
     }
 
     private void handleDisconnection(SalonProfile salon) {
