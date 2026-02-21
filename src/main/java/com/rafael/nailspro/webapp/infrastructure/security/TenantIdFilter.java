@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class TenantFilter extends OncePerRequestFilter {
+public class TenantIdFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
 
