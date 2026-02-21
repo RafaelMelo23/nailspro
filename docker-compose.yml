@@ -27,9 +27,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   db:
-    image: postgres:15
+    image: postgres:15-alpine
     container_name: postgres-gh
     networks:
       - app-network
@@ -46,6 +50,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   evolution:
     container_name: evolution_api
@@ -57,12 +65,13 @@ services:
       - AUTHENTICATION_API_KEY=random_key
       - AUTHENTICATION_TYPE=apikey
       - DATABASE_ENABLED=true
-      - DATABASE_PROVIDER=postgresql
-      - DATABASE_CONNECTION_URI=postgresql://evolution_user:123@evolution-db:5432/evolution?schema=public
-      - DATABASE_CONNECTION_CLIENT_NAME=evolution_exchange
+      - DATABASE_PROVIDER=sqlite
+      - DATABASE_CONNECTION_URI=file:/evolution/data/database.sqlite
+      - DATABASE_SAVE_DATA_INSTANCE=true
       - CACHE_REDIS_ENABLED=false
-      - GENERATE_SWAGGER=true
-      - SWAGGER_ENABLED=true
+      - GENERATE_SWAGGER=false
+      - SWAGGER_ENABLED=false
+      - LOG_LEVEL=error
       - SERVER_URL=http://evolution:8080
       - CONFIG_SESSION_PHONE_CLIENT=Chrome
       - CONFIG_SESSION_PHONE_NAME=Chrome
@@ -70,34 +79,17 @@ services:
       - NODE_OPTIONS=--dns-result-order=ipv4first
     networks:
       - app-network
-    depends_on:
-      evolution-db:
-        condition: service_healthy
-
-  evolution-db:
-    container_name: evolution_db
-    image: postgres:16
-    restart: always
-    ports:
-      - "5433:5432"
-    environment:
-      - POSTGRES_USER=evolution_user
-      - POSTGRES_PASSWORD=${EVO_DB_PASSWORD}
-      - POSTGRES_DB=evolution
-    networks:
-      - app-network
     volumes:
-      - evolution_pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "evolution_user", "-d", "evolution" ]
-      interval: 10s
-      timeout: 5s
-      retries: 8
+      - evolution_data:/evolution/data
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
 networks:
   app-network:
     driver: bridge
 
 volumes:
-  evolution_pgdata:
+  evolution_data:
   nailspro_db:
