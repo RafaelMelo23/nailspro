@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.application.professional;
 
-import com.rafael.nailspro.webapp.application.salon.service.SalonProfileService;
+import com.rafael.nailspro.webapp.application.salon.business.SalonProfileService;
 import com.rafael.nailspro.webapp.domain.model.Professional;
 import com.rafael.nailspro.webapp.domain.model.ScheduleBlock;
 import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;

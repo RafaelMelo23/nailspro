@@ -3,7 +3,7 @@ package com.rafael.nailspro.webapp.application.whatsapp.webhook;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rafael.nailspro.webapp.application.professional.ProfessionalQueryService;
 import com.rafael.nailspro.webapp.application.sse.EvolutionConnectionNotificationService;
-import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionEvent;
+import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
 import com.rafael.nailspro.webapp.domain.model.Professional;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.EvolutionWebhookResponse;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.QrCodeData;
@@ -45,7 +45,7 @@ public class QrCodeUpdatedUseCase implements WebhookStrategy {
     }
 
     @Override
-    public EvolutionEvent getSupportedTypeEvent() {
-        return EvolutionEvent.QRCODE_UPDATED;
+    public EvolutionWebhookEvent getSupportedTypeEvent() {
+        return EvolutionWebhookEvent.QRCODE_UPDATED;
     }
 }

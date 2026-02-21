@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.whatsapp.evolution;
 
 import com.rafael.nailspro.webapp.application.whatsapp.WhatsappProvider;
-import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionEvent;
+import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.CreateInstanceRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.SendTextRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -58,10 +58,10 @@ public class EvolutionWhatsappService implements WhatsappProvider {
     }
 
     public CreateInstanceRequestDTO createInstanceRequestPayload(String tenantId) {
-        List<EvolutionEvent> eventosDesejados = List.of(
-                EvolutionEvent.QRCODE_UPDATED,
-                EvolutionEvent.SEND_MESSAGE,
-                EvolutionEvent.CONNECTION_UPDATE
+        List<EvolutionWebhookEvent> eventosDesejados = List.of(
+                EvolutionWebhookEvent.QRCODE_UPDATED,
+                EvolutionWebhookEvent.SEND_MESSAGE,
+                EvolutionWebhookEvent.CONNECTION_UPDATE
         );
 
         return CreateInstanceRequestDTO.builder()

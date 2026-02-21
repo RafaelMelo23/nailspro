@@ -1,10 +1,10 @@
 package com.rafael.nailspro.webapp.application.whatsapp.webhook;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rafael.nailspro.webapp.application.salon.service.SalonProfileService;
+import com.rafael.nailspro.webapp.application.salon.business.SalonProfileService;
 import com.rafael.nailspro.webapp.application.sse.EvolutionConnectionNotificationService;
 import com.rafael.nailspro.webapp.application.whatsapp.WhatsappProvider;
-import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionEvent;
+import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
 import com.rafael.nailspro.webapp.domain.model.SalonProfile;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.ConnectionData;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.EvolutionWebhookResponse;
@@ -112,7 +112,7 @@ public class ConnectionUpdatedUseCase implements WebhookStrategy {
     }
 
     @Override
-    public EvolutionEvent getSupportedTypeEvent() {
-        return EvolutionEvent.CONNECTION_UPDATE;
+    public EvolutionWebhookEvent getSupportedTypeEvent() {
+        return EvolutionWebhookEvent.CONNECTION_UPDATE;
     }
 }

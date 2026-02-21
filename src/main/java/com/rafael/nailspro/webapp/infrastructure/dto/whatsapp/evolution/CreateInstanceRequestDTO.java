@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionEvent;
+import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
 import lombok.Builder;
 
 import java.util.List;
@@ -15,5 +15,5 @@ public record CreateInstanceRequestDTO(String instanceName,
                                        String webhook,
                                        @JsonProperty("webhook_by_events")
                                        boolean webhookByEvents,
-                                       List<EvolutionEvent> events) {
+                                       List<EvolutionWebhookEvent> events) {
 }

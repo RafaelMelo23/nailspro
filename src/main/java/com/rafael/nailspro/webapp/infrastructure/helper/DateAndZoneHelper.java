@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.helper;
 
-import com.rafael.nailspro.webapp.application.salon.service.SalonProfileService;
+import com.rafael.nailspro.webapp.application.salon.business.SalonProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

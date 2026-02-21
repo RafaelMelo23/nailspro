@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.application.whatsapp.webhook;
 
-import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionEvent;
+import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.EvolutionWebhookResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Service
 public class WebhookProcessorService {
 
-    private final Map<EvolutionEvent, WebhookStrategy> strategyMap;
+    private final Map<EvolutionWebhookEvent, WebhookStrategy> strategyMap;
 
     public WebhookProcessorService(List<WebhookStrategy> strategies) {
         this.strategyMap = strategies.stream()

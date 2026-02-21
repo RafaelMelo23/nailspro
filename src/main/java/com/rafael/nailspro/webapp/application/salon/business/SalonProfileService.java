@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.application.salon.service;
+package com.rafael.nailspro.webapp.application.salon.business;
 
 import com.rafael.nailspro.webapp.domain.enums.OperationalStatus;
 import com.rafael.nailspro.webapp.domain.model.BaseEntity;

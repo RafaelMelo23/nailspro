@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.security;
 
-import com.rafael.nailspro.webapp.application.salon.service.SalonProfileService;
+import com.rafael.nailspro.webapp.application.salon.business.SalonProfileService;
 import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

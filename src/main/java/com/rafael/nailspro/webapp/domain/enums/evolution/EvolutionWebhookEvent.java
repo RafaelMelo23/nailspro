@@ -2,7 +2,7 @@ package com.rafael.nailspro.webapp.domain.enums.evolution;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public enum EvolutionEvent {
+public enum EvolutionWebhookEvent {
     @JsonProperty("qrcode.updated")
     QRCODE_UPDATED,
 

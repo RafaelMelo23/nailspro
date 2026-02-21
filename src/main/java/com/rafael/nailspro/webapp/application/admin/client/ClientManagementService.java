@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.application.admin.client;
 
-import com.rafael.nailspro.webapp.application.salon.service.SalonProfileService;
+import com.rafael.nailspro.webapp.application.salon.business.SalonProfileService;
 import com.rafael.nailspro.webapp.domain.enums.UserStatus;
 import com.rafael.nailspro.webapp.domain.model.Client;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
