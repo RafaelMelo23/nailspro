@@ -1,92 +1,113 @@
-Gestão Inteligente para Nail Designers
-====================================================
+Plataforma SaaS com foco em backend para estúdios de unhas e salões de beleza, orientada a dois resultados:
+- Aumentar a ocupação da agenda com agendamento inteligente e automações
+- Melhorar retenção e visibilidade de receita com CRM + analytics
 
-O sistema é um SaaS multi-tenant desenvolvido para transformar 
-a gestão de manicures e salões de beleza. Indo além de um simples 
-sistema de agendamento, o projeto foca na **retenção** de clientes e manejar 
-de maneira inteligente a agenda dos profissionais, podendo priorizar
-clientes recorrentes, por exemplo, além de módulos de
-**análise de faturamento e clientes**, 
-utilizando uma arquitetura moderna e escalável.
+## Por Que Este Projeto Se Destaca
+- Não é apenas uma API de agendamento: combina agenda, inteligência de cliente, previsão de retenção, automação via WhatsApp e dashboards de negócio.
+- Foi desenhado para expansão SaaS, com onboarding tenant-aware, claim de tenant no JWT e dados orientados por tenant.
+- Utiliza fluxos orientados a eventos, então ações operacionais (agendar, finalizar, cancelar, falta) disparam automações e atualização de métricas.
 
-🚀 O que mudou? (Últimas Atualizações)
---------------------------------------
+## Mapa de Funcionalidades (Por Módulo do Sistema)
 
-*   **Feature de Retenção** Agora o sistema prevê quando um cliente deve retornar e envia um convite de agendamento com antecedência.
+### 1. Experiência de Agendamento do Cliente
+- Agendamento e cancelamento de atendimento (`/api/v1/booking`)
+- Consulta de horários disponíveis com janela calculada (`/api/v1/booking/times`)
+- Política inteligente de agendamento
+- Clientes fiãis podem receber uma janela maior de agendamento
+- Clientes novos podem ter uma janela menor
+- Data recomendada de retorno com base no intervalo de manutenção do serviço
+- Prevenção de conflito
+- Lock pessimista no fluxo de reserva
+- Validação de conflitos com agenda/bloqueios do profissional
 
-*   **Módulo de CRM**: Módulo de auditoria do cliente, com informações de total gasto no salão, faltas, cancelamentos, etc.
+### 2. Operação de Agenda do Profissional
+- CRUD de horários de trabalho (`/api/v1/schedule`)
+- Gestão de bloqueios de agenda (`/api/v1/schedule/block`)
+- Visualização da agenda diária do profissional (`/professional/appointments`)
+- Ações de ciclo de vida do atendimento (confirmar, finalizar, cancelar, faltou) com eventos de domínio
 
-* **Lógica de agendamento**: Agora é possível que o tenant priorize cliente leais, aumentando a agenda visível para esses, e diminuindo-a para novos clientes, facilitando o manejo da agenda e priorizando recorrência.
+### 3. Admin, CRM e Insights
+- Endpoint de onboarding para novo salão (`/api/internal/onboard`)
+- Gestão de perfil do salão (`/api/v1/admin/salon/profile`)
+- Gestão de serviços do salão (`/api/v1/admin/salon/service`)
+- Gestão de clientes e status (`/api/v1/admin/client`)
+- Insight de CRM por cliente (`/api/v1/admin/insight/clients/{clientId}`)
+- Total gasto
+- Atendimentos concluídos
+- Cancelamentos
+- Faltas
+- Última visita
+- Auditoria de atendimentos por cliente (`/api/v1/admin/appointments/users/{userId}`)
+- Dashboard de receita (`/api/v1/admin/insight/salon/revenue`)
+- Receita mensal
+- Receita semanal
+- Ticket médio
+- Série diária para gráfico
 
-*   **Dashboards de Auditoria:** Implementação de serviços de auditoria para faturamento diário e métricas de comportamento do cliente.
+### 4. Mensageria e Automação de Retenção
+- Integração com WhatsApp via Evolution API
+- Envio de confirmação apãs commit da tansação de agendamento
+- Scheduler de lembretes a cada 15 minutos para atendimentos próximos
+- Geração de previsão de retenção apãs finalização do atendimento
+- Job diário de follow-up para clientes no período previsto de retorno
+- Rastreamento de falhas de envio para monitoramento/retentativa
 
-*   **Refatoração DDD:** Evolução da estrutura de pacotes para um Domain-Driven Design pragmático, reduzindo acoplamento e melhorando a evolução contínua do sistema.
+### 5. Operação em Tempo Real
+- Canal SSE de inscriãão (`/api/v1/notifications/subscribe`)
+- Atualização em tempo real de QR Code para pareamento do WhatsApp
+- Notificações em tempo real de conexão/desconexão para o dono do salão
 
-*   **Concorrência e Desempenho:** Adição de mecanismos de _locking_ no fluxo de agendamento e adição de arquitetura orientada a eventos.
+### 6. Segurança e Controle de Acesso
+- Spring Security + JWT com claims de papel e tenant
+- Suporte a cookie de autenticação HTTP-only e secure
+- Autorização por papãis para ãreas admin/profissional
+- Tokens de reset de senha com propósito e expiração
 
+## Destaques de Engenharia
+- Organização pragmática em DDD (`application`, `domain`, `infrastructure`)
+- Núcleo orientado a eventos com listeners transacionais
+- Processamento assíncrono para mensageria e listeners de métricas
+- Modelagem multi-tenant em entidades e contexto de requisição
+- Ambiente local containerizado (app + PostgreSQL + Evolution API + Evolution DB)
 
-🛠 Tech Stack
--------------
+## Stack
+- Java 21
+- Spring Boot 3.4.x
+- Spring Security + JWT
+- Spring Data JPA
+- PostgreSQL
+- Docker + Docker Compose
+- Evolution API (WhatsApp)
 
-*   **Java 21 LTS**
+## Execução Local
 
-*   **Spring Boot 3.4+** 
+### Pré-requisitos
+- Docker
+- Docker Compose
+- Maven (ou `./mvnw`)
 
-*   **PostgreSQL**
+### Ambiente
+- Ajuste os valores do `.env.example` conforme necessário (`EVO_DB_PASSWORD`, `RESEND_API_KEY`)
+- Configuraçães principais da aplicação em `src/main/resources/application.properties`
 
-*   **Spring Security + JWT**
+### Build e Subida
+```bash
+./mvnw clean package -DskipTests
+docker compose up -d --build
+```
 
-*   **Evolution API**
+Serviços:
+- App: `http://localhost:8080 (Sem interface de usuário)`
+- PostgreSQL: `localhost:5432`
+- Evolution API: `http://localhost:8081`
+- Evolution PostgreSQL: `localhost:5433`
 
-*   **Docker & Docker Compose**
+## Status Atual
+- O backend é o foco principal e segue em evolução ativa.
+- Implementação API-first com arquitetura pronta para produção, enquanto o client apenas tem algumas views validadas.
 
-
-🌟 Diferenciais de Engenharia
------------------------------
-
-### 🏗 Arquitetura & Design Patterns
-
-*   **Pragmatic DDD:** Organização por contextos delimitados, separando regras de domínio de detalhes de infraestrutura.
-
-*   **Event-Driven Architecture:** Utilização de eventos para disparar cálculos de métricas e geração de previsões de retenção após a conclusão de atendimentos.
-
-*   **Strategy Pattern:** Processamento dinâmico de webhooks da Evolution API, facilitando a expansão para novos tipos de mensagens sem alterar o código existente (Open/Closed Principle).
-
-*   **Async Processing:** Agendamento de mensagens e tarefas de retenção utilizando executores configurados para não bloquear a thread principal.
-
-
-### 📈 Inteligência de Negócio
-
-*   **Retention Forecast:** Motor que calcula a data ideal de retorno da cliente e automatiza o lembrete via WhatsApp.
-
-*   **Salon Revenue Auditing:** Monitoramento diário de faturamento.
-
-*   **Multi-tenancy:** Isolamento lógico que permite que o sistema escale como um serviço para múltiplos salões simultaneamente.
-
-
-⚙️ Como Executar
-
-**Nota:** O projeto 
-encontra-se em desenvolvimento backend. 
-Atualmente, a interação é feita exclusivamente via API.
-
-----------------
-
-O projeto está totalmente containerizado para facilitar o setup inicial.
-
-### ✅ Pré-requisitos
-
-*   Docker & Docker Compose
-
-*   Git
-
-
-### 📥 Passo a Passo
-
-1.  git clone https://github.com/RafaelMelo23/nailspro.git
-
-2.  cd nailspro
-
-3.  **Configurar Variáveis de Ambiente** O projeto utiliza variáveis de ambiente para segurança. Certifique-se de configurar o arquivo .env (baseado no example.env).
-
-4.  docker compose up -d
+## Valor para Recrutadores e Empresas
+- Demonstra visão de negócio, não apenas implementação CRUD
+- Mostra capacidade de desenhar políticas de domínio (agendamento por fidelidade, previsão de retenção)
+- Comprova integração com provedores externos de mensageria e canais em tempo real
+- Aplica padrões escaláveis de backend: eventos, assíncrono, serviços modulares, segurança por papéis e entrega containerizada replicável
