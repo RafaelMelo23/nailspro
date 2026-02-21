@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.application.auth;
 
-import com.rafael.nailspro.webapp.domain.enums.UserStatus;
+import com.rafael.nailspro.webapp.domain.enums.user.UserStatus;
 import com.rafael.nailspro.webapp.domain.model.Client;
 import com.rafael.nailspro.webapp.domain.model.User;
 import com.rafael.nailspro.webapp.domain.repository.ClientRepository;

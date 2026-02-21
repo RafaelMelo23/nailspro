@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.domain.repository;
 
-import com.rafael.nailspro.webapp.domain.enums.RetentionStatus;
+import com.rafael.nailspro.webapp.domain.enums.appointment.RetentionStatus;
 import com.rafael.nailspro.webapp.domain.model.RetentionForecast;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,12 +13,15 @@ public interface RetentionForecastRepository extends JpaRepository<RetentionFore
 
     @Query("""
             SELECT rf FROM RetentionForecast rf
-                       WHERE rf.predictedReturnDate >= :start AND rf.predictedReturnDate <= :end
-                                  AND rf.status IN :statuses
+            JOIN SalonProfile sp ON rf.tenantId = sp.tenantId
+            WHERE sp.tenantStatus = 'ACTIVE'
+            AND rf.predictedReturnDate >= :start
+            AND rf.predictedReturnDate <= :end
+            AND rf.status IN :statuses
             """)
     List<RetentionForecast> findAllPredictedForecastsBetween(@Param("start") Instant start,
                                                              @Param("end") Instant end,
-                                                             @Param("statuses")List<RetentionStatus> statuses);
+                                                             @Param("statuses") List<RetentionStatus> statuses);
 
     @Query("""
             SELECT rf FROM RetentionForecast rf

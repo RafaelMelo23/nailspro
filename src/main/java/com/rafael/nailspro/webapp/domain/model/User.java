@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.domain.model;
 
-import com.rafael.nailspro.webapp.domain.enums.UserRole;
-import com.rafael.nailspro.webapp.domain.enums.UserStatus;
+import com.rafael.nailspro.webapp.domain.enums.user.UserRole;
+import com.rafael.nailspro.webapp.domain.enums.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

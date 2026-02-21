@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.application.retention;
 
-import com.rafael.nailspro.webapp.domain.enums.RetentionStatus;
+import com.rafael.nailspro.webapp.domain.enums.appointment.RetentionStatus;
 import com.rafael.nailspro.webapp.domain.model.RetentionForecast;
 import com.rafael.nailspro.webapp.domain.repository.RetentionForecastRepository;
 import lombok.RequiredArgsConstructor;

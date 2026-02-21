@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.rafael.nailspro.webapp.domain.enums.AppointmentNotificationStatus.SENT;
-import static com.rafael.nailspro.webapp.domain.enums.AppointmentNotificationType.REMINDER;
+import static com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationStatus.SENT;
+import static com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationType.REMINDER;
 
 @Log4j2
 @Component

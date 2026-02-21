@@ -26,7 +26,7 @@ public interface ProfessionalRepository extends JpaRepository<Professional, Long
             EXISTS (
             SELECT 1 FROM Appointment ap
             WHERE ap.professional = p
-            AND ap.appointmentStatus <> com.rafael.nailspro.webapp.domain.enums.AppointmentStatus.CANCELLED
+            AND ap.appointmentStatus <> com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentStatus.CANCELLED
             AND ap.endDate > :startDate
             AND ap.startDate < :endDate
             )

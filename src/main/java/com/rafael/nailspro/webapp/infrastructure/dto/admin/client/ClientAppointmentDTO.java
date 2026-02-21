@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.infrastructure.dto.admin.client;
 
-import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
+import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentStatus;
 import lombok.Builder;
 
 import java.math.BigDecimal;

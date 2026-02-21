@@ -21,7 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     private final SecurityFilter filter;
-    private final TenantFilter tenantFilter;
+    private final TenantIdFilter tenantIdFilter;
+    private final TenantStatusFilter tenantStatusFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -65,7 +66,8 @@ public class SecurityConfiguration {
 
                         .anyRequest().authenticated())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-                // .addFilterAfter(tenantFilter, SecurityFilter.class)
+                // .addFilterAfter(tenantIdFilter, filter.getClass())
+                // .addFilterAfter(tenantStatusFilter, tenantIdFilter.getClass())
                 .build();
     }
 }

@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
-import static com.rafael.nailspro.webapp.domain.enums.AppointmentNotificationStatus.FAILED;
-import static com.rafael.nailspro.webapp.domain.enums.AppointmentNotificationStatus.SENT;
-import static com.rafael.nailspro.webapp.domain.enums.AppointmentNotificationType.CONFIRMATION;
-import static com.rafael.nailspro.webapp.domain.enums.AppointmentNotificationType.REMINDER;
+import static com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationStatus.FAILED;
+import static com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationStatus.SENT;
+import static com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationType.CONFIRMATION;
+import static com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationType.REMINDER;
 
 @Log4j2
 @Service

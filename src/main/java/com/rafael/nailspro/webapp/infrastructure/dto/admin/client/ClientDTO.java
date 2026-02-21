@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.dto.admin.client;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.rafael.nailspro.webapp.domain.enums.UserStatus;
+import com.rafael.nailspro.webapp.domain.enums.user.UserStatus;
 import lombok.Builder;
 
 @Builder

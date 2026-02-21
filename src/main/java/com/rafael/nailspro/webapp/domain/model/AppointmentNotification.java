@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.domain.model;
 
-import com.rafael.nailspro.webapp.domain.enums.AppointmentNotificationStatus;
-import com.rafael.nailspro.webapp.domain.enums.AppointmentNotificationType;
+import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationStatus;
+import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

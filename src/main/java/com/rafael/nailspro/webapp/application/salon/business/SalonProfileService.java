@@ -1,6 +1,7 @@
 package com.rafael.nailspro.webapp.application.salon.business;
 
-import com.rafael.nailspro.webapp.domain.enums.OperationalStatus;
+import com.rafael.nailspro.webapp.domain.enums.appointment.TenantStatus;
+import com.rafael.nailspro.webapp.domain.enums.salon.OperationalStatus;
 import com.rafael.nailspro.webapp.domain.model.BaseEntity;
 import com.rafael.nailspro.webapp.domain.model.SalonProfile;
 import com.rafael.nailspro.webapp.domain.repository.SalonProfileRepository;
@@ -21,6 +22,11 @@ public class SalonProfileService {
 
         return repository.findByTenantId(tenantId)
                 .orElseThrow(() -> new BusinessException("Salão não encontrado"));
+    }
+
+    public TenantStatus getStatusByTenantId(String tenantId) {
+
+        return repository.findStatusByTenantId(tenantId);
     }
 
     public void save(SalonProfile salonProfile) {

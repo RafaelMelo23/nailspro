@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.domain.model;
 
-import com.rafael.nailspro.webapp.domain.enums.RetentionStatus;
+import com.rafael.nailspro.webapp.domain.enums.appointment.RetentionStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

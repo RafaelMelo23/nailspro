@@ -1,6 +1,7 @@
 package com.rafael.nailspro.webapp.domain.model;
 
-import com.rafael.nailspro.webapp.domain.enums.OperationalStatus;
+import com.rafael.nailspro.webapp.domain.enums.appointment.TenantStatus;
+import com.rafael.nailspro.webapp.domain.enums.salon.OperationalStatus;
 import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionConnectionState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -86,6 +87,10 @@ public class SalonProfile extends BaseEntity {
     @Column(name = "last_pairing_code")
     private String lastPairingCode;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tenant_status")
+    private TenantStatus tenantStatus;
+
     @Override
     public void prePersist() {
         super.prePersist();
@@ -124,6 +129,10 @@ public class SalonProfile extends BaseEntity {
 
         if (this.evolutionConnectionState == null) {
             this.evolutionConnectionState = EvolutionConnectionState.CLOSE;
+        }
+
+        if (this.tenantStatus == null) {
+            this.tenantStatus = TenantStatus.ACTIVE;
         }
     }
 }

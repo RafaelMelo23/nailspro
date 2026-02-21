@@ -10,8 +10,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.rafael.nailspro.webapp.domain.enums.RetentionStatus.FAILED_TO_SEND;
-import static com.rafael.nailspro.webapp.domain.enums.RetentionStatus.PENDING;
+import static com.rafael.nailspro.webapp.domain.enums.appointment.RetentionStatus.FAILED_TO_SEND;
+import static com.rafael.nailspro.webapp.domain.enums.appointment.RetentionStatus.PENDING;
 
 @Component
 @RequiredArgsConstructor

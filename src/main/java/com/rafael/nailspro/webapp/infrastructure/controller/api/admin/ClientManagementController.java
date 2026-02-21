@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
 import com.rafael.nailspro.webapp.application.admin.client.ClientManagementService;
-import com.rafael.nailspro.webapp.domain.enums.UserStatus;
+import com.rafael.nailspro.webapp.domain.enums.user.UserStatus;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.client.ClientAppointmentDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.client.ClientDTO;
 import lombok.RequiredArgsConstructor;

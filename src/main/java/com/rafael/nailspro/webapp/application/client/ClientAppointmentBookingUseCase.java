@@ -5,7 +5,7 @@ import com.rafael.nailspro.webapp.application.appointment.BookingPolicyManager;
 import com.rafael.nailspro.webapp.application.professional.ProfessionalAppointmentUseCase;
 import com.rafael.nailspro.webapp.application.professional.WorkScheduleService;
 import com.rafael.nailspro.webapp.application.salon.business.SalonProfileService;
-import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
+import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentStatus;
 import com.rafael.nailspro.webapp.domain.model.*;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.domain.repository.ClientRepository;

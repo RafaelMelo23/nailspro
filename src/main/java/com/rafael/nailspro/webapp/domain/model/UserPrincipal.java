@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.domain.model;
 
-import com.rafael.nailspro.webapp.domain.enums.UserRole;
+import com.rafael.nailspro.webapp.domain.enums.user.UserRole;
 import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Getter;

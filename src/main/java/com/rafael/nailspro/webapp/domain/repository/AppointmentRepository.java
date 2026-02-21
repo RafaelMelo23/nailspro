@@ -1,6 +1,6 @@
 package com.rafael.nailspro.webapp.domain.repository;
 
-import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
+import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentStatus;
 import com.rafael.nailspro.webapp.domain.model.Appointment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +23,13 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
                                                                Instant startDateAfter,
                                                                Instant startDateBefore);
 
+    @Query("""
+            SELECT ap FROM Appointment ap
+            JOIN SalonProfile sp ON ap.tenantId = sp.tenantId
+            WHERE sp.tenantStatus = 'ACTIVE'
+            AND ap.startDate >= :start
+            AND ap.startDate <= :end
+            """)
     List<Appointment> findByStartDateBetween(Instant start, Instant end);
 
     Optional<Appointment> findFirstByClientIdAndProfessional_ExternalIdOrderByStartDateDesc(Long clientId, UUID professionalId);
@@ -39,9 +46,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
                                                   @Param("endRange") Instant endRange);
 
     @Query("""
-    SELECT CASE WHEN COUNT(ap) > 0 THEN TRUE ELSE FALSE END
-    FROM Appointment ap WHERE ap.mainSalonService.maintenanceIntervalDays != NULL
-    AND ap.client.id = :clientId""")
+            SELECT CASE WHEN COUNT(ap) > 0 THEN TRUE ELSE FALSE END
+            FROM Appointment ap WHERE ap.mainSalonService.maintenanceIntervalDays != NULL
+            AND ap.client.id = :clientId""")
     boolean clientBookedServiceRequiringMaintenance(@Param("clientId") Long clientId);
 
 }

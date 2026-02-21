@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.domain.enums;
+package com.rafael.nailspro.webapp.domain.enums.salon;
 
 public enum OperationalStatus {
 

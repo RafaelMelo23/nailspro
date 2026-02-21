@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.rafael.nailspro.webapp.domain.enums.RetentionStatus.*;
+import static com.rafael.nailspro.webapp.domain.enums.appointment.RetentionStatus.*;
 
 @Service
 @RequiredArgsConstructor

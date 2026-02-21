@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.application.professional;
 
 import com.rafael.nailspro.webapp.application.appointment.AppointmentService;
-import com.rafael.nailspro.webapp.domain.enums.AppointmentStatus;
+import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentStatus;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAppointmentScheduleDTO;
