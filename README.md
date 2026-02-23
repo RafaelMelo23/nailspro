@@ -103,7 +103,6 @@ Serviços:
 - App: `http://localhost:8080 (Sem interface de usuário)`
 - PostgreSQL: `localhost:5432`
 - Evolution API: `http://localhost:8081`
-- Evolution PostgreSQL: `localhost:5433`
 
 ## Status Atual
 - O backend é o foco principal e segue em evolução ativa.
