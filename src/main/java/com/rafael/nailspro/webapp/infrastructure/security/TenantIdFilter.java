@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -29,13 +30,11 @@ public class TenantIdFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String tenantId;
-
         try {
             DecodedJWT token = tokenService.recoverAndValidateToken(request);
 
             if (token != null) {
                 tenantId = token.getClaim("tenantId").asString();
-
             } else {
                 String serverName = request.getServerName();
                 tenantId = serverName.split("\\.")[0];
@@ -43,15 +42,16 @@ public class TenantIdFilter extends OncePerRequestFilter {
 
             if (tenantId != null) {
                 TenantContext.setTenant(tenantId);
+                MDC.put("tenant", tenantId);
             }
-        } catch (Exception ignored) {
 
-        }
+        } catch (Exception ignored) {}
 
         try {
             filterChain.doFilter(request, response);
         } finally {
             TenantContext.clear();
+            MDC.remove("tenant");
         }
     }
 }

@@ -21,7 +21,6 @@ public class UserPrincipal implements UserDetails {
     private UserRole userRole;
     private String tenantId;
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 

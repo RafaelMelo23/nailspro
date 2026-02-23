@@ -1,7 +1,8 @@
 package com.rafael.nailspro.webapp.infrastructure.exception;
 
+import io.sentry.Sentry;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.Instant;
 
-@Log4j2
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -30,9 +31,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<StandardError> database(Exception e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> genericUnknownError(Exception e, HttpServletRequest request) {
         String error = "Erro interno do servidor";
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        Sentry.captureException(e);
 
         log.error("Internal server error", e);
         StandardError err = new StandardError(Instant.now(),

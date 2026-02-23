@@ -27,6 +27,7 @@ public class AppointmentMessagingUseCase {
     private final WhatsappProvider whatsappProvider;
     private final AppointmentMessageBuilder messageBuilder;
 
+    // todo: configure appropriate scheduled retries
     @Async
     @Transactional
     public void sendAppointmentConfirmationMessage(Long appointmentId) {
