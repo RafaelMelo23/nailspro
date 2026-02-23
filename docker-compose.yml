@@ -4,33 +4,26 @@ services:
     networks:
       - app-network
     env_file:
-      - .env.example
+      - .env
     ports:
       - "8080:8080"
     environment:
-      - DB_URL=jdbc:postgresql://db:5432/nailspro_db
-      - DB_USER=postgres
-      - DB_PASSWORD=123
-      - MAIL_HOST=localhost
-      - MAIL_PORT=25
-      - MAIL_USER=resend
+      - DB_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USER=${MAIL_USER}
       - MAIL_PASSWORD=${RESEND_API_KEY}
-      - DOMAIN_URL=https://todecide.com
-      - INTERNAL_API_KEY=np_test_931246127461
+      - DOMAIN_URL=${DOMAIN_URL}
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY}
       - EVO_URL=http://evolution:8080
-      - EVO_API_KEY=random_key
+      - EVO_API_KEY=${EVO_API_KEY}
       - EVO_WEBHOOK_URL=http://app:8080/api/v1/webhook
-      - LOG_LEVEL=INFO
-      - JOBRUNR_SERVER=true
-      - JOBRUNR_DASHBOARD=true
-      - JOBRUNR_PORT=8000
+      - LOG_LEVEL=${LOG_LEVEL}
     depends_on:
       db:
         condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 512M
 
   db:
     image: postgres:15-alpine
@@ -38,22 +31,18 @@ services:
     networks:
       - app-network
     environment:
-      - POSTGRES_DB=nailspro_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - nailspro_db:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "nailspro_db" ]
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}" ]
       interval: 5s
       timeout: 5s
       retries: 5
-    deploy:
-      resources:
-        limits:
-          memory: 256M
 
   evolution:
     container_name: evolution_api
@@ -62,7 +51,7 @@ services:
     ports:
       - "8081:8080"
     environment:
-      - AUTHENTICATION_API_KEY=random_key
+      - AUTHENTICATION_API_KEY=${EVO_API_KEY}
       - AUTHENTICATION_TYPE=apikey
       - DATABASE_ENABLED=true
       - DATABASE_PROVIDER=sqlite
@@ -75,16 +64,12 @@ services:
       - SERVER_URL=http://evolution:8080
       - CONFIG_SESSION_PHONE_CLIENT=Chrome
       - CONFIG_SESSION_PHONE_NAME=Chrome
-      - CONFIG_SESSION_PHONE_VERSION=2.3000.1033775652 #TODO: feature a way to update the version, not manually
+      - CONFIG_SESSION_PHONE_VERSION=2.3000.1033775652
       - NODE_OPTIONS=--dns-result-order=ipv4first
     networks:
       - app-network
     volumes:
       - evolution_data:/evolution/data
-    deploy:
-      resources:
-        limits:
-          memory: 512M
 
 networks:
   app-network:

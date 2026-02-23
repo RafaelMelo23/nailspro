@@ -81,6 +81,9 @@ Plataforma SaaS com foco em backend para estúdios de unhas e salões de beleza,
 
 ## Execução Local
 
+* **O compose é apenas para demonstração, contando com 
+todas as portas expostas para teste local**
+
 ### Pré-requisitos
 - Docker
 - Docker Compose
