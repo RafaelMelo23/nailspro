@@ -9,10 +9,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class TenantUrlProvider {
 
-    @Value("${app.protocol.http:whatever}")
+    @Value("${app.protocol.http}")
     private String protocol;
 
-    @Value("${base.url:whatever}")
+    @Value("${domain.url}")
     private String domain;
 
     private static final String CLIENT_MANAGE_APPOINTMENTS_PAGE_URL = "todo/{id}/cancelar"; //todo

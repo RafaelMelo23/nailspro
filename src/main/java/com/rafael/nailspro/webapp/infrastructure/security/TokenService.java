@@ -24,7 +24,7 @@ import java.util.Optional;
 @Service
 public class TokenService {
 
-    @Value("${api.security.jwt.secret:whatever}")
+    @Value("${api.security.jwt.secret}")
     private String secret;
     private static final String ISSUER_CLAIM = "nailspro-api";
     private static final String TENANT_CLAIM = "tenantId";

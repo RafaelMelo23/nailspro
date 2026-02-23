@@ -47,7 +47,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("""
             SELECT CASE WHEN COUNT(ap) > 0 THEN TRUE ELSE FALSE END
-            FROM Appointment ap WHERE ap.mainSalonService.maintenanceIntervalDays != NULL
+            FROM Appointment ap WHERE ap.mainSalonService.maintenanceIntervalDays IS NOT NULL
             AND ap.client.id = :clientId""")
     boolean clientBookedServiceRequiringMaintenance(@Param("clientId") Long clientId);
 

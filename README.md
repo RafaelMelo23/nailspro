@@ -1,4 +1,4 @@
-Plataforma SaaS com foco em backend para estúdios de unhas e salões de beleza, orientada a dois resultados:
+﻿Plataforma SaaS com foco em backend para estúdios de unhas e salões de beleza, orientada a dois resultados:
 - Aumentar a ocupação da agenda com agendamento inteligente e automações
 - Melhorar retenção e visibilidade de receita com CRM + analytics
 
@@ -83,8 +83,8 @@ Plataforma SaaS com foco em backend para estúdios de unhas e salões de beleza,
 
 ## Execução Local
 
-* **O compose é apenas para demonstração, contando com 
-todas as portas expostas para teste local**
+* **O compose é apenas para demonstração, contando com
+  todas as portas expostas para teste local**
 
 ### Pré-requisitos
 - Docker
