@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/booking")
@@ -33,10 +35,19 @@ public class ClientBookingController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/times")
+    @GetMapping("/{professionalExternalId}/availability")
     public ResponseEntity<ProfessionalAvailabilityDTO> findAvailableProfessionalTimes(
-            @RequestBody FindProfessionalAvailabilityDTO dto,
-            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable String professionalExternalId,
+            @RequestParam int serviceDurationInSeconds,
+            @RequestParam List<Long> servicesIds
+    ) {
+
+        FindProfessionalAvailabilityDTO dto = FindProfessionalAvailabilityDTO.builder()
+                .professionalExternalId(professionalExternalId)
+                .serviceDurationInSeconds(serviceDurationInSeconds)
+                .servicesIds(servicesIds)
+                .build();
 
         return ResponseEntity.ok(service.findAvailableTimes(dto, userPrincipal.getUserId()));
     }
