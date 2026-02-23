@@ -62,6 +62,7 @@ Plataforma SaaS com foco em backend para estúdios de unhas e salões de beleza,
 - Suporte a cookie de autenticação HTTP-only e secure
 - Autorização por papãis para ãreas admin/profissional
 - Tokens de reset de senha com propósito e expiração
+- Implementação robusta de logging com Sentry
 
 ## Destaques de Engenharia
 - Organização pragmática em DDD (`application`, `domain`, `infrastructure`)
@@ -78,6 +79,7 @@ Plataforma SaaS com foco em backend para estúdios de unhas e salões de beleza,
 - PostgreSQL
 - Docker + Docker Compose
 - Evolution API (WhatsApp)
+- Sentry
 
 ## Execução Local
 
