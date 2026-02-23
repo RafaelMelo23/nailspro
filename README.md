@@ -13,7 +13,7 @@ Plataforma SaaS com foco em backend para estúdios de unhas e salões de beleza,
 - Agendamento e cancelamento de atendimento (`/api/v1/booking`)
 - Consulta de horários disponíveis com janela calculada (`/api/v1/booking/times`)
 - Política inteligente de agendamento
-- Clientes fiãis podem receber uma janela maior de agendamento
+- Clientes fiéis podem receber uma janela maior de agendamento
 - Clientes novos podem ter uma janela menor
 - Data recomendada de retorno com base no intervalo de manutenção do serviço
 - Prevenção de conflito
