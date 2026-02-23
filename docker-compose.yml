@@ -1,6 +1,7 @@
 services:
   app:
     build: .
+    container_name: nailspro_app
     networks:
       - app-network
     env_file:
@@ -8,73 +9,92 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DB_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
+      # --- SENTRY & OBSERVABILITY ---
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIROMENT}
+      - SENTRY_RELEASE=${SENTRY_RELEASE_VERSION}
+      - SENTRY_AUTO_INIT=false
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
+      - LOG_LEVEL=${LOG_LEVEL}
+
+      # --- DATABASE CONNECTION ---
+      - DB_URL=jdbc:postgresql://db:5432/${POSTGRES_DB_APP}
       - DB_USER=${POSTGRES_USER}
       - DB_PASSWORD=${POSTGRES_PASSWORD}
+
+      # --- EMAIL (RESEND) ---
       - MAIL_HOST=${MAIL_HOST}
       - MAIL_PORT=${MAIL_PORT}
       - MAIL_USER=${MAIL_USER}
       - MAIL_PASSWORD=${RESEND_API_KEY}
+
+      # --- INTEGRATIONS & SECURITY ---
       - DOMAIN_URL=${DOMAIN_URL}
       - INTERNAL_API_KEY=${INTERNAL_API_KEY}
+
+      # --- FLYWAY ---
+      - SPRING_FLYWAY_ENABLED=true
+      - SPRING_FLYWAY_URL=jdbc:postgresql://db:5432/${POSTGRES_DB_APP}
+      - SPRING_FLYWAY_USER=${POSTGRES_USER}
+      - SPRING_FLYWAY_PASSWORD=${POSTGRES_PASSWORD}
+
+      # --- EVO ---
       - EVO_URL=http://evolution:8080
       - EVO_API_KEY=${EVO_API_KEY}
       - EVO_WEBHOOK_URL=http://app:8080/api/v1/webhook
-      - LOG_LEVEL=${LOG_LEVEL}
     depends_on:
       db:
         condition: service_healthy
 
   db:
     image: postgres:15-alpine
-    container_name: postgres-gh
+    container_name: postgres_nailspro
     networks:
       - app-network
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB_APP}
     ports:
       - "5432:5432"
     volumes:
-      - nailspro_db:/var/lib/postgresql/data
+      - postgres_volume:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 5s
       timeout: 5s
       retries: 5
 
   evolution:
-    container_name: evolution_api
     image: evoapicloud/evolution-api:v2.3.7
+    container_name: evolution_api
     restart: always
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "8081:8080"
     environment:
       - AUTHENTICATION_API_KEY=${EVO_API_KEY}
       - AUTHENTICATION_TYPE=apikey
+
       - DATABASE_ENABLED=true
-      - DATABASE_PROVIDER=sqlite
-      - DATABASE_CONNECTION_URI=file:/evolution/data/database.sqlite
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB_EVO}
       - DATABASE_SAVE_DATA_INSTANCE=true
+
       - CACHE_REDIS_ENABLED=false
-      - GENERATE_SWAGGER=false
-      - SWAGGER_ENABLED=false
-      - LOG_LEVEL=error
       - SERVER_URL=http://evolution:8080
-      - CONFIG_SESSION_PHONE_CLIENT=Chrome
-      - CONFIG_SESSION_PHONE_NAME=Chrome
-      - CONFIG_SESSION_PHONE_VERSION=2.3000.1033775652
-      - NODE_OPTIONS=--dns-result-order=ipv4first
+      - LOG_LEVEL=error
+
     networks:
       - app-network
-    volumes:
-      - evolution_data:/evolution/data
 
 networks:
   app-network:
     driver: bridge
 
 volumes:
-  evolution_data:
-  nailspro_db:
+  postgres_volume:
