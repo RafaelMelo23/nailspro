@@ -2,17 +2,23 @@ package com.rafael.nailspro.webapp.application.auth;
 
 import com.rafael.nailspro.webapp.domain.enums.user.UserStatus;
 import com.rafael.nailspro.webapp.domain.model.Client;
+import com.rafael.nailspro.webapp.domain.model.RefreshToken;
 import com.rafael.nailspro.webapp.domain.model.User;
 import com.rafael.nailspro.webapp.domain.repository.ClientRepository;
 import com.rafael.nailspro.webapp.domain.repository.UserRepository;
+import com.rafael.nailspro.webapp.infrastructure.dto.auth.AuthResultDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.LoginDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.RegisterDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.auth.TokenRefreshResponseDTO;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
+import com.rafael.nailspro.webapp.infrastructure.exception.TokenRefreshException;
 import com.rafael.nailspro.webapp.infrastructure.exception.UserAlreadyExistsException;
-import com.rafael.nailspro.webapp.infrastructure.security.TokenService;
+import com.rafael.nailspro.webapp.infrastructure.security.token.RefreshTokenService;
+import com.rafael.nailspro.webapp.infrastructure.security.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,6 +30,7 @@ public class AuthenticationService {
     private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
+    private final RefreshTokenService refreshTokenService;
 
     public void register(RegisterDTO registerDTO) {
         checkIfUserAlreadyExists(registerDTO);
@@ -52,8 +59,7 @@ public class AuthenticationService {
                 });
     }
 
-    public String login(LoginDTO loginDTO) {
-
+    public AuthResultDTO login(LoginDTO loginDTO) {
         Optional<User> userOptional = userRepository.findByEmailIgnoreCase(loginDTO.email());
         User user;
 
@@ -64,10 +70,38 @@ public class AuthenticationService {
             }
         } else {
             passwordEncoder.matches(loginDTO.password(), "$2a$10$C1J9Q8yCg.6r5PqW3H4Qz.pM3n5k7M9D2g6L1E8R0F4V7I0S2X9A1");
-
             throw new BusinessException("Os dados informados são inválidos");
         }
 
-        return tokenService.generateAuthToken(user);
+        String jwt = tokenService.generateAuthToken(user);
+        String refresh = refreshTokenService.createRefreshToken(user).getToken();
+
+        return AuthResultDTO.builder()
+                .jwtToken(jwt)
+                .refreshToken(refresh).build();
+    }
+
+    @Transactional
+    public TokenRefreshResponseDTO refreshToken(String refreshToken) {
+        return refreshTokenService.findByToken(refreshToken)
+                .map(token -> {
+                    if (token.isRevoked()) {
+                        refreshTokenService.revokeAllForUser(token.getUser().getId());
+                        throw new TokenRefreshException("Este token já foi utilizado.");
+                    }
+                    return token;
+                })
+                .map(refreshTokenService::verifyExpiration)
+                .map(token -> {
+                    User user = token.getUser();
+                    token.setRevoked(true);
+
+                    RefreshToken newRefresh = refreshTokenService.createRefreshToken(user);
+                    String newJwt = tokenService.generateAuthToken(user);
+
+                    return new TokenRefreshResponseDTO(newJwt, newRefresh.getToken());
+                })
+                .orElseThrow(() -> new TokenRefreshException("Token não encontrado"));
+
     }
 }

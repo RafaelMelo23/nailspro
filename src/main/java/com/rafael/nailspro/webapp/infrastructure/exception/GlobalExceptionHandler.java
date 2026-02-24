@@ -22,6 +22,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
+    @ExceptionHandler(TokenRefreshException.class)
+    public ResponseEntity<StandardError> auth(TokenRefreshException e, HttpServletRequest request) {
+        String error = "Erro de autenticação";
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
     @ExceptionHandler(ProfessionalBusyException.class)
     public ResponseEntity<StandardError> busy(ProfessionalBusyException e, HttpServletRequest request) {
         String error = "Erro de validação";

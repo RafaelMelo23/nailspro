@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.infrastructure.security;
+package com.rafael.nailspro.webapp.infrastructure.security.filter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,17 +1,16 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.auth;
 
 import com.rafael.nailspro.webapp.application.auth.AuthenticationService;
+import com.rafael.nailspro.webapp.infrastructure.dto.auth.AuthResultDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.LoginDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.RegisterDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.auth.TokenRefreshResponseDTO;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
@@ -25,16 +24,11 @@ public class AuthenticationController {
     public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO,
                                       HttpServletResponse response) {
 
-        String token = authenticationService.login(loginDTO);
+        AuthResultDTO authResultDTO = authenticationService.login(loginDTO);
 
-        Cookie cookie = new Cookie("AUTH_TOKEN", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60 * 24);
+        addRefreshTokenCookie(response, authResultDTO.refreshToken());
 
-        response.addCookie(cookie);
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok().body(authResultDTO.jwtToken());
     }
 
     @PostMapping("/register")
@@ -42,5 +36,25 @@ public class AuthenticationController {
 
         authenticationService.register(registerDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refresh(@CookieValue(name = "refresh_token") String refreshToken,
+                                        HttpServletResponse response) {
+
+        TokenRefreshResponseDTO tokenRefreshResponseDTO = authenticationService.refreshToken(refreshToken);
+
+        addRefreshTokenCookie(response, tokenRefreshResponseDTO.refreshToken());
+
+        return ResponseEntity.ok(tokenRefreshResponseDTO.jwtToken());
+    }
+
+    private void addRefreshTokenCookie(HttpServletResponse response, String token) {
+        Cookie cookie = new Cookie("refresh_token", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/api/v1/auth/refresh");
+        cookie.setMaxAge(60 * 60 * 24 * 7);
+        response.addCookie(cookie);
     }
 }

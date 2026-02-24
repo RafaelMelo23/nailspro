@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.infrastructure.security;
+package com.rafael.nailspro.webapp.infrastructure.security.filter;
 
 import com.rafael.nailspro.webapp.application.salon.business.SalonProfileService;
 import com.rafael.nailspro.webapp.shared.tenant.TenantContext;

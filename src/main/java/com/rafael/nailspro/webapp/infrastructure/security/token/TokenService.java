@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.infrastructure.security;
+package com.rafael.nailspro.webapp.infrastructure.security.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -11,15 +11,12 @@ import com.rafael.nailspro.webapp.domain.enums.security.TokenPurpose;
 import com.rafael.nailspro.webapp.domain.model.User;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.ResetPasswordDTO;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Optional;
 
 @Service
 public class TokenService {
@@ -49,18 +46,17 @@ public class TokenService {
         }
     }
 
-    public DecodedJWT recoverAndValidateToken(HttpServletRequest request) {
+    public DecodedJWT recoverAndValidate(HttpServletRequest request) {
 
-        Cookie[] cookies = request.getCookies();
+        return validateAndDecode(recoverToken(request));
+    }
 
-        Optional<Cookie> jwtCookie = (cookies == null)
-                ? Optional.empty()
-                : Arrays.stream(cookies)
-                .filter(cookie -> "AUTH_TOKEN".equals(cookie.getName()))
-                .findFirst();
+    public String recoverToken(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
 
-        return jwtCookie.map(cookie -> validateAndDecode(cookie.getValue()))
-                .orElse(null);
+        return authorizationHeader.startsWith("Bearer ")
+                ? authorizationHeader.substring(7)
+                : null;
     }
 
     public DecodedJWT validateAndDecode(String token) {
@@ -101,7 +97,7 @@ public class TokenService {
 
     public Instant generateAuthExpirationTime() {
 
-        return Instant.now().plus(24, ChronoUnit.HOURS);
+        return Instant.now().plus(10, ChronoUnit.MINUTES);
     }
 
     public Instant generateResetPasswordExpirationTime() {

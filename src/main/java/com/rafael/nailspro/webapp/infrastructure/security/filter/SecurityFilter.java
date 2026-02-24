@@ -1,8 +1,9 @@
-package com.rafael.nailspro.webapp.infrastructure.security;
+package com.rafael.nailspro.webapp.infrastructure.security.filter;
 
 import com.rafael.nailspro.webapp.domain.enums.user.UserRole;
 import com.rafael.nailspro.webapp.domain.enums.security.TokenClaim;
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
+import com.rafael.nailspro.webapp.infrastructure.security.token.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +35,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        var token = tokenService.recoverAndValidateToken(request);
+        var token = tokenService.recoverAndValidate(request);
 
         if (token != null) {
             String tokenPurposeClaim = token.getClaim("purpose").asString();

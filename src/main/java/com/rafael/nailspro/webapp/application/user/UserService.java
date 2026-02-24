@@ -10,7 +10,7 @@ import com.rafael.nailspro.webapp.infrastructure.dto.auth.ResetPasswordDTO;
 import com.rafael.nailspro.webapp.infrastructure.email.EmailService;
 import com.rafael.nailspro.webapp.infrastructure.email.template.EmailTemplateBuilder;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
-import com.rafael.nailspro.webapp.infrastructure.security.TokenService;
+import com.rafael.nailspro.webapp.infrastructure.security.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,6 +1,7 @@
-package com.rafael.nailspro.webapp.infrastructure.security;
+package com.rafael.nailspro.webapp.infrastructure.security.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.rafael.nailspro.webapp.infrastructure.security.token.TokenService;
 import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,7 +32,7 @@ public class TenantIdFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String tenantId;
         try {
-            DecodedJWT token = tokenService.recoverAndValidateToken(request);
+            DecodedJWT token = tokenService.recoverAndValidate(request);
 
             if (token != null) {
                 tenantId = token.getClaim("tenantId").asString();

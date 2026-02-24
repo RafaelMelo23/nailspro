@@ -1,0 +1,37 @@
+package com.rafael.nailspro.webapp.domain.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import java.time.Instant;
+
+@Entity
+@Setter
+@Getter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "refresh_token")
+public class RefreshToken {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String token;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    @Column(nullable = false)
+    private Instant expiryDate;
+
+    @Column(name = "is_revoked")
+    private boolean isRevoked;
+}
