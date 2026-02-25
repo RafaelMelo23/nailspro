@@ -3,6 +3,7 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api.evolution.webho
 import com.rafael.nailspro.webapp.application.whatsapp.ManageWhatsappConnectionUseCase;
 import com.rafael.nailspro.webapp.domain.enums.evolution.WhatsappConnectionMethod;
 import com.rafael.nailspro.webapp.shared.tenant.TenantContext;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +21,8 @@ public class WhatsappController {
     private final ManageWhatsappConnectionUseCase whatsappConnectionUseCase;
 
     @PostMapping
-    public ResponseEntity<Void> setupConnection(@RequestParam WhatsappConnectionMethod connectionMethod) {
+    public ResponseEntity<Void> setupConnection(@RequestParam @NotNull(message = "O método de conexão é obrigatório")
+                                                WhatsappConnectionMethod connectionMethod) {
 
         whatsappConnectionUseCase.setupInitialConnection(TenantContext.getTenant(), connectionMethod);
         return ResponseEntity.ok().build();

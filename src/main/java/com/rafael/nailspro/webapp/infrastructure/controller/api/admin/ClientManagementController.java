@@ -4,6 +4,7 @@ import com.rafael.nailspro.webapp.application.admin.client.ClientManagementServi
 import com.rafael.nailspro.webapp.domain.enums.user.UserStatus;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.client.ClientAppointmentDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.client.ClientDTO;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public class ClientManagementController {
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/status/{userId}/{userStatus}")
     public ResponseEntity<Void> updateClientStatus(
-            @PathVariable Long userId,
+            @PathVariable @Positive(message = "O identificador do usuário deve ser positivo") Long userId,
             @PathVariable UserStatus userStatus) {
 
         clientManagementService.updateClientStatus(userId, userStatus);
@@ -43,7 +44,7 @@ public class ClientManagementController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{clientId}/appointments")
     public ResponseEntity<Page<ClientAppointmentDTO>> getClientAppointments(
-            @PathVariable Long clientId,
+            @PathVariable @Positive(message = "O identificador do cliente deve ser positivo") Long clientId,
             Pageable pageable) {
 
         Page<ClientAppointmentDTO> appointments =

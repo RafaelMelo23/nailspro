@@ -3,6 +3,7 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 import com.rafael.nailspro.webapp.application.salon.business.SalonServiceService;
 import com.rafael.nailspro.webapp.infrastructure.dto.salon.service.SalonServiceDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.salon.service.SalonServiceOutDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class SalonServiceManagementController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<Void> createSalonService(@RequestBody SalonServiceDTO salonServiceDTO) {
+    public ResponseEntity<Void> createSalonService(@Valid @RequestBody SalonServiceDTO salonServiceDTO) {
 
         salonService.createService(salonServiceDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -52,7 +53,7 @@ public class SalonServiceManagementController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{serviceId}")
-    public ResponseEntity<Void> updateSalonService(@RequestBody SalonServiceDTO salonServiceDTO,
+    public ResponseEntity<Void> updateSalonService(@Valid @RequestBody SalonServiceDTO salonServiceDTO,
                                                    @PathVariable Long serviceId) {
 
         salonService.updateSalonService(serviceId, salonServiceDTO);

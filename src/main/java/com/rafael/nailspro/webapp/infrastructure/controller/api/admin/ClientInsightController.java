@@ -2,6 +2,7 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
 import com.rafael.nailspro.webapp.application.admin.dashboard.ClientInsightService;
 import com.rafael.nailspro.webapp.infrastructure.dto.client.AdminClientCrmDTO;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +18,7 @@ public class ClientInsightController {
 
     @GetMapping("/{clientId}")
     public ResponseEntity<AdminClientCrmDTO> getClientDashboardInfo(
-            @PathVariable Long clientId) {
+            @PathVariable @Positive(message = "O identificador do cliente deve ser positivo") Long clientId) {
 
         AdminClientCrmDTO response = service.getClientsAuditedInfo(clientId);
 

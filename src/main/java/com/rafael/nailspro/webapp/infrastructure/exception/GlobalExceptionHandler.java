@@ -2,13 +2,17 @@ package com.rafael.nailspro.webapp.infrastructure.exception;
 
 import io.sentry.Sentry;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @ControllerAdvice
@@ -18,7 +22,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<StandardError> business(BusinessException e, HttpServletRequest request) {
         String error = "Erro de validação";
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        StandardError err = new StandardError(Instant.now(), status.value(), error, List.of(e.getMessage()), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
 
@@ -26,7 +30,41 @@ public class GlobalExceptionHandler {
     public ResponseEntity<StandardError> auth(TokenRefreshException e, HttpServletRequest request) {
         String error = "Erro de autenticação";
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        StandardError err = new StandardError(Instant.now(), status.value(), error, List.of(e.getMessage()), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<StandardError> dtoValidation(MethodArgumentNotValidException e, HttpServletRequest request) {
+        String error = "Erro de validação";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        List<String> errorMessages = e.getBindingResult().getFieldErrors().stream()
+                .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
+                .toList();
+
+        if (errorMessages.isEmpty()) {
+            errorMessages = List.of("Algum dos dados informados não é valido, revise e tente novamente.");
+        }
+
+        StandardError err = new StandardError(Instant.now(), status.value(), error, errorMessages, request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<StandardError> singleParamValidation(ConstraintViolationException e, HttpServletRequest request) {
+        String error = "Erro de validação";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        List<String> errorMessages = e.getConstraintViolations().stream()
+                .map(cv -> cv.getPropertyPath() + ": " + cv.getMessage())
+                .toList();
+
+        if (errorMessages.isEmpty()) {
+            errorMessages = List.of("Algum dos dados informados não é valido, revise e tente novamente.");
+        }
+
+        StandardError err = new StandardError(Instant.now(), status.value(), error, errorMessages, request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
 
@@ -34,7 +72,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<StandardError> busy(ProfessionalBusyException e, HttpServletRequest request) {
         String error = "Erro de validação";
         HttpStatus status = HttpStatus.CONFLICT;
-        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        StandardError err = new StandardError(Instant.now(), status.value(), error, List.of(e.getMessage()), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
 
@@ -49,7 +87,7 @@ public class GlobalExceptionHandler {
         StandardError err = new StandardError(Instant.now(),
                 status.value(),
                 error,
-                "Ocorreu um erro inesperado. Contate o suporte.",
+                List.of("Ocorreu um erro inesperado. Contate o suporte."),
                 request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
@@ -63,7 +101,7 @@ public class GlobalExceptionHandler {
         StandardError err = new StandardError(Instant.now(),
                 status.value(),
                 error,
-                e.getMessage(),
+                List.of(e.getMessage()),
                 request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }

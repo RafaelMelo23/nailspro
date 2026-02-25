@@ -3,6 +3,7 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api.professional;
 import com.rafael.nailspro.webapp.application.professional.WorkScheduleService;
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.WorkScheduleRecordDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class WorkScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createWorkSchedule(@RequestBody List<WorkScheduleRecordDTO> workScheduleRecordDTO,
+    public ResponseEntity<Void> createWorkSchedule(@Valid @RequestBody List<WorkScheduleRecordDTO> workScheduleRecordDTO,
                                                    @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         workScheduleService.registerSchedules(workScheduleRecordDTO, userPrincipal.getUserId());
@@ -35,7 +36,7 @@ public class WorkScheduleController {
     }
 
     @PatchMapping
-    public ResponseEntity<Void> modifySchedules(@RequestBody List<WorkScheduleRecordDTO> workScheduleRecordDTO,
+    public ResponseEntity<Void> modifySchedules(@Valid @RequestBody List<WorkScheduleRecordDTO> workScheduleRecordDTO,
                                                 @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         workScheduleService.modifyWeekSchedule(workScheduleRecordDTO, userPrincipal.getUserId());

@@ -4,6 +4,9 @@ import com.rafael.nailspro.webapp.application.professional.ScheduleBlockService;
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.block.ScheduleBlockDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.block.ScheduleBlockOutDTO;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +25,7 @@ public class ScheduleBlockController {
     private final ScheduleBlockService scheduleBlockService;
 
     @PostMapping
-    public ResponseEntity<Void> createBlock(@RequestBody ScheduleBlockDTO blockDTO,
+    public ResponseEntity<Void> createBlock(@Valid @RequestBody ScheduleBlockDTO blockDTO,
                                             @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         scheduleBlockService.createBlock(blockDTO, userPrincipal.getUserId());
@@ -30,7 +33,7 @@ public class ScheduleBlockController {
     }
 
     @DeleteMapping("/{blockId}")
-    public ResponseEntity<Void> deleteBlock(@PathVariable Long blockId,
+    public ResponseEntity<Void> deleteBlock(@PathVariable @Positive(message = "O identificador do bloqueio deve ser positivo") Long blockId,
                                             @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         scheduleBlockService.deleteBlock(userPrincipal.getUserId(), blockId);
@@ -38,7 +41,7 @@ public class ScheduleBlockController {
     }
 
     @GetMapping("/{dateAndTime}")
-    public ResponseEntity<List<ScheduleBlockOutDTO>> getBlocks(@PathVariable LocalDateTime dateAndTime,
+    public ResponseEntity<List<ScheduleBlockOutDTO>> getBlocks(@PathVariable @NotNull(message = "A data e hora são obrigatórias") LocalDateTime dateAndTime,
                                                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         return ResponseEntity.ok(scheduleBlockService.getBlocks(userPrincipal.getUserId(), Optional.of(dateAndTime)));

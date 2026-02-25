@@ -1,6 +1,9 @@
 package com.rafael.nailspro.webapp.infrastructure.dto.salon.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 
 import java.util.List;
@@ -8,9 +11,21 @@ import java.util.Optional;
 
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record SalonServiceDTO(Long id,
-                              String name,
-                              Integer value,
-                              Integer durationInSeconds,
-                              String description,
-                              Optional<List<Long>> professionals) {}
+public record SalonServiceDTO(
+        Long id,
+
+        @NotBlank(message = "O nome do serviço é obrigatório")
+        String name,
+
+        @NotNull(message = "O valor do serviço é obrigatório")
+        @Positive(message = "O valor do serviço deve ser maior que zero")
+        Integer value,
+
+        @NotNull(message = "A duração do serviço é obrigatória")
+        @Positive(message = "A duração do serviço deve ser maior que zero")
+        Integer durationInSeconds,
+
+        String description,
+
+        Optional<List<Long>> professionals
+) {}

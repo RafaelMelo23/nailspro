@@ -5,6 +5,7 @@ import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.FindProfessionalAvailabilityDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +21,7 @@ public class ClientBookingController {
     private final ClientAppointmentBookingUseCase service;
 
     @PostMapping
-    public ResponseEntity<Void> bookAppointment(@RequestBody AppointmentCreateDTO appointmentDTO,
+    public ResponseEntity<Void> bookAppointment(@Valid @RequestBody AppointmentCreateDTO appointmentDTO,
                                                 @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         service.createAppointment(appointmentDTO, userPrincipal);

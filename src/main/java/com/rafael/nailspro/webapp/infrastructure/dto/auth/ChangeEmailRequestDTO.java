@@ -1,4 +1,14 @@
 package com.rafael.nailspro.webapp.infrastructure.dto.auth;
 
-public record ChangeEmailRequestDTO(String newEmail, String password) {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record ChangeEmailRequestDTO(
+        @NotBlank(message = "O novo e-mail é obrigatório")
+        @Email(message = "O novo e-mail deve ser válido")
+        String newEmail,
+
+        @NotBlank(message = "A senha é obrigatória")
+        String password
+) {
 }

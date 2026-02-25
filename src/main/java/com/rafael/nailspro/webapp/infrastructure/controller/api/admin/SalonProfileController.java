@@ -3,6 +3,7 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 import com.rafael.nailspro.webapp.application.admin.salon.profile.SalonProfileManagementService;
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.salon.profile.SalonProfileDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +23,7 @@ public class SalonProfileController {
 
     @PostMapping
     public ResponseEntity<Void> createOrUpdateProfile(@AuthenticationPrincipal UserPrincipal user,
-                                                      @RequestBody SalonProfileDTO dto) throws IOException {
+                                                      @Valid @RequestBody SalonProfileDTO dto) throws IOException {
 
         salonProfileManagementService.createOrUpdateProfile(user.getUserId(), dto);
         return ResponseEntity.ok().build();

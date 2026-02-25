@@ -3,6 +3,8 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api.professional;
 import com.rafael.nailspro.webapp.application.professional.ProfessionalAppointmentUseCase;
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAppointmentScheduleDTO;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +26,10 @@ public class ProfessionalAppointmentController {
     @GetMapping
     public ResponseEntity<List<ProfessionalAppointmentScheduleDTO>> findByDay(
             @AuthenticationPrincipal UserPrincipal principal,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime end
+            @RequestParam @NotNull(message = "A data e hora inicial são obrigatórias")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime start,
+            @RequestParam @NotNull(message = "A data e hora final são obrigatórias")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime end
     ) {
         return ResponseEntity.ok(
                 service.findProfessionalAppointmentsByDay(
@@ -38,8 +42,8 @@ public class ProfessionalAppointmentController {
 
     @PatchMapping("/{appointmentId}/confirm")
     public ResponseEntity<Void> confirmAppointment(
-            @PathVariable Long appointmentId,
-            @RequestParam Long clientId
+            @PathVariable @Positive(message = "O identificador do agendamento deve ser positivo") Long appointmentId,
+            @RequestParam @Positive(message = "O identificador do cliente deve ser positivo") Long clientId
     ) {
         service.markAppointmentAsConfirmed(appointmentId, clientId);
         return ResponseEntity.noContent().build();
@@ -47,8 +51,8 @@ public class ProfessionalAppointmentController {
 
     @PatchMapping("/{appointmentId}/finish")
     public ResponseEntity<Void> finishAppointment(
-            @PathVariable Long appointmentId,
-            @RequestParam Long clientId
+            @PathVariable @Positive(message = "O identificador do agendamento deve ser positivo") Long appointmentId,
+            @RequestParam @Positive(message = "O identificador do cliente deve ser positivo") Long clientId
     ) {
         service.markAppointmentAsFinished(appointmentId, clientId);
         return ResponseEntity.noContent().build();
@@ -56,8 +60,8 @@ public class ProfessionalAppointmentController {
 
     @PatchMapping("/{appointmentId}/cancel")
     public ResponseEntity<Void> cancelAppointment(
-            @PathVariable Long appointmentId,
-            @RequestParam Long clientId
+            @PathVariable @Positive(message = "O identificador do agendamento deve ser positivo") Long appointmentId,
+            @RequestParam @Positive(message = "O identificador do cliente deve ser positivo") Long clientId
     ) {
         service.markAppointmentAsCancelled(appointmentId, clientId);
         return ResponseEntity.noContent().build();
@@ -65,8 +69,8 @@ public class ProfessionalAppointmentController {
 
     @PatchMapping("/{appointmentId}/miss")
     public ResponseEntity<Void> missedAppointment(
-            @PathVariable Long appointmentId,
-            @RequestParam Long clientId
+            @PathVariable @Positive(message = "O identificador do agendamento deve ser positivo") Long appointmentId,
+            @RequestParam @Positive(message = "O identificador do cliente deve ser positivo") Long clientId
     ) {
         service.markAppointmentAsMissed(appointmentId, clientId);
         return ResponseEntity.noContent().build();

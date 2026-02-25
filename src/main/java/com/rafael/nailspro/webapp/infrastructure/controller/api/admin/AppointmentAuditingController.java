@@ -2,6 +2,7 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
 import com.rafael.nailspro.webapp.application.admin.salon.profile.AppointmentAuditService;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AdminUserAppointmentDTO;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,7 @@ public class AppointmentAuditingController {
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<Page<AdminUserAppointmentDTO>> listUserAppointments(
-            @PathVariable Long userId,
+            @PathVariable @Positive(message = "O identificador do usuário deve ser positivo") Long userId,
             @PageableDefault(
                     sort = "startDateAndTime"
             ) Pageable pageable

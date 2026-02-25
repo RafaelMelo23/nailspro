@@ -1,4 +1,12 @@
 package com.rafael.nailspro.webapp.infrastructure.dto.auth;
 
-public record ChangePhoneRequestDTO(String newPhone, String password) {
+import jakarta.validation.constraints.NotBlank;
+
+public record ChangePhoneRequestDTO(
+        @NotBlank(message = "O novo telefone é obrigatório")
+        String newPhone,
+
+        @NotBlank(message = "A senha é obrigatória")
+        String password
+) {
 }

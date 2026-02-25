@@ -5,6 +5,9 @@ import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.ChangeEmailRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.ChangePhoneRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.ResetPasswordDTO;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +22,7 @@ public class UserController {
 
     @PatchMapping("/email")
     public ResponseEntity<Void> updateEmail(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                            @RequestBody ChangeEmailRequestDTO dto) {
+                                            @Valid @RequestBody ChangeEmailRequestDTO dto) {
 
         userService.updateEmail(userPrincipal.getUserId(), dto);
         return ResponseEntity.noContent().build();
@@ -27,7 +30,7 @@ public class UserController {
 
     @PatchMapping("/phone")
     public ResponseEntity<Void> updatePhone(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                            @RequestBody ChangePhoneRequestDTO dto) {
+                                            @Valid @RequestBody ChangePhoneRequestDTO dto) {
 
         userService.updatePhone(userPrincipal.getUserId(), dto);
         return ResponseEntity.noContent().build();
@@ -35,14 +38,16 @@ public class UserController {
 
     //todo: test
     @PostMapping("/password/forgot")
-    public ResponseEntity<Void> forgotPassword(String userEmail) {
+    public ResponseEntity<Void> forgotPassword(@RequestParam @NotBlank(message = "O e-mail é obrigatório")
+                                               @Email(message = "O e-mail deve ser válido")
+                                               String userEmail) {
 
         userService.forgotPasswordRequest(userEmail);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/password/update")
-    public ResponseEntity<Void> updatePassword(@RequestBody ResetPasswordDTO dto) {
+    public ResponseEntity<Void> updatePassword(@Valid @RequestBody ResetPasswordDTO dto) {
 
         userService.resetPassword(dto);
         return ResponseEntity.noContent().build();

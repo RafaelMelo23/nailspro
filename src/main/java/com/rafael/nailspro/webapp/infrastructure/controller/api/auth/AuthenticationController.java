@@ -5,6 +5,7 @@ import com.rafael.nailspro.webapp.infrastructure.dto.auth.AuthResultDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.LoginDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.RegisterDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.TokenRefreshResponseDTO;
+import jakarta.validation.Valid;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO,
+    public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO,
                                       HttpServletResponse response) {
 
         AuthResultDTO authResultDTO = authenticationService.login(loginDTO);
@@ -32,7 +33,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody RegisterDTO registerDTO) {
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterDTO registerDTO) {
 
         authenticationService.register(registerDTO);
         return ResponseEntity.ok().build();
