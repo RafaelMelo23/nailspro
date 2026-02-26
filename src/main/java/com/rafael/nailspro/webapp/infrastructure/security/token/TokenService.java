@@ -48,10 +48,10 @@ public class TokenService {
 
     public DecodedJWT recoverAndValidate(HttpServletRequest request) {
 
-        return validateAndDecode(recoverToken(request));
+        return validateAndDecode(recover(request));
     }
 
-    public String recoverToken(HttpServletRequest request) {
+    public String recover(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null) {

@@ -20,9 +20,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final SecurityFilter filter;
+    private final SecurityFilter securityFilter;
     private final TenantIdFilter tenantIdFilter;
     private final TenantStatusFilter tenantStatusFilter;
+    private final SalonMaintenanceFilter salonMaintenanceFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -53,8 +54,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/internal/**",
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/register",
-                                "/api/v1/webhook/**",
-                        "/evolution-test").permitAll() //todo: remember to remove the test page
+                                "/api/v1/webhook/**").permitAll()
 
                         // User/Anonymous Pages
                         .requestMatchers(HttpMethod.GET,
@@ -65,9 +65,10 @@ public class SecurityConfiguration {
                         .permitAll()
 
                         .anyRequest().authenticated())
-                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-                // .addFilterAfter(tenantIdFilter, filter.getClass())
-                // .addFilterAfter(tenantStatusFilter, tenantIdFilter.getClass())
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(tenantIdFilter, securityFilter.getClass())
+                .addFilterAfter(salonMaintenanceFilter, tenantIdFilter.getClass())
+                .addFilterAfter(tenantStatusFilter, tenantIdFilter.getClass())
                 .build();
     }
 }
