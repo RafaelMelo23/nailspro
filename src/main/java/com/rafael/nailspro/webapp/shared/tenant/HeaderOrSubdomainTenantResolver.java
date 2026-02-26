@@ -13,24 +13,29 @@ public class HeaderOrSubdomainTenantResolver implements TenantResolver {
 
     private final TokenService tokenService;
 
+    //todo: consider making the subdomain == tenantId (onboarding API)
+
     @Override
     public String resolve(HttpServletRequest request) {
         DecodedJWT token = tokenService.recoverAndValidate(request);
 
-        String tokenTenant = (token != null)
+        String tenantFromToken = (token != null)
                 ? token.getClaim("tenantId").asString()
                 : null;
 
         String host = request.getHeader("X-Forwarded-Host");
-        if (host == null) host = request.getHeader("Host");
-        if (host == null) host = request.getServerName();
+        if (host == null) request.getHeader("Host");
+        if (host == null) request.getServerName();
 
-        String subdomainTenant = host.split("\\.")[0];
+        String tenantFromSubdomain = host.split("\\.")[0];
 
-        if (tokenTenant != null && !subdomainTenant.equalsIgnoreCase(tokenTenant)) {
-            throw new TenantIdentifierMismatchException("Tenant mismatch");
+        if (tenantFromToken != null &&
+                !tenantFromToken.equalsIgnoreCase(host)) {
+            throw new TenantIdentifierMismatchException("Tenant mismatch between token and domain");
         }
 
-        return (tokenTenant != null) ? tokenTenant : subdomainTenant;
+        return (tenantFromToken != null)
+                ? tenantFromToken
+                : tenantFromSubdomain;
     }
 }
