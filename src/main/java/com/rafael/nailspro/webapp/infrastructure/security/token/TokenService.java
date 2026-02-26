@@ -54,9 +54,12 @@ public class TokenService {
     public String recoverToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
 
-        return authorizationHeader.startsWith("Bearer ")
-                ? authorizationHeader.substring(7)
-                : null;
+        if (authorizationHeader != null) {
+            if (authorizationHeader.startsWith("Bearer ")) {
+                return authorizationHeader.substring(7);
+            }
+        }
+        return null;
     }
 
     public DecodedJWT validateAndDecode(String token) {
