@@ -60,4 +60,10 @@ public class RefreshTokenService {
 
         repository.revokeAllUserTokens(userId);
     }
+
+    @Transactional
+    public void revokeUserToken(String token, Long userId) {
+
+        repository.revokeToken(token, userId);
+    }
 }

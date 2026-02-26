@@ -13,8 +13,9 @@ import com.rafael.nailspro.webapp.infrastructure.dto.auth.TokenRefreshResponseDT
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import com.rafael.nailspro.webapp.infrastructure.exception.TokenRefreshException;
 import com.rafael.nailspro.webapp.infrastructure.exception.UserAlreadyExistsException;
-import com.rafael.nailspro.webapp.infrastructure.security.token.refresh.RefreshTokenService;
+import com.rafael.nailspro.webapp.infrastructure.security.token.CookieService;
 import com.rafael.nailspro.webapp.infrastructure.security.token.TokenService;
+import com.rafael.nailspro.webapp.infrastructure.security.token.refresh.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final RefreshTokenService refreshTokenService;
+    private final CookieService cookieService;
 
     public void register(RegisterDTO registerDTO) {
         checkIfUserAlreadyExists(registerDTO);
@@ -79,6 +81,12 @@ public class AuthenticationService {
         return AuthResultDTO.builder()
                 .jwtToken(jwt)
                 .refreshToken(refresh).build();
+    }
+
+    @Transactional
+    public void logout(String refreshToken, Long userId) {
+
+        refreshTokenService.revokeUserToken(refreshToken, userId);
     }
 
     @Transactional

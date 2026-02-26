@@ -22,4 +22,9 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     Long user(User user);
 
     void deleteByExpiryDateBefore(Instant now);
+
+    @Modifying
+    @Query("UPDATE RefreshToken rt SET rt.isRevoked = TRUE WHERE rt.token = :token AND rt.user.id = :userId")
+    void revokeToken(@Param("token") String token,
+                     @Param("userId") Long userId);
 }
