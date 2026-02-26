@@ -13,7 +13,7 @@ import com.rafael.nailspro.webapp.infrastructure.dto.auth.TokenRefreshResponseDT
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import com.rafael.nailspro.webapp.infrastructure.exception.TokenRefreshException;
 import com.rafael.nailspro.webapp.infrastructure.exception.UserAlreadyExistsException;
-import com.rafael.nailspro.webapp.infrastructure.security.token.RefreshTokenService;
+import com.rafael.nailspro.webapp.infrastructure.security.token.refresh.RefreshTokenService;
 import com.rafael.nailspro.webapp.infrastructure.security.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

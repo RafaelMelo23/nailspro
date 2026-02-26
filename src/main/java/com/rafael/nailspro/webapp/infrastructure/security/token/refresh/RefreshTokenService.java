@@ -1,9 +1,8 @@
-package com.rafael.nailspro.webapp.infrastructure.security.token;
+package com.rafael.nailspro.webapp.infrastructure.security.token.refresh;
 
 import com.rafael.nailspro.webapp.domain.model.RefreshToken;
 import com.rafael.nailspro.webapp.domain.model.User;
 import com.rafael.nailspro.webapp.domain.repository.RefreshTokenRepository;
-import com.rafael.nailspro.webapp.domain.repository.UserRepository;
 import com.rafael.nailspro.webapp.infrastructure.exception.TokenRefreshException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +18,6 @@ import java.util.UUID;
 public class RefreshTokenService {
 
     private final RefreshTokenRepository repository;
-    private final UserRepository userRepository;
 
     @Value("${app.jwt.refreshExpirationMs}")
     private Long tokenDurationMs;
@@ -29,13 +27,12 @@ public class RefreshTokenService {
     }
 
     @Transactional
-    public RefreshToken createRefreshToken(User user) {
-        return saveRefreshToken(user);
+    public void deleteExpiredTokens() {
+        repository.deleteByExpiryDateBefore(Instant.now());
     }
 
     @Transactional
-    public RefreshToken createRefreshToken(Long userId) {
-        User user = getUser(userId);
+    public RefreshToken createRefreshToken(User user) {
         return saveRefreshToken(user);
     }
 
@@ -62,15 +59,5 @@ public class RefreshTokenService {
     public void revokeAllForUser(Long userId) {
 
         repository.revokeAllUserTokens(userId);
-    }
-
-    private User getUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
-    @Transactional
-    public void deleteByUserId(Long userId) {
-        repository.deleteByUser_Id(userId);
     }
 }
