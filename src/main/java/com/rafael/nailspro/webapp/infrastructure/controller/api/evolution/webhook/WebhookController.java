@@ -1,6 +1,5 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.evolution.webhook;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.rafael.nailspro.webapp.application.whatsapp.webhook.WebhookProcessorService;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.EvolutionWebhookResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,16 +27,4 @@ public class WebhookController {
                 .header(HttpHeaders.CONNECTION, "close")
                 .build();
     }
-
-    @PostMapping("/debug")
-    public ResponseEntity<Void> webhookDebugger(@RequestBody JsonNode body) {
-        String event = body.has("event") ? body.get("event").asText() : "unknown";
-
-        log.info("Novo Webhook recebido - Evento: {}", event);
-        log.info("Payload completo: {}", body.toPrettyString());
-
-
-        return ResponseEntity.ok().build();
-    }
-
 }
