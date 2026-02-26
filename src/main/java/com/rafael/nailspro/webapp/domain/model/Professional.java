@@ -1,36 +1,30 @@
 package com.rafael.nailspro.webapp.domain.model;
 
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.contract.BusyInterval;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.SimpleBusyInterval;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Stream;
 
-//@SQLDelete(sql = "UPDATE professionals SET is_active = false WHERE user_id = ?")
-//@FilterDef(
-//        name = "activeFilter",
-//        parameters = @ParamDef(name = "isActive", type = Boolean.class)
-//)
-//@Filter(name = "activeFilter", condition = "is_active = :isActive")
+
 @Entity
 @SuperBuilder
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "professional")
+@Table(name = "professional",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_professional_externalId_per_tenant",
+                        columnNames = {"tenantId", "externalId"})
+        })
 @PrimaryKeyJoinColumn(name = "user_id")
 public class Professional extends User {
 
     private String professionalPicture;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private UUID externalId = UUID.randomUUID();
 
     @Column(name = "is_active", nullable = false)

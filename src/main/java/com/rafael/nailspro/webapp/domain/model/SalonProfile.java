@@ -19,7 +19,13 @@ import java.time.ZoneId;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "salon_profile")
+@Table(name = "salon_profile",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_salon_domain_slug", columnNames = {"domain_slug"}),
+                @UniqueConstraint(name = "uk_salon_tenant_id", columnNames = {"tenant_Id"}),
+                @UniqueConstraint(name = "uk_salon_owner_id", columnNames = {"owner_id"})
+        }
+)
 public class SalonProfile extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -57,11 +63,11 @@ public class SalonProfile extends BaseEntity {
     @Column(name = "appointment_buffer_minutes", nullable = false)
     private Integer appointmentBufferMinutes;
 
-    @Column(name = "domain_slug", nullable = false, unique = true, length = 40)
+    @Column(name = "domain_slug", nullable = false, length = 40)
     private String domainSlug;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
-    @JoinColumn(name = "owner_id", nullable = false, unique = true)
+    @JoinColumn(name = "owner_id", nullable = false)
     private Professional owner;
 
     //todo: add

@@ -13,21 +13,32 @@ import java.util.Set;
 
 @Entity
 @SuperBuilder
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("is_deleted = false")
-@Table(name = "service")
+@Table(name = "service",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_service_name_per_tenant",
+                        columnNames = {"tenant_Id", "name"}
+                ),
+                @UniqueConstraint(
+                        name = "uk_service_desc_per_tenant",
+                        columnNames = {"tenant_Id", "description"}
+                )
+        })
 public class SalonService extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true, length = 200)
+    @Column(name = "name", nullable = false, length = 200)
     private String name;
 
-    @Column(name = "description", nullable = false, unique = true, length = 250)
+    @Column(name = "description", nullable = false, length = 250)
     private String description;
 
     @Column(name = "nail_count", nullable = false)
@@ -59,8 +70,8 @@ public class SalonService extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "professionals_id"))
     private Set<Professional> professionals = new LinkedHashSet<>();
 
-    @Column(name = "is_add_on") // todo: put nullable false
-    private Boolean isAddOn = false;
+    @Column(name = "is_add_on")
+    private boolean isAddOn;
 
     @Override
     public void prePersist() {

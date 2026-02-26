@@ -9,11 +9,17 @@ import java.util.List;
 
 @Entity
 @SuperBuilder
-@Setter @Getter
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "clients")
 @PrimaryKeyJoinColumn(name = "user_id")
+@Table(name = "clients",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_phone_per_tenant",
+                        columnNames = {"tenantId", "phoneNumber"})
+        })
 public class Client extends User {
 
     @Column(name = "missed_appointments", nullable = false)
@@ -25,7 +31,7 @@ public class Client extends User {
     @OneToMany(mappedBy = "client")
     private List<Appointment> clientAppointments;
 
-    @Column(name = "phone_number", nullable = false, unique = true, length = 13)
+    @Column(name = "phone_number", nullable = false, length = 13)
     private String phoneNumber;
 
     @OneToOne(mappedBy = "client", orphanRemoval = true)

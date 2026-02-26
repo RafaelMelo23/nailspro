@@ -15,18 +15,23 @@ import java.util.List;
 
 @Entity
 @SuperBuilder
-@Setter @Getter
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "users")
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_email_per_tenant",
+                        columnNames = {"tenant_Id", "email"})
+        })
 public abstract class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
 
     private String fullName;
-    @Column(unique = true)
     private String email;
     private String password;
 
@@ -57,11 +62,22 @@ public abstract class User extends BaseEntity implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() {
+        return true;
+    }
 }

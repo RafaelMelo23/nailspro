@@ -15,83 +15,10 @@
 -- SET xmloption = content;
 -- SET client_min_messages = warning;
 -- SET row_security = off;
-
-ALTER TABLE IF EXISTS ONLY public.clients DROP CONSTRAINT IF EXISTS fktiuqdledq2lybrds2k3rfqrv4;
-ALTER TABLE IF EXISTS ONLY public.appointment_addons_record DROP CONSTRAINT IF EXISTS fkt3gyvigvhli8782hb8os2b6q;
-ALTER TABLE IF EXISTS ONLY public.appointment_addons_record DROP CONSTRAINT IF EXISTS fksi4dirh6fkk6rsbjgb3ai87s;
-ALTER TABLE IF EXISTS ONLY public.appointment_notification DROP CONSTRAINT IF EXISTS fkpjsd7jd504tlfyecws2xukplk;
-ALTER TABLE IF EXISTS ONLY public.retention_forecast DROP CONSTRAINT IF EXISTS fkny77h2kfej4ccm2cgpkrewpj;
-ALTER TABLE IF EXISTS ONLY public.appointment DROP CONSTRAINT IF EXISTS fkni4hs6h0bbqj8cc16hccppuuu;
-ALTER TABLE IF EXISTS ONLY public.work_schedule DROP CONSTRAINT IF EXISTS fkmn6k06r0ad4aw8s8a49fbb94y;
-ALTER TABLE IF EXISTS ONLY public.retention_forecast DROP CONSTRAINT IF EXISTS fkl3918912lweatg7t7gj6351px;
-ALTER TABLE IF EXISTS ONLY public.refresh_token DROP CONSTRAINT IF EXISTS fkjtx87i0jvq2svedphegvdwcuy;
-ALTER TABLE IF EXISTS ONLY public.retention_forecast DROP CONSTRAINT IF EXISTS fkjfjcmkypvtmdelwl3ouashrn1;
-ALTER TABLE IF EXISTS ONLY public.salon_profile DROP CONSTRAINT IF EXISTS fkionbydwwqvit5rjvkay0vl5ey;
-ALTER TABLE IF EXISTS ONLY public.professional DROP CONSTRAINT IF EXISTS fkfif9nre2vib9k48065tw91h9k;
-ALTER TABLE IF EXISTS ONLY public.retention_forecast DROP CONSTRAINT IF EXISTS fkdr8j6b4qoe62e8581kcewhr72;
-ALTER TABLE IF EXISTS ONLY public.service_professionals DROP CONSTRAINT IF EXISTS fkdl9ahe59gntpe4n1up0eftmf1;
-ALTER TABLE IF EXISTS ONLY public.client_audit_metrics DROP CONSTRAINT IF EXISTS fkd3d04xebwb4qlraxnirin5xyg;
-ALTER TABLE IF EXISTS ONLY public.schedule_block DROP CONSTRAINT IF EXISTS fkcgjga2auhdd647totw973lxny;
-ALTER TABLE IF EXISTS ONLY public.appointment DROP CONSTRAINT IF EXISTS fk7y39ubfrch1jv1csekp9rmup6;
-ALTER TABLE IF EXISTS ONLY public.appointment DROP CONSTRAINT IF EXISTS fk7wv46g6c222h1bnk4uk2xjod7;
-ALTER TABLE IF EXISTS ONLY public.service_professionals DROP CONSTRAINT IF EXISTS fk2etykylku1kjsb0wakh0kr37b;
-ALTER TABLE IF EXISTS ONLY public.work_schedule DROP CONSTRAINT IF EXISTS work_schedule_pkey;
-ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
-ALTER TABLE IF EXISTS ONLY public.refresh_token DROP CONSTRAINT IF EXISTS ukr4k4edos30bx9neoq81mdvwph;
-ALTER TABLE IF EXISTS ONLY public.service DROP CONSTRAINT IF EXISTS uknjew1c9fl5n5u2fmteo291087;
-ALTER TABLE IF EXISTS ONLY public.salon_profile DROP CONSTRAINT IF EXISTS ukl630h31xosqmuxq9lj1s8aj0x;
-ALTER TABLE IF EXISTS ONLY public.client_audit_metrics DROP CONSTRAINT IF EXISTS uki686llavv9390id8k4wa2q56e;
-ALTER TABLE IF EXISTS ONLY public.retention_forecast DROP CONSTRAINT IF EXISTS ukhybhwstd67u8dj1ocny1yqpxf;
-ALTER TABLE IF EXISTS ONLY public.professional DROP CONSTRAINT IF EXISTS ukh9usoa4j6g3l26wt40emh44q8;
-ALTER TABLE IF EXISTS ONLY public.refresh_token DROP CONSTRAINT IF EXISTS ukf95ixxe7pa48ryn1awmh2evt7;
-ALTER TABLE IF EXISTS ONLY public.clients DROP CONSTRAINT IF EXISTS ukbt1ji0od8t2mhp0thot6pod8u;
-ALTER TABLE IF EXISTS ONLY public.service DROP CONSTRAINT IF EXISTS ukadgojnrwwx9c3y3qa2q08uuqp;
-ALTER TABLE IF EXISTS ONLY public.work_schedule DROP CONSTRAINT IF EXISTS uk_professional_day;
-ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS uk6dotkott2kjsp8vw4d0m25fb7;
-ALTER TABLE IF EXISTS ONLY public.salon_profile DROP CONSTRAINT IF EXISTS uk2bo3ncdoybyk1m533wjuohy1y;
-ALTER TABLE IF EXISTS ONLY public.service_professionals DROP CONSTRAINT IF EXISTS service_professionals_pkey;
-ALTER TABLE IF EXISTS ONLY public.service DROP CONSTRAINT IF EXISTS service_pkey;
-ALTER TABLE IF EXISTS ONLY public.schedule_block DROP CONSTRAINT IF EXISTS schedule_block_pkey;
-ALTER TABLE IF EXISTS ONLY public.salon_profile DROP CONSTRAINT IF EXISTS salon_profile_pkey;
-ALTER TABLE IF EXISTS ONLY public.salon_daily_revenue DROP CONSTRAINT IF EXISTS salon_daily_revenue_pkey;
-ALTER TABLE IF EXISTS ONLY public.retention_forecast DROP CONSTRAINT IF EXISTS retention_forecast_pkey;
-ALTER TABLE IF EXISTS ONLY public.refresh_token DROP CONSTRAINT IF EXISTS refresh_token_pkey;
-ALTER TABLE IF EXISTS ONLY public.professional DROP CONSTRAINT IF EXISTS professional_pkey;
-ALTER TABLE IF EXISTS ONLY public.clients DROP CONSTRAINT IF EXISTS clients_pkey;
-ALTER TABLE IF EXISTS ONLY public.client_audit_metrics DROP CONSTRAINT IF EXISTS client_audit_metrics_pkey;
-ALTER TABLE IF EXISTS ONLY public.appointment DROP CONSTRAINT IF EXISTS appointment_pkey;
-ALTER TABLE IF EXISTS ONLY public.appointment_notification DROP CONSTRAINT IF EXISTS appointment_notification_pkey;
-ALTER TABLE IF EXISTS ONLY public.appointment_addons_record DROP CONSTRAINT IF EXISTS appointment_addons_record_pkey;
-DROP SEQUENCE IF EXISTS public.work_schedule_seq;
-DROP TABLE IF EXISTS public.work_schedule;
-DROP SEQUENCE IF EXISTS public.users_seq;
-DROP TABLE IF EXISTS public.users;
-DROP SEQUENCE IF EXISTS public.service_seq;
-DROP TABLE IF EXISTS public.service_professionals;
-DROP TABLE IF EXISTS public.service;
-DROP SEQUENCE IF EXISTS public.schedule_block_seq;
-DROP TABLE IF EXISTS public.schedule_block;
-DROP SEQUENCE IF EXISTS public.salon_profile_seq;
-DROP TABLE IF EXISTS public.salon_profile;
-DROP SEQUENCE IF EXISTS public.salon_daily_revenue_seq;
-DROP TABLE IF EXISTS public.salon_daily_revenue;
-DROP SEQUENCE IF EXISTS public.retention_forecast_seq;
-DROP TABLE IF EXISTS public.retention_forecast;
-DROP SEQUENCE IF EXISTS public.refresh_token_seq;
-DROP TABLE IF EXISTS public.refresh_token;
-DROP TABLE IF EXISTS public.professional;
-DROP TABLE IF EXISTS public.clients;
-DROP SEQUENCE IF EXISTS public.client_audit_metrics_seq;
-DROP TABLE IF EXISTS public.client_audit_metrics;
-DROP SEQUENCE IF EXISTS public.appointment_seq;
-DROP SEQUENCE IF EXISTS public.appointment_notification_seq;
-DROP TABLE IF EXISTS public.appointment_notification;
-DROP SEQUENCE IF EXISTS public.appointment_addons_record_seq;
-DROP TABLE IF EXISTS public.appointment_addons_record;
-DROP TABLE IF EXISTS public.appointment;
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
+--
+-- SET default_tablespace = '';
+--
+-- SET default_table_access_method = heap;
 
 --
 -- Name: appointment; Type: TABLE; Schema: public; Owner: -
@@ -110,7 +37,7 @@ CREATE TABLE public.appointment (
     client_id bigint NOT NULL,
     main_service_id bigint NOT NULL,
     professional_id bigint NOT NULL,
-    CONSTRAINT appointment_appointment_status_check CHECK (((appointment_status)::text = ANY (ARRAY[('PENDING'::character varying)::text, ('CONFIRMED'::character varying)::text, ('CANCELLED'::character varying)::text, ('MISSED'::character varying)::text, ('COMPLETED'::character varying)::text])))
+    CONSTRAINT appointment_appointment_status_check CHECK (((appointment_status)::text = ANY ((ARRAY['PENDING'::character varying, 'CONFIRMED'::character varying, 'CANCELLED'::character varying, 'MISSED'::character varying, 'COMPLETED'::character varying])::text[])))
 );
 
 
@@ -153,8 +80,8 @@ CREATE TABLE public.appointment_notification (
     failed_message_content character varying(500),
     sent_at timestamp(6) with time zone,
     appointment_external_id bigint,
-    CONSTRAINT appointment_notification_appointment_notification_status_check CHECK (((appointment_notification_status)::text = ANY (ARRAY[('PENDING'::character varying)::text, ('SENT'::character varying)::text, ('DELIVERED'::character varying)::text, ('FAILED'::character varying)::text]))),
-    CONSTRAINT appointment_notification_appointment_notification_type_check CHECK (((appointment_notification_type)::text = ANY (ARRAY[('CONFIRMATION'::character varying)::text, ('REMINDER'::character varying)::text])))
+    CONSTRAINT appointment_notification_appointment_notification_status_check CHECK (((appointment_notification_status)::text = ANY ((ARRAY['PENDING'::character varying, 'SENT'::character varying, 'DELIVERED'::character varying, 'FAILED'::character varying])::text[]))),
+    CONSTRAINT appointment_notification_appointment_notification_type_check CHECK (((appointment_notification_type)::text = ANY ((ARRAY['CONFIRMATION'::character varying, 'REMINDER'::character varying])::text[])))
 );
 
 
@@ -221,7 +148,6 @@ CREATE TABLE public.clients (
     user_id bigint NOT NULL
 );
 
-
 --
 -- Name: professional; Type: TABLE; Schema: public; Owner: -
 --
@@ -254,7 +180,7 @@ CREATE TABLE public.refresh_token (
 
 CREATE SEQUENCE public.refresh_token_seq
     START WITH 1
-    INCREMENT BY 1
+    INCREMENT BY 50
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
@@ -273,7 +199,7 @@ CREATE TABLE public.retention_forecast (
     last_service_id bigint NOT NULL,
     origin_appointment_id bigint,
     professional_id bigint,
-    CONSTRAINT retention_forecast_status_check CHECK (((status)::text = ANY (ARRAY[('PENDING'::character varying)::text, ('CONVERTED'::character varying)::text, ('EXPIRED'::character varying)::text, ('FAILED_TO_SEND'::character varying)::text])))
+    CONSTRAINT retention_forecast_status_check CHECK (((status)::text = ANY ((ARRAY['PENDING'::character varying, 'CONVERTED'::character varying, 'EXPIRED'::character varying, 'FAILED_TO_SEND'::character varying])::text[])))
 );
 
 
@@ -341,9 +267,9 @@ CREATE TABLE public.salon_profile (
     whatsapp_last_reset_at timestamp(6) without time zone,
     salon_zone_id character varying(255) NOT NULL,
     owner_id bigint NOT NULL,
-    CONSTRAINT salon_profile_evolution_connection_state_check CHECK (((evolution_connection_state)::text = ANY (ARRAY[('CONNECTING'::character varying)::text, ('OPEN'::character varying)::text, ('CLOSE'::character varying)::text]))),
-    CONSTRAINT salon_profile_operational_status_check CHECK (((operational_status)::text = ANY (ARRAY[('OPEN'::character varying)::text, ('CLOSED_TEMPORARY'::character varying)::text, ('UNDER_MAINTENANCE'::character varying)::text]))),
-    CONSTRAINT salon_profile_tenant_status_check CHECK (((tenant_status)::text = ANY (ARRAY[('ACTIVE'::character varying)::text, ('SUSPENDED'::character varying)::text])))
+    CONSTRAINT salon_profile_evolution_connection_state_check CHECK (((evolution_connection_state)::text = ANY ((ARRAY['CONNECTING'::character varying, 'OPEN'::character varying, 'CLOSE'::character varying])::text[]))),
+    CONSTRAINT salon_profile_operational_status_check CHECK (((operational_status)::text = ANY ((ARRAY['OPEN'::character varying, 'CLOSED_TEMPORARY'::character varying, 'UNDER_MAINTENANCE'::character varying])::text[]))),
+    CONSTRAINT salon_profile_tenant_status_check CHECK (((tenant_status)::text = ANY ((ARRAY['ACTIVE'::character varying, 'SUSPENDED'::character varying])::text[])))
 );
 
 
@@ -440,8 +366,8 @@ CREATE TABLE public.users (
     password character varying(255),
     status character varying(255),
     user_role character varying(255) NOT NULL,
-    CONSTRAINT users_status_check CHECK (((status)::text = ANY (ARRAY[('ACTIVE'::character varying)::text, ('BANNED'::character varying)::text]))),
-    CONSTRAINT users_user_role_check CHECK (((user_role)::text = ANY (ARRAY[('ADMIN'::character varying)::text, ('PROFESSIONAL'::character varying)::text, ('CLIENT'::character varying)::text])))
+    CONSTRAINT users_status_check CHECK (((status)::text = ANY ((ARRAY['ACTIVE'::character varying, 'BANNED'::character varying])::text[]))),
+    CONSTRAINT users_user_role_check CHECK (((user_role)::text = ANY ((ARRAY['ADMIN'::character varying, 'PROFESSIONAL'::character varying, 'CLIENT'::character varying])::text[])))
 );
 
 
@@ -471,7 +397,7 @@ CREATE TABLE public.work_schedule (
     end_time time(6) without time zone NOT NULL,
     start_time time(6) without time zone NOT NULL,
     professional_id bigint NOT NULL,
-    CONSTRAINT work_schedule_day_of_week_check CHECK (((day_of_week)::text = ANY (ARRAY[('MONDAY'::character varying)::text, ('TUESDAY'::character varying)::text, ('WEDNESDAY'::character varying)::text, ('THURSDAY'::character varying)::text, ('FRIDAY'::character varying)::text, ('SATURDAY'::character varying)::text, ('SUNDAY'::character varying)::text])))
+    CONSTRAINT work_schedule_day_of_week_check CHECK (((day_of_week)::text = ANY ((ARRAY['MONDAY'::character varying, 'TUESDAY'::character varying, 'WEDNESDAY'::character varying, 'THURSDAY'::character varying, 'FRIDAY'::character varying, 'SATURDAY'::character varying, 'SUNDAY'::character varying])::text[])))
 );
 
 
@@ -485,7 +411,6 @@ CREATE SEQUENCE public.work_schedule_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
 --
 -- Name: appointment_addons_record_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
@@ -560,7 +485,7 @@ SELECT pg_catalog.setval('public.service_seq', 1, false);
 -- Name: users_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.users_seq', 1, true);
+SELECT pg_catalog.setval('public.users_seq', 1, false);
 
 
 --
@@ -608,6 +533,7 @@ ALTER TABLE ONLY public.client_audit_metrics
 
 ALTER TABLE ONLY public.clients
     ADD CONSTRAINT clients_pkey PRIMARY KEY (user_id);
+
 --
 -- Name: professional professional_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
@@ -673,19 +599,11 @@ ALTER TABLE ONLY public.service_professionals
 
 
 --
--- Name: salon_profile uk2bo3ncdoybyk1m533wjuohy1y; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.salon_profile
-    ADD CONSTRAINT uk2bo3ncdoybyk1m533wjuohy1y UNIQUE (owner_id);
-
-
---
--- Name: users uk6dotkott2kjsp8vw4d0m25fb7; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: users uk_email_per_tenant; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT uk6dotkott2kjsp8vw4d0m25fb7 UNIQUE (email);
+    ADD CONSTRAINT uk_email_per_tenant UNIQUE (tenant_id, email);
 
 
 --
@@ -697,19 +615,43 @@ ALTER TABLE ONLY public.work_schedule
 
 
 --
--- Name: service ukadgojnrwwx9c3y3qa2q08uuqp; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: salon_profile uk_salon_domain_slug; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.salon_profile
+    ADD CONSTRAINT uk_salon_domain_slug UNIQUE (domain_slug);
+
+
+--
+-- Name: salon_profile uk_salon_owner_id; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.salon_profile
+    ADD CONSTRAINT uk_salon_owner_id UNIQUE (owner_id);
+
+
+--
+-- Name: salon_profile uk_salon_tenant_id; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.salon_profile
+    ADD CONSTRAINT uk_salon_tenant_id UNIQUE (tenant_id);
+
+
+--
+-- Name: service uk_service_desc_per_tenant; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.service
-    ADD CONSTRAINT ukadgojnrwwx9c3y3qa2q08uuqp UNIQUE (name);
+    ADD CONSTRAINT uk_service_desc_per_tenant UNIQUE (tenant_id, description);
 
 
 --
--- Name: clients ukbt1ji0od8t2mhp0thot6pod8u; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: service uk_service_name_per_tenant; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.clients
-    ADD CONSTRAINT ukbt1ji0od8t2mhp0thot6pod8u UNIQUE (phone_number);
+ALTER TABLE ONLY public.service
+    ADD CONSTRAINT uk_service_name_per_tenant UNIQUE (tenant_id, name);
 
 
 --
@@ -718,14 +660,6 @@ ALTER TABLE ONLY public.clients
 
 ALTER TABLE ONLY public.refresh_token
     ADD CONSTRAINT ukf95ixxe7pa48ryn1awmh2evt7 UNIQUE (user_id);
-
-
---
--- Name: professional ukh9usoa4j6g3l26wt40emh44q8; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.professional
-    ADD CONSTRAINT ukh9usoa4j6g3l26wt40emh44q8 UNIQUE (external_id);
 
 
 --
@@ -745,30 +679,6 @@ ALTER TABLE ONLY public.client_audit_metrics
 
 
 --
--- Name: salon_profile ukl630h31xosqmuxq9lj1s8aj0x; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.salon_profile
-    ADD CONSTRAINT ukl630h31xosqmuxq9lj1s8aj0x UNIQUE (domain_slug);
-
-
---
--- Name: service uknjew1c9fl5n5u2fmteo291087; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.service
-    ADD CONSTRAINT uknjew1c9fl5n5u2fmteo291087 UNIQUE (description);
-
-
---
--- Name: refresh_token ukr4k4edos30bx9neoq81mdvwph; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.refresh_token
-    ADD CONSTRAINT ukr4k4edos30bx9neoq81mdvwph UNIQUE (token);
-
-
---
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -782,7 +692,6 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.work_schedule
     ADD CONSTRAINT work_schedule_pkey PRIMARY KEY (external_id);
-
 --
 -- Name: service_professionals fk2etykylku1kjsb0wakh0kr37b; Type: FK CONSTRAINT; Schema: public; Owner: -
 --

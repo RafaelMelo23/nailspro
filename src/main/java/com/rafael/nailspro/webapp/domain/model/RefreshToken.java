@@ -15,14 +15,19 @@ import java.time.Instant;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "refresh_token")
+@Table(name = "refresh_token",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_refresh_token_per_tenant",
+                        columnNames = {"tenantId", "token"})
+        })
 public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String token;
 
     @OneToOne
