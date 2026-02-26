@@ -1,4 +1,4 @@
-﻿Plataforma SaaS com foco em backend para estúdios de unhas e salões de beleza, orientada a dois resultados:
+Plataforma SaaS com foco em backend para estúdios de unhas e salões de beleza, orientada a dois resultados:
 - Aumentar a ocupação da agenda com agendamento inteligente e automações
 - Melhorar retenção e visibilidade de receita com CRM + analytics
 
@@ -46,23 +46,32 @@
 
 ### 4. Mensageria e Automação de Retenção
 - Integração com WhatsApp via Evolution API
-- Envio de confirmação apãs commit da tansação de agendamento
+- Envio de confirmação após commit da transação de agendamento
 - Scheduler de lembretes a cada 15 minutos para atendimentos próximos
-- Geração de previsão de retenção apãs finalização do atendimento
+- Geração de previsão de retenção após finalização do atendimento
 - Job diário de follow-up para clientes no período previsto de retorno
 - Rastreamento de falhas de envio para monitoramento/retentativa
 
 ### 5. Operação em Tempo Real
-- Canal SSE de inscriãão (`/api/v1/notifications/subscribe`)
+- Canal SSE de inscrição (`/api/v1/notifications/subscribe`)
 - Atualização em tempo real de QR Code para pareamento do WhatsApp
 - Notificações em tempo real de conexão/desconexão para o dono do salão
 
 ### 6. Segurança e Controle de Acesso
 - Spring Security + JWT com claims de papel e tenant
-- Suporte a cookie de autenticação HTTP-only e secure
-- Autorização por papãis para ãreas admin/profissional
+- Autenticação com JWT + refresh tokens (fluxo de renovação seguro via cookie HTTP-only e secure)
+- Autorização por papéis para áreas admin/profissional
 - Tokens de reset de senha com propósito e expiração
 - Implementação robusta de logging com Sentry
+
+### 7. Validação e Tratamento de Erros
+- Validação de entrada com Jakarta Bean Validation (`@NotNull`, `@NotBlank`, `@Email`, etc.) aplicada a DTOs e parâmetros de requisição
+- Uso de `@Valid` em controllers para acionar validação automaticamente em `@RequestBody` e parâmetros anotados
+- `GlobalExceptionHandler` com `@ControllerAdvice` centralizando o tratamento de:
+  - Erros de validação de corpo de requisição (`MethodArgumentNotValidException`)
+  - Erros de validação de parâmetros (`ConstraintViolationException`)
+  - Exceções de negócio e autenticação (por exemplo, `BusinessException`, `TokenRefreshException`, `UserAlreadyExistsException`)
+- Respostas padronizadas em JSON (`StandardError`) com mensagens amigáveis em português-BR, incluindo campo inválido, mensagem e path da requisição
 
 ## Destaques de Engenharia
 - Organização pragmática em DDD (`application`, `domain`, `infrastructure`)
