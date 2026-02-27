@@ -2,6 +2,7 @@ package com.rafael.nailspro.webapp.infrastructure.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record RegisterDTO(
@@ -17,5 +18,6 @@ public record RegisterDTO(
         String rawPassword,
 
         @NotBlank(message = "O telefone é obrigatório")
+        @Pattern(regexp = "\\d{11}", message = "O telefone deve conter 11 dígitos (DDD + número)")
         String phoneNumber
 ) {}

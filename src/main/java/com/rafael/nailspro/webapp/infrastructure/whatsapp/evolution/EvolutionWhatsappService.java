@@ -4,6 +4,7 @@ import com.rafael.nailspro.webapp.application.whatsapp.WhatsappProvider;
 import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.CreateInstanceRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.SendTextRequestDTO;
+import com.rafael.nailspro.webapp.infrastructure.helper.PhoneNumberHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,7 +94,7 @@ public class EvolutionWhatsappService implements WhatsappProvider {
         String url = evolutionApiBaseUrl + "/message/sendText/" + instanceName;
 
         SendTextRequestDTO body = SendTextRequestDTO.of(
-                formatPhoneNumber(targetNumber),
+                PhoneNumberHelper.formatPhoneNumber(targetNumber),
                 message
         );
 
@@ -107,7 +108,7 @@ public class EvolutionWhatsappService implements WhatsappProvider {
         String url = evolutionApiBaseUrl + "/message/sendText/" + instanceName;
 
         SendTextRequestDTO bodyDTO = SendTextRequestDTO.of(
-                formatPhoneNumber(targetNumber),
+                PhoneNumberHelper.formatPhoneNumber(targetNumber),
                 message
         );
 
@@ -138,10 +139,5 @@ public class EvolutionWhatsappService implements WhatsappProvider {
         return httpHeaders;
     }
 
-    private String formatPhoneNumber(String phoneNumber) {
-        String cleanNumber = phoneNumber.replaceAll("\\D", "");
-        return cleanNumber.startsWith("55")
-                ? cleanNumber
-                : "55" + cleanNumber;
-    }
+
 }

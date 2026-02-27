@@ -13,7 +13,6 @@ import com.rafael.nailspro.webapp.infrastructure.dto.auth.TokenRefreshResponseDT
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import com.rafael.nailspro.webapp.infrastructure.exception.TokenRefreshException;
 import com.rafael.nailspro.webapp.infrastructure.exception.UserAlreadyExistsException;
-import com.rafael.nailspro.webapp.infrastructure.security.token.CookieService;
 import com.rafael.nailspro.webapp.infrastructure.security.token.TokenService;
 import com.rafael.nailspro.webapp.infrastructure.security.token.refresh.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static com.rafael.nailspro.webapp.infrastructure.helper.PhoneNumberHelper.formatPhoneNumber;
 
 @Service
 @RequiredArgsConstructor
@@ -32,19 +33,20 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final RefreshTokenService refreshTokenService;
-    private final CookieService cookieService;
 
     public void register(RegisterDTO registerDTO) {
         checkIfUserAlreadyExists(registerDTO);
 
         String encryptedPassword = passwordEncoder.encode(registerDTO.rawPassword());
 
+        String normalizedPhoneNumber = formatPhoneNumber(registerDTO.phoneNumber());
+
         clientRepository.save(Client.builder()
                 .fullName(registerDTO.fullName())
                 .email(registerDTO.email())
                 .password(encryptedPassword)
                 .status(UserStatus.ACTIVE)
-                .phoneNumber(registerDTO.phoneNumber())
+                .phoneNumber(normalizedPhoneNumber)
                 .build()
         );
     }
@@ -55,7 +57,7 @@ public class AuthenticationService {
                     throw new UserAlreadyExistsException("O E-mail informado já está sendo utilizado");
                 });
 
-        clientRepository.findByPhoneNumber(registerDTO.phoneNumber())
+        clientRepository.findByPhoneNumber(formatPhoneNumber(registerDTO.phoneNumber()))
                 .ifPresent(user -> {
                     throw new UserAlreadyExistsException("O telefone informado já está sendo utilizado");
                 });
