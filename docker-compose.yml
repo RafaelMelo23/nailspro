@@ -12,6 +12,7 @@ services:
       # --- API ---
       - JWT_SECRET=${JWT_SECRET}
       - APP_HTTP_PROTOCOL=http
+      - UPLOADS_PATH=/var/nailspro/uploads
       # --- SENTRY & OBSERVABILITY ---
       - SENTRY_DSN=${SENTRY_DSN}
       - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}

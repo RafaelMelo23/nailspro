@@ -3,6 +3,8 @@ package com.rafael.nailspro.webapp.infrastructure.dto.admin.salon.profile;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.rafael.nailspro.webapp.domain.enums.salon.OperationalStatus;
 
+import java.time.ZoneId;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record SalonProfileDTO(String tradeName,
                               String slogan,
@@ -13,5 +15,9 @@ public record SalonProfileDTO(String tradeName,
                               String socialMediaLink,
                               OperationalStatus status,
                               String warningMessage,
-                              Integer appointmentBufferMinutes) {
+                              Integer appointmentBufferMinutes,
+                              ZoneId zoneId,
+                              boolean isLoyalClientelePrioritized,
+                              int loyalClientBookingWindowDays,
+                              int standardBookingWindow) {
 }

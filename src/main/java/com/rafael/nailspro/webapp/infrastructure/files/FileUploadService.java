@@ -15,7 +15,7 @@ import java.util.UUID;
 @Component
 public class FileUploadService {
 
-    @Value("${file.upload.dir:/upload}")
+    @Value("${file.upload.dir}")
     private String uploadDir;
 
     private Path getUploadPath() {
@@ -46,17 +46,15 @@ public class FileUploadService {
         return filename;
     }
 
-    public boolean deleteFile(String filename) throws IOException {
-
+    public void delete(String filename) throws IOException {
         Path fileToDelete = getUploadPath().resolve(filename);
 
-        if (Files.exists(fileToDelete) && Files.isRegularFile(fileToDelete)) {
+        if (Files.exists(fileToDelete) &&
+                Files.isRegularFile(fileToDelete)) {
 
             Files.delete(fileToDelete);
-            return true;
         } else {
             log.error("Could not delete file: " + fileToDelete);
-            return false;
         }
     }
 }
