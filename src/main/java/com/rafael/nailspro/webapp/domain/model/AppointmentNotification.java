@@ -18,7 +18,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "appointment_notification")
-public class AppointmentNotification {
+public class AppointmentNotification extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

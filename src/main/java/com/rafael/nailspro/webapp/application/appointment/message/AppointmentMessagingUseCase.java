@@ -58,6 +58,7 @@ public class AppointmentMessagingUseCase {
                             .destinationNumber(appointment.getClient().getPhoneNumber())
                             .notificationType(type)
                             .notificationStatus(FAILED)
+                            .tenantId(appointment.getTenantId())
                             .attempts(0)
                             .build();
                     return notificationRepository.save(newNotif);

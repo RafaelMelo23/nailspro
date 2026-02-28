@@ -3,7 +3,9 @@ package com.rafael.nailspro.webapp.application.appointment.message.schedule;
 import com.rafael.nailspro.webapp.application.appointment.message.AppointmentMessagingUseCase;
 import com.rafael.nailspro.webapp.domain.model.AppointmentNotification;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentNotificationRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Session;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +23,15 @@ public class AppointmentConfirmationMessageScheduler {
 
     private final AppointmentMessagingUseCase messagingUseCase;
     private final AppointmentNotificationRepository notificationRepository;
+    private final EntityManager entityManager;
 
     //todo: review the confirmation process, and remove possible manual feat of confirmation
     @Scheduled(cron = "0 */5 * * * *")
     public void retryFailedConfirmationMessages() {
         final int MAX_RETRIES = 3;
+
+        Session session = entityManager.unwrap(Session.class);
+        session.disableFilter("tenantFilter");
 
         List<AppointmentNotification> notifications =
                 notificationRepository.findRetriableMessages(MAX_RETRIES, FAILED, CONFIRMATION);

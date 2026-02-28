@@ -25,14 +25,16 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("""
             SELECT ap FROM Appointment ap
-            JOIN SalonProfile sp ON ap.tenantId = sp.tenantId
-            WHERE sp.tenantStatus = 'ACTIVE'
-            AND ap.startDate >= :start
-            AND ap.startDate <= :end
+            WHERE ap.startDate > :now
+            AND ap.startDate <= :windowEnd
+            AND NOT EXISTS(
+            SELECT 1 FROM AppointmentNotification an
+            WHERE an.appointment = ap
+            AND an.notificationType = 'REMINDER'
+            AND (an.notificationStatus = 'SENT' OR an.attempts >= 3)
+                        )
             """)
-    List<Appointment> findByStartDateBetween(Instant start, Instant end);
-
-    Optional<Appointment> findFirstByClientIdAndProfessional_ExternalIdOrderByStartDateDesc(Long clientId, UUID professionalId);
+    List<Appointment> findAppointmentsNeedingReminder(Instant start, Instant end);
 
     Optional<Appointment> findFirstByClientIdOrderByStartDateDesc(Long clientId);
 
@@ -44,11 +46,4 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findBusyAppointmentsInRange(@Param("id") Long professionalId,
                                                   @Param("startRange") Instant startRange,
                                                   @Param("endRange") Instant endRange);
-
-    @Query("""
-            SELECT CASE WHEN COUNT(ap) > 0 THEN TRUE ELSE FALSE END
-            FROM Appointment ap WHERE ap.mainSalonService.maintenanceIntervalDays IS NOT NULL
-            AND ap.client.id = :clientId""")
-    boolean clientBookedServiceRequiringMaintenance(@Param("clientId") Long clientId);
-
 }

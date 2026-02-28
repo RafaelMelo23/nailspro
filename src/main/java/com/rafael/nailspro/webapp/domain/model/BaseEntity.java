@@ -30,6 +30,9 @@ public class BaseEntity {
 
     @PrePersist
     public void prePersist() {
-        this.tenantId = TenantContext.getTenant();
+
+        if (this.tenantId == null) {
+            this.tenantId = TenantContext.getTenant();
+        }
     }
 }
