@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.application.appointment;
+package com.rafael.nailspro.webapp.application.appointment.message;
 
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.booking.AppointmentBookedEvent;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class AppointmentEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleBookedAppointment(AppointmentBookedEvent appointmentBookedEvent) {
 
-        messagingUseCase.sendAppointmentConfirmationMessage(
+        messagingUseCase.sendAppointmentConfirmationMessageAsync(
                 appointmentBookedEvent.appointmentId()
         );
     }

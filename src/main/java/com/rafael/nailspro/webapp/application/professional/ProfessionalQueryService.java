@@ -2,8 +2,10 @@ package com.rafael.nailspro.webapp.application.professional;
 
 import com.rafael.nailspro.webapp.domain.model.Professional;
 import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
+import com.rafael.nailspro.webapp.infrastructure.dto.professional.ProfessionalResponseDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.ProfessionalSimplifiedDTO;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
+import com.rafael.nailspro.webapp.infrastructure.mapper.ProfessionalMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +32,9 @@ public class ProfessionalQueryService {
 
         return repository.findSalonOwnerByTenantId(tenantId)
                 .orElseThrow(() -> new BusinessException("Unable to find Owner"));
+    }
+
+    public List<ProfessionalResponseDTO> findAllProfessionals() {
+        return ProfessionalMapper.toDTOList(repository.findAll());
     }
 }

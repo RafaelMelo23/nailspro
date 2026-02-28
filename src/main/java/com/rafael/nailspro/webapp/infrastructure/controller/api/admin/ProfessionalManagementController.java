@@ -1,15 +1,15 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
 
 import com.rafael.nailspro.webapp.application.admin.professional.ProfessionalManagementService;
+import com.rafael.nailspro.webapp.application.professional.ProfessionalQueryService;
 import com.rafael.nailspro.webapp.application.professional.ScheduleBlockService;
 import com.rafael.nailspro.webapp.application.professional.WorkScheduleService;
 import com.rafael.nailspro.webapp.domain.model.Professional;
-import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.professional.CreateProfessionalDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.professional.ProfessionalResponseDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.WorkScheduleRecordDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.block.ScheduleBlockOutDTO;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,8 +25,8 @@ import java.util.Set;
 @RequestMapping("/api/v1/admin/professional")
 public class ProfessionalManagementController {
 
-    private final ProfessionalManagementService professionalManagementService;
-    private final ProfessionalRepository professionalRepository;
+    private final ProfessionalManagementService managementService;
+    private final ProfessionalQueryService queryService;
     private final WorkScheduleService workScheduleService;
     private final ScheduleBlockService scheduleBlockService;
 
@@ -35,7 +35,7 @@ public class ProfessionalManagementController {
     public ResponseEntity<Void> createProfessional(
             @Valid @RequestBody CreateProfessionalDTO professionalDTO) {
 
-        professionalManagementService.createProfessional(professionalDTO);
+        managementService.createProfessional(professionalDTO);
         return ResponseEntity.status(201).build();
     }
 
@@ -44,16 +44,15 @@ public class ProfessionalManagementController {
     public ResponseEntity<Void> deactivateProfessional(
             @PathVariable Long id) {
 
-        professionalManagementService.deactivateProfessional(id);
+        managementService.deactivateProfessional(id);
         return ResponseEntity.noContent().build();
     }
 
-    //todo: perhaps change it to a more suitable DTO
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<Professional>> getAllProfessionals() {
+    public ResponseEntity<List<ProfessionalResponseDTO>> getAllProfessionals() {
 
-        return ResponseEntity.ok(professionalRepository.findAll());
+        return ResponseEntity.ok(queryService.findAllProfessionals());
     }
 
     @PreAuthorize("hasRole('ADMIN')")

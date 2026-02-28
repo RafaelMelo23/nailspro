@@ -3,9 +3,11 @@ package com.rafael.nailspro.webapp.infrastructure.mapper;
 import com.rafael.nailspro.webapp.domain.model.Appointment;
 import com.rafael.nailspro.webapp.domain.model.Professional;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAppointmentScheduleDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.professional.ProfessionalResponseDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.ProfessionalSimplifiedDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,21 @@ public class ProfessionalMapper {
                 .build();
     }
 
+    public static ProfessionalResponseDTO toDTO(Professional professional) {
+        return ProfessionalResponseDTO.builder()
+                .id(professional.getId())
+                .externalId(professional.getExternalId())
+                .name(professional.getFullName())
+                .email(professional.getEmail())
+                .professionalPicture(professional.getProfessionalPicture())
+                .isActive(professional.getIsActive())
+                .isFirstLogin(professional.getIsFirstLogin())
+                .build();
+    }
 
-
+    public static List<ProfessionalResponseDTO> toDTOList(List<Professional> professionals) {
+        return professionals.stream()
+                .map(ProfessionalMapper::toDTO)
+                .toList();
+    }
 }

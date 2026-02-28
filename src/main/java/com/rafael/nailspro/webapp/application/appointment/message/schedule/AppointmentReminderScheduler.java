@@ -1,5 +1,6 @@
-package com.rafael.nailspro.webapp.application.appointment;
+package com.rafael.nailspro.webapp.application.appointment.message.schedule;
 
+import com.rafael.nailspro.webapp.application.appointment.message.AppointmentMessagingUseCase;
 import com.rafael.nailspro.webapp.domain.model.Appointment;
 import com.rafael.nailspro.webapp.domain.model.AppointmentNotification;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentNotificationRepository;
@@ -48,7 +49,7 @@ public class AppointmentReminderScheduler {
                 appointmentNotificationRepository.findByAppointments(upcomingAppointments);
 
         var reminderMap = appointmentNotifications.stream()
-                .filter(ap -> REMINDER.equals(ap.getAppointmentNotificationType()))
+                .filter(ap -> REMINDER.equals(ap.getNotificationType()))
                 .collect(Collectors.toMap(
                         notif -> notif.getAppointment().getId(),
                         notif -> notif
@@ -64,6 +65,6 @@ public class AppointmentReminderScheduler {
             return true;
         }
 
-        return reminderMap.get(ap.getId()).getAppointmentNotificationStatus() != SENT;
+        return reminderMap.get(ap.getId()).getNotificationStatus() != SENT;
     }
 }
