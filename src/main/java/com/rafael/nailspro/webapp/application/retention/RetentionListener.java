@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.application.retention;
 
-import com.rafael.nailspro.webapp.application.appointment.AppointmentService;
 import com.rafael.nailspro.webapp.domain.model.Appointment;
+import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.event.AppointmentFinishedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -14,12 +14,13 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class RetentionListener {
 
     private final VisitPredictionService forecastUseCase;
-    private final AppointmentService appointmentService;
+    private final AppointmentRepository appointmentRepository;
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onFinished(AppointmentFinishedEvent event) {
-        Appointment appointment = appointmentService.findById(event.appointmentId());
+        Appointment appointment = appointmentRepository.findById(event.appointmentId())
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
         boolean hasMaintenanceInterval =
                 appointment.getMainSalonService().getMaintenanceIntervalDays() != null

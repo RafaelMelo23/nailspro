@@ -1,16 +1,18 @@
-package com.rafael.nailspro.webapp.domain.service;
+package com.rafael.nailspro.webapp.domain;
 
 import com.rafael.nailspro.webapp.domain.model.*;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
+import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
 import com.rafael.nailspro.webapp.domain.repository.ScheduleBlockRepository;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentTimesDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.booking.AppointmentTimeWindow;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.contract.BusyInterval;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.SimpleBusyInterval;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
+import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -18,14 +20,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.awt.SystemColor.window;
-
 @Service
 @RequiredArgsConstructor
 public class AvailabilityDomainService {
 
     private final AppointmentRepository appointmentRepository;
     private final ScheduleBlockRepository scheduleBlockRepository;
+    private final ProfessionalRepository professionalRepository;
 
     public List<AppointmentTimesDTO> findAvailableTimes(Professional professional,
                                                         AppointmentTimeWindow window,
@@ -136,5 +137,15 @@ public class AvailabilityDomainService {
         return Stream.concat(appointmentStream, blockStream)
                 .sorted(Comparator.comparing(BusyInterval::getStart))
                 .toList();
+    }
+
+    public void checkIfProfessionalHasTimeConflicts(UUID professionalId, TimeInterval interval) {
+        if (professionalRepository.hasTimeConflicts(
+                professionalId,
+                interval.toLocalDateTime(interval.realTimeStart()),
+                interval.toLocalDateTime(interval.endTimeWithBuffer()),
+                interval.getDayOfWeek())) {
+            throw new BusinessException("O profissional já possui um compromisso ou bloqueio neste horário.");
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.professional;
 
-import com.rafael.nailspro.webapp.application.professional.ProfessionalAppointmentUseCase;
+import com.rafael.nailspro.webapp.application.professional.ProfessionalAppointmentStatusUseCase;
+import com.rafael.nailspro.webapp.application.professional.ProfessionalScheduleQueryUseCase;
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAppointmentScheduleDTO;
 import jakarta.validation.constraints.NotNull;
@@ -16,12 +17,13 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/professional/appointments")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('PROFESSIONAL')")
-public class ProfessionalAppointmentController {
+@RequestMapping("/api/v1/professional/appointments")
+public class ProfessionalAppointmentManagementController {
 
-    private final ProfessionalAppointmentUseCase service;
+    private final ProfessionalScheduleQueryUseCase professionalScheduleQueryUseCase;
+    private final ProfessionalAppointmentStatusUseCase professionalAppointmentStatusUseCase;
 
     @GetMapping
     public ResponseEntity<List<ProfessionalAppointmentScheduleDTO>> findByDay(
@@ -32,7 +34,7 @@ public class ProfessionalAppointmentController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime end
     ) {
         return ResponseEntity.ok(
-                service.findProfessionalAppointmentsByDay(
+                professionalScheduleQueryUseCase.findProfessionalAppointmentsByDay(
                         principal.getUserId(),
                         start,
                         end
@@ -45,7 +47,7 @@ public class ProfessionalAppointmentController {
             @PathVariable @Positive(message = "O identificador do agendamento deve ser positivo") Long appointmentId,
             @RequestParam @Positive(message = "O identificador do cliente deve ser positivo") Long clientId
     ) {
-        service.markAppointmentAsConfirmed(appointmentId, clientId);
+        professionalAppointmentStatusUseCase.confirm(appointmentId, clientId);
         return ResponseEntity.noContent().build();
     }
 
@@ -54,7 +56,7 @@ public class ProfessionalAppointmentController {
             @PathVariable @Positive(message = "O identificador do agendamento deve ser positivo") Long appointmentId,
             @RequestParam @Positive(message = "O identificador do cliente deve ser positivo") Long clientId
     ) {
-        service.markAppointmentAsFinished(appointmentId, clientId);
+        professionalAppointmentStatusUseCase.finish(appointmentId, clientId);
         return ResponseEntity.noContent().build();
     }
 
@@ -63,7 +65,7 @@ public class ProfessionalAppointmentController {
             @PathVariable @Positive(message = "O identificador do agendamento deve ser positivo") Long appointmentId,
             @RequestParam @Positive(message = "O identificador do cliente deve ser positivo") Long clientId
     ) {
-        service.markAppointmentAsCancelled(appointmentId, clientId);
+        professionalAppointmentStatusUseCase.cancel(appointmentId, clientId);
         return ResponseEntity.noContent().build();
     }
 
@@ -72,7 +74,7 @@ public class ProfessionalAppointmentController {
             @PathVariable @Positive(message = "O identificador do agendamento deve ser positivo") Long appointmentId,
             @RequestParam @Positive(message = "O identificador do cliente deve ser positivo") Long clientId
     ) {
-        service.markAppointmentAsMissed(appointmentId, clientId);
+        professionalAppointmentStatusUseCase.miss(appointmentId, clientId);
         return ResponseEntity.noContent().build();
     }
 }

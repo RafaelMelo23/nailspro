@@ -46,4 +46,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findBusyAppointmentsInRange(@Param("id") Long professionalId,
                                                   @Param("startRange") Instant startRange,
                                                   @Param("endRange") Instant endRange);
+
+    @Query("SELECT ap FROM Appointment ap WHERE ap.id = :appointmentId AND ap.client.id = :clientId")
+    Optional<Appointment> findAndValidateClientOwnership(@Param("appointmentId") Long appointmentId,
+                                                         @Param("clientId") Long clientId);
+
+    @Query("SELECT ap FROM Appointment ap WHERE ap.id = :appointmentId AND ap.professional.id = :clientId")
+    Optional<Appointment> findAndValidateProfessionalOwnership(Long appointmentId, Long professionalId);
 }

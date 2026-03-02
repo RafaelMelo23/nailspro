@@ -1,6 +1,8 @@
 package com.rafael.nailspro.webapp.domain.model;
 
 import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentStatus;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +70,21 @@ public class Appointment extends BaseEntity {
     @OneToMany(mappedBy = "appointment", orphanRemoval = true)
     private List<AppointmentNotification> appointmentNotifications = new ArrayList<>();
 
+    public void miss() {
+        this.setAppointmentStatus(AppointmentStatus.MISSED);
+    }
+
+    public void cancel() {
+        this.setAppointmentStatus(AppointmentStatus.CANCELLED);
+    }
+
+    public void confirm() {
+        this.setAppointmentStatus(AppointmentStatus.CONFIRMED);
+    }
+
+    public void finish() {
+        this.setAppointmentStatus(AppointmentStatus.FINISHED);
+    }
 
     public BigDecimal calculateTotalValue() {
 
@@ -81,7 +98,61 @@ public class Appointment extends BaseEntity {
         return mainValue.add(addOnsValue);
     }
 
-    public ZonedDateTime getZonedEndDate(ZoneId zoneId) {
-        return endDate.atZone(zoneId);
+    public static Appointment create(
+            AppointmentCreateDTO dto,
+            Client client,
+            Professional professional,
+            SalonService mainService,
+            List<AppointmentAddOn> addOns,
+            SalonProfile salonProfile,
+            TimeInterval interval
+    ) {
+
+        Appointment appointment = Appointment.builder()
+                .appointmentStatus(AppointmentStatus.PENDING)
+                .startDate(interval.realTimeStart())
+                .endDate(interval.realTimeEnd())
+                .client(client)
+                .professional(professional)
+                .mainSalonService(mainService)
+                .addOns(addOns)
+                .observations(dto.observation().orElse(null))
+                .salonTradeName(salonProfile.getTradeName())
+                .salonZoneId(salonProfile.getZoneId())
+                .build();
+
+        appointment.setTotalValue(appointment.calculateTotalValue());
+
+        return appointment;
+    }
+
+    public static TimeInterval calculateIntervalAndBuffer(
+            AppointmentCreateDTO dto,
+            long durationInSeconds,
+            SalonProfile salonProfile
+    ) {
+
+        Instant start = dto.zonedAppointmentDateTime().toInstant();
+        Instant realEnd = start.plusSeconds(durationInSeconds);
+        Instant endWithBuffer = realEnd.plus(
+                salonProfile.getAppointmentBufferMinutes(),
+                ChronoUnit.MINUTES
+        );
+
+        return TimeInterval.builder()
+                .realTimeStart(start)
+                .realTimeEnd(realEnd)
+                .endTimeWithBuffer(endWithBuffer)
+                .build();
+    }
+
+    public static long calculateDurationInSeconds(
+            SalonService mainService,
+            List<AppointmentAddOn> addOns
+    ) {
+        return mainService.getDurationInSeconds()
+                + addOns.stream()
+                .mapToLong(addon -> addon.getService().getDurationInSeconds())
+                .sum();
     }
 }

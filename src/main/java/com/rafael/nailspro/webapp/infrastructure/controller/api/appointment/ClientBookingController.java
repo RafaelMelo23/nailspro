@@ -1,6 +1,8 @@
 package com.rafael.nailspro.webapp.infrastructure.controller.api.appointment;
 
-import com.rafael.nailspro.webapp.application.client.ClientAppointmentBookingUseCase;
+import com.rafael.nailspro.webapp.application.appointment.booking.BookingAppointmentUseCase;
+import com.rafael.nailspro.webapp.application.appointment.booking.CancelAppointmentUseCase;
+import com.rafael.nailspro.webapp.application.appointment.booking.FindProfessionalAvailabilityUseCase;
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
@@ -18,13 +20,15 @@ import java.util.List;
 @RequestMapping("/api/v1/booking")
 public class ClientBookingController {
 
-    private final ClientAppointmentBookingUseCase service;
+    private final BookingAppointmentUseCase bookingAppointmentUseCase;
+    private final CancelAppointmentUseCase cancelAppointmentUseCase;
+    private final FindProfessionalAvailabilityUseCase findProfessionalAvailabilityUseCase;
 
     @PostMapping
     public ResponseEntity<Void> bookAppointment(@Valid @RequestBody AppointmentCreateDTO appointmentDTO,
                                                 @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        service.createAppointment(appointmentDTO, userPrincipal);
+        bookingAppointmentUseCase.bookAppointment(appointmentDTO, userPrincipal);
         return ResponseEntity.status(201).build();
     }
 
@@ -32,7 +36,7 @@ public class ClientBookingController {
     public ResponseEntity<Void> cancelAppointment(@PathVariable Long appointmentId,
                                                   @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        service.cancelAppointment(appointmentId, userPrincipal.getUserId());
+        cancelAppointmentUseCase.cancelAppointment(appointmentId, userPrincipal.getUserId());
         return ResponseEntity.noContent().build();
     }
 
@@ -50,6 +54,6 @@ public class ClientBookingController {
                 .servicesIds(servicesIds)
                 .build();
 
-        return ResponseEntity.ok(service.findAvailableTimes(dto, userPrincipal.getUserId()));
+        return ResponseEntity.ok(findProfessionalAvailabilityUseCase.findAvailableTimes(dto, userPrincipal));
     }
 }
