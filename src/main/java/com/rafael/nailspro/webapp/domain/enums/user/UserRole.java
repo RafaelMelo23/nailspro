@@ -7,6 +7,7 @@ import java.util.Arrays;
 @Getter
 public enum UserRole {
 
+    SUPER_ADMIN("super_admin"),
     ADMIN("admin"),
     PROFESSIONAL("professional"),
     CLIENT("client");

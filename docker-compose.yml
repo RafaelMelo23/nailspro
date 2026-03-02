@@ -20,6 +20,7 @@ services:
       - SENTRY_AUTO_INIT=true
 
       - OTEL_METRICS_EXPORTER=none
+      - OTEL_TRACES_EXPORTER=none
       - OTEL_LOGS_EXPORTER=none
 
       - LOG_LEVEL=${LOG_LEVEL}
