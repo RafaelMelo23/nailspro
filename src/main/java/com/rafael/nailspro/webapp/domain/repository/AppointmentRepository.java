@@ -34,7 +34,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             AND (an.notificationStatus = 'SENT' OR an.attempts >= 3)
                         )
             """)
-    List<Appointment> findAppointmentsNeedingReminder(Instant start, Instant end);
+    List<Appointment> findAppointmentsNeedingReminder(@Param("now") Instant now,
+                                                      @Param("windowEnd") Instant windowEnd);
 
     Optional<Appointment> findFirstByClientIdOrderByStartDateDesc(Long clientId);
 

@@ -23,13 +23,7 @@ public interface RetentionForecastRepository extends JpaRepository<RetentionFore
                                                              @Param("end") Instant end,
                                                              @Param("statuses") List<RetentionStatus> statuses);
 
-    @Query("""
-            SELECT rf FROM RetentionForecast rf
-                       WHERE rf.predictedReturnDate < :now
-                                  AND rf.status != :status
-            """)
+    @Query("SELECT rf FROM RetentionForecast rf WHERE rf.predictedReturnDate < :now AND rf.status != :status")
     List<RetentionForecast> findAllExpiredPredictedForecastsAndNotInStatus(@Param("now") Instant now,
                                                                            @Param("status") RetentionStatus status);
-
-
 }
