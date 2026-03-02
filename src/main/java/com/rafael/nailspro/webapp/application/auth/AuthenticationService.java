@@ -73,7 +73,7 @@ public class AuthenticationService {
                 throw new BusinessException("Os dados informados são inválidos");
             }
         } else {
-            passwordEncoder.matches(loginDTO.password(), "$2a$10$C1J9Q8yCg.6r5PqW3H4Qz.pM3n5k7M9D2g6L1E8R0F4V7I0S2X9A1");
+            passwordEncoder.matches(loginDTO.password(), "$2a$12$p1DeDmHwMBRxNGAJ7II9JefEvHnrPDxCw72YF0nh1Modhwv67y1hK");
             throw new BusinessException("Os dados informados são inválidos");
         }
 
