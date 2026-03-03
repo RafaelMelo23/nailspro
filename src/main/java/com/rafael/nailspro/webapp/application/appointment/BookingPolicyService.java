@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.application.appointment;
 
-import com.rafael.nailspro.webapp.domain.BookingPolicy;
 import com.rafael.nailspro.webapp.application.salon.business.SalonProfileService;
+import com.rafael.nailspro.webapp.domain.BookingPolicy;
 import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentStatus;
 import com.rafael.nailspro.webapp.domain.model.Appointment;
 import com.rafael.nailspro.webapp.domain.model.SalonProfile;

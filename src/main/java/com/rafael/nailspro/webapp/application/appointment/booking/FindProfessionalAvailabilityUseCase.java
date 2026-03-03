@@ -2,13 +2,13 @@ package com.rafael.nailspro.webapp.application.appointment.booking;
 
 import com.rafael.nailspro.webapp.application.appointment.BookingPolicyService;
 import com.rafael.nailspro.webapp.application.salon.business.SalonProfileService;
+import com.rafael.nailspro.webapp.domain.AvailabilityDomainService;
 import com.rafael.nailspro.webapp.domain.model.Professional;
 import com.rafael.nailspro.webapp.domain.model.SalonProfile;
 import com.rafael.nailspro.webapp.domain.model.SalonService;
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.domain.repository.ProfessionalRepository;
 import com.rafael.nailspro.webapp.domain.repository.SalonServiceRepository;
-import com.rafael.nailspro.webapp.domain.AvailabilityDomainService;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentTimesDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.ProfessionalAvailabilityDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.booking.AppointmentTimeWindow;

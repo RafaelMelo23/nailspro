@@ -1,6 +1,7 @@
 package com.rafael.nailspro.webapp.infrastructure.dto.client;
 
 import lombok.Builder;
+
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 

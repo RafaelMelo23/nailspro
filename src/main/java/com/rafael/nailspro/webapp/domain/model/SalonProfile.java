@@ -1,8 +1,8 @@
 package com.rafael.nailspro.webapp.domain.model;
 
 import com.rafael.nailspro.webapp.domain.enums.appointment.TenantStatus;
-import com.rafael.nailspro.webapp.domain.enums.salon.OperationalStatus;
 import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionConnectionState;
+import com.rafael.nailspro.webapp.domain.enums.salon.OperationalStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

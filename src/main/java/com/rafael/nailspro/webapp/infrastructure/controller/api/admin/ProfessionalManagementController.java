@@ -4,7 +4,6 @@ import com.rafael.nailspro.webapp.application.admin.professional.ProfessionalMan
 import com.rafael.nailspro.webapp.application.professional.ProfessionalQueryService;
 import com.rafael.nailspro.webapp.application.professional.ScheduleBlockService;
 import com.rafael.nailspro.webapp.application.professional.WorkScheduleService;
-import com.rafael.nailspro.webapp.domain.model.Professional;
 import com.rafael.nailspro.webapp.infrastructure.dto.admin.professional.CreateProfessionalDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.ProfessionalResponseDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.professional.schedule.WorkScheduleRecordDTO;
