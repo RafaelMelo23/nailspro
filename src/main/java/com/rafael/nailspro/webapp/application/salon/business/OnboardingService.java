@@ -22,7 +22,6 @@ public class OnboardingService {
     private final SalonProfileRepository salonProfileRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // todo: remember to make the spring filters skip its API
     @Transactional
     public OnboardingResultDTO onboardOwner(OnboardingRequestDTO dto) {
 

@@ -3,12 +3,10 @@ package com.rafael.nailspro.webapp.infrastructure.security.filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -38,40 +36,36 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
+
+        http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/api/auth/**")
+                        .ignoringRequestMatchers("/api/v1/auth/**")
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
+                .authorizeHttpRequests(auth -> auth
+                        // Public Endpoints
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/webhook/**").permitAll()
 
-                        // Admin Pages
-                        .requestMatchers(HttpMethod.GET,
-                                "/admin/servicos",
-                                "/admin/configuracoes").hasRole("ADMIN")
+                        .requestMatchers("/api/internal/**").hasRole("SUPER_ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/admin/agenda-profissional").hasAnyRole("ADMIN", "PROFESSIONAL")
+                        // Admin Endpoints
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 
-                        // APIs
-                        .requestMatchers("/api/internal/**",
-                                "/api/v1/auth/login",
-                                "/api/v1/auth/register",
-                                "/api/v1/webhook/**").permitAll()
+                        // Professional Endpoints
+                        .requestMatchers("/api/v1/professional/**").hasAnyRole("PROFESSIONAL", "ADMIN")
 
-                        // User/Anonymous Pages
-                        .requestMatchers(HttpMethod.GET,
-                                "/entrar",
-                                "/cadastro",
-                                "/agendar",
-                                "/actuator/health")
-                        .permitAll()
+                        // Client Endpoints
+                        .requestMatchers("/api/v1/user/**").authenticated()
+                        .requestMatchers("/api/v1/booking/**").authenticated()
 
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(tenantIdFilter, securityFilter.getClass())
                 .addFilterAfter(salonMaintenanceFilter, tenantIdFilter.getClass())
-                .addFilterAfter(tenantStatusFilter, tenantIdFilter.getClass())
-                .build();
+                .addFilterAfter(tenantStatusFilter, tenantIdFilter.getClass()
+                );
+
+        return http.build();
     }
 }

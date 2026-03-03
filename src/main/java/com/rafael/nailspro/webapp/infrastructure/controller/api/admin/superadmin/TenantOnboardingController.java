@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.infrastructure.controller.api.admin;
+package com.rafael.nailspro.webapp.infrastructure.controller.api.admin.superadmin;
 
 import com.rafael.nailspro.webapp.application.salon.business.OnboardingService;
 import com.rafael.nailspro.webapp.infrastructure.dto.onboarding.OnboardingRequestDTO;
