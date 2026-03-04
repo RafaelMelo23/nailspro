@@ -19,4 +19,13 @@ public class AppConfig {
                 .readTimeout(Duration.ofSeconds(15))
                 .build();
     }
+
+    @Bean
+    public RestTemplate evolutionRestTemplate(RestTemplateBuilder builder) {
+
+        return builder
+                .connectTimeout(Duration.ofSeconds(15))
+                .readTimeout(Duration.ofSeconds(45))
+                .build();
+    }
 }

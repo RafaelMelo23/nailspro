@@ -4,6 +4,7 @@
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <prettyPrint>true</prettyPrint>
             <fieldNames>
                 <timestamp>timestamp</timestamp>
                 <version>[ignore]</version>

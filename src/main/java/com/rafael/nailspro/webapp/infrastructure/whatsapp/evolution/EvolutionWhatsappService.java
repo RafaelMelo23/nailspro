@@ -4,30 +4,34 @@ import com.rafael.nailspro.webapp.application.whatsapp.WhatsappProvider;
 import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.CreateInstanceRequestDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.SendTextRequestDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.WebhookDTO;
 import com.rafael.nailspro.webapp.infrastructure.helper.PhoneNumberHelper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
-@Log4j2
+import static com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionIntegraton.WHATSAPP_BAILEYS;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "whatsapp.provider", havingValue = "evolution", matchIfMissing = true)
 public class EvolutionWhatsappService implements WhatsappProvider {
 
+    private static final String INSTANCE_PATH = "/instance";
+    private static final String MESSAGE_PATH = "/message";
+
+    @Qualifier("evolutionRestTemplate")
     private final RestTemplate restTemplate;
 
     @Value("${evolution.url}")
@@ -39,105 +43,180 @@ public class EvolutionWhatsappService implements WhatsappProvider {
     @Value("${evolution.webhook.url}")
     private String webhookUrl;
 
-    public void prepareAndConnect(String tenantId, String phoneNumber) throws InterruptedException {
-        logout(tenantId);
-        TimeUnit.MILLISECONDS.sleep(800);
-        createInstance(tenantId);
-        instanceConnect(tenantId, Optional.of(phoneNumber));
-    }
-
+    @Override
     public String createInstance(String tenantId) {
-        String url = evolutionApiBaseUrl + "/instance/create/";
-        CreateInstanceRequestDTO dto = createInstanceRequestPayload(tenantId);
+        String url = buildInstanceUrl("/create");
+
+        log.info("Evolution API - CREATE instance request. tenantId={}", tenantId);
+
+        HttpEntity<CreateInstanceRequestDTO> request =
+                new HttpEntity<>(buildCreateInstancePayload(tenantId), getHeaders());
 
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(url, dto, String.class);
+            ResponseEntity<String> response =
+                    restTemplate.postForEntity(url, request, String.class);
+
+            log.debug("Evolution API - CREATE success. tenantId={}", tenantId);
             return response.getBody();
+
         } catch (HttpClientErrorException.Conflict e) {
+            log.warn("Evolution API - Instance already exists. tenantId={}", tenantId);
             return null;
+
+        } catch (Exception ex) {
+            log.error("Evolution API - CREATE failed. tenantId={}", tenantId, ex);
+            throw ex;
         }
     }
 
-    public CreateInstanceRequestDTO createInstanceRequestPayload(String tenantId) {
-        List<EvolutionWebhookEvent> eventosDesejados = List.of(
+    @Override
+    public String instanceConnect(String instanceName, Optional<String> phoneNumber) {
+        String url = buildConnectUrl(instanceName, phoneNumber);
+
+        log.info("Evolution API - CONNECT request. instanceName={}", instanceName);
+
+        HttpEntity<Void> request = new HttpEntity<>(getHeaders());
+
+        try {
+            ResponseEntity<String> response =
+                    restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+
+            log.debug("Evolution API - CONNECT success. instanceName={}", instanceName);
+            return response.getBody();
+
+        } catch (Exception ex) {
+            log.error("Evolution API - CONNECT failed. instanceName={}", instanceName, ex);
+            throw ex;
+        }
+    }
+
+    @Override
+    public void deleteInstance(String instanceName) {
+        String url = buildInstanceUrl("/delete/" + instanceName);
+
+        log.info("Evolution API - DELETE request. instanceName={}", instanceName);
+
+        HttpEntity<Void> request = new HttpEntity<>(getHeaders());
+
+        try {
+            restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            log.debug("Evolution API - DELETE success. instanceName={}", instanceName);
+
+            Thread.sleep(1000);
+
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            log.error("Evolution API - DELETE interrupted. instanceName={}", instanceName, ex);
+            throw new IllegalStateException("Deletion interrupted", ex);
+
+        } catch (Exception ex) {
+            log.error("Evolution API - DELETE failed. instanceName={}", instanceName, ex);
+            throw ex;
+        }
+    }
+
+    @Override
+    public void logout(String instanceName) {
+        String url = buildInstanceUrl("/logout/" + instanceName);
+
+        log.info("Evolution API - LOGOUT request. instanceName={}", instanceName);
+
+        HttpEntity<Void> request = new HttpEntity<>(getHeaders());
+
+        try {
+            restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            log.debug("Evolution API - LOGOUT success. instanceName={}", instanceName);
+
+        } catch (Exception ex) {
+            log.error("Evolution API - LOGOUT failed. instanceName={}", instanceName, ex);
+            throw ex;
+        }
+    }
+
+    @Override
+    public void sendText(String instanceName, String message, String targetNumber) {
+        String url = buildMessageUrl("/sendText/" + instanceName);
+
+        String formattedNumber = PhoneNumberHelper.formatPhoneNumber(targetNumber);
+
+        log.info(
+                "Evolution API - SEND TEXT request. instanceName={} targetEnding={}",
+                instanceName,
+                maskNumber(formattedNumber)
+        );
+
+        SendTextRequestDTO bodyDTO = SendTextRequestDTO.of(formattedNumber, message);
+        HttpEntity<SendTextRequestDTO> request =
+                new HttpEntity<>(bodyDTO, getHeaders());
+
+        try {
+            restTemplate.postForObject(url, request, Void.class);
+            log.debug("Evolution API - SEND TEXT success. instanceName={}", instanceName);
+
+        } catch (Exception ex) {
+            log.error("Evolution API - SEND TEXT failed. instanceName={}", instanceName, ex);
+            throw ex;
+        }
+    }
+
+    private CreateInstanceRequestDTO buildCreateInstancePayload(String tenantId) {
+        List<EvolutionWebhookEvent> events = List.of(
                 EvolutionWebhookEvent.QRCODE_UPDATED,
                 EvolutionWebhookEvent.SEND_MESSAGE,
                 EvolutionWebhookEvent.CONNECTION_UPDATE
         );
 
+        WebhookDTO webhook = WebhookDTO.builder()
+                .base64(false)
+                .url(webhookUrl)
+                .events(events)
+                .build();
+
         return CreateInstanceRequestDTO.builder()
-                .token(evolutionApiKey)
-                .events(eventosDesejados)
                 .instanceName(tenantId)
-                .webhookByEvents(false)
-                .webhook(webhookUrl)
-                .number(null)
-                .qrcode(true)
+                .webhook(webhook)
+                .qrcode(false)
+                .integration(WHATSAPP_BAILEYS)
                 .build();
     }
 
-    public String instanceConnect(String instanceName, Optional<String> phoneNumber) {
-        String url = evolutionApiBaseUrl + "/instance/connect/" + instanceName;
-
-        if (phoneNumber.isPresent()) {
-            url = url + "?phoneNumber=" + phoneNumber.get();
-        }
-
-        HttpEntity<Void> request = new HttpEntity<>(getHeaders());
-        ResponseEntity<String> response =
-                restTemplate.exchange(url, HttpMethod.GET, request, String.class);
-
-        return response.getBody();
+    private String buildInstanceUrl(String path) {
+        return UriComponentsBuilder
+                .fromUriString(evolutionApiBaseUrl)
+                .path(INSTANCE_PATH)
+                .path(path)
+                .toUriString();
     }
 
-    public void sendTextVoid(String instanceName, String message, String targetNumber) {
-        String url = evolutionApiBaseUrl + "/message/sendText/" + instanceName;
+    private String buildMessageUrl(String path) {
+        return UriComponentsBuilder
+                .fromUriString(evolutionApiBaseUrl)
+                .path(MESSAGE_PATH)
+                .path(path)
+                .toUriString();
+    }
 
-        SendTextRequestDTO body = SendTextRequestDTO.of(
-                PhoneNumberHelper.formatPhoneNumber(targetNumber),
-                message
+    private String buildConnectUrl(String instanceName, Optional<String> phoneNumber) {
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromUriString(evolutionApiBaseUrl)
+                .pathSegment("instance", "connect", instanceName);
+
+        phoneNumber.ifPresent(number ->
+                builder.queryParam("phoneNumber", number)
         );
 
-        HttpEntity<SendTextRequestDTO> request =
-                new HttpEntity<>(body, getHeaders());
-
-        restTemplate.postForEntity(url, request, String.class);
-    }
-
-    public Map<String, Object> sendText(String instanceName, String message, String targetNumber) {
-        String url = evolutionApiBaseUrl + "/message/sendText/" + instanceName;
-
-        SendTextRequestDTO bodyDTO = SendTextRequestDTO.of(
-                PhoneNumberHelper.formatPhoneNumber(targetNumber),
-                message
-        );
-
-        HttpEntity<SendTextRequestDTO> requestBody =
-                new HttpEntity<>(bodyDTO, getHeaders());
-
-        return restTemplate.postForObject(url, requestBody, Map.class);
-    }
-
-    public void deleteInstance(String instanceName) {
-        String url = evolutionApiBaseUrl + "/instance/delete/" + instanceName;
-
-        HttpEntity<Void> request = new HttpEntity<>(getHeaders());
-        restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
-    }
-
-    public void logout(String instanceName) {
-        String url = evolutionApiBaseUrl + "/instance/logout/" + instanceName;
-
-        HttpEntity<Void> request = new HttpEntity<>(getHeaders());
-        restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+        return builder.toUriString();
     }
 
     private HttpHeaders getHeaders() {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("apikey", evolutionApiKey);
-        httpHeaders.set("Content-Type", "application/json");
-        return httpHeaders;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("apikey", evolutionApiKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
     }
 
-
+    private String maskNumber(String number) {
+        if (number.length() <= 4) return "****";
+        return "****" + number.substring(number.length() - 4);
+    }
 }

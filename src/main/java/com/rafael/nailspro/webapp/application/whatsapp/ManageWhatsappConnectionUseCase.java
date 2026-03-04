@@ -3,58 +3,68 @@ package com.rafael.nailspro.webapp.application.whatsapp;
 import com.rafael.nailspro.webapp.application.salon.business.SalonProfileService;
 import com.rafael.nailspro.webapp.domain.enums.evolution.WhatsappConnectionMethod;
 import com.rafael.nailspro.webapp.domain.model.SalonProfile;
-import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.rafael.nailspro.webapp.domain.enums.evolution.WhatsappConnectionMethod.PAIRING_CODE;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ManageWhatsappConnectionUseCase {
 
-    /*
-        TODO: when making the front-end view for it. make it so the tenant can see the number that will be used for the connection (salon.comercialPhone),
-        TODO: and make it so they can promptly change it if inadequate
-     */
-
     private final SalonProfileService salonService;
     private final WhatsappProvider whatsappProvider;
 
+    @Transactional
     public void setupInitialConnection(String tenantId, WhatsappConnectionMethod connectionMethod) {
-
-        try {
-            whatsappProvider.deleteInstance(tenantId);
-        } catch (Exception ignore) {
-        }
-
-        whatsappProvider.createInstance(tenantId);
-
+        log.info("Starting WhatsApp initial connection setup for tenantId={}", tenantId);
+        deleteInstance(tenantId);
         SalonProfile salon = salonService.findWithOwnerByTenantId(tenantId);
-        salon.setWhatsappLastResetAt(LocalDateTime.now());
 
-        String cleanPhoneNumber = basicPhoneFormatValidation(salon.getComercialPhone());
-        salonService.save(salon);
+        createInstance(tenantId);
+        updateConnectionInfo(tenantId, salon);
 
-        if (PAIRING_CODE.equals(connectionMethod)) {
-            whatsappProvider.instanceConnect(tenantId, Optional.of(cleanPhoneNumber));
+        connectViaChosenMethod(tenantId, connectionMethod, salon.getComercialPhone());
+
+        log.info("WhatsApp initial connection setup completed for tenantId={}", tenantId);
+    }
+
+    private void createInstance(String tenantId) {
+        log.info("Creating new WhatsApp instance for tenantId={}", tenantId);
+        whatsappProvider.createInstance(tenantId);
+    }
+
+    private void connectViaChosenMethod(String tenantId, WhatsappConnectionMethod connectionMethod, String phoneNumber) {
+        switch (connectionMethod) {
+            case PAIRING_CODE -> {
+                log.info("Connecting WhatsApp instance using PAIRING_CODE for tenantId={}", tenantId);
+                whatsappProvider.instanceConnect(tenantId, Optional.of(phoneNumber));
+            } case QR_CODE -> {
+                log.info("Connecting WhatsApp instance using QR_CODE for tenantId={}", tenantId);
+                whatsappProvider.instanceConnect(tenantId, Optional.empty());
+            }
         }
     }
 
-    private String basicPhoneFormatValidation(String phoneNumber) {
-        if (phoneNumber == null) throw new BusinessException("Não há número registrado para realizar conexão.");
+    private void updateConnectionInfo(String tenantId, SalonProfile salon) {
+        log.debug("Salon profile loaded for tenantId={}", tenantId);
+        salon.setWhatsappLastResetAt(LocalDateTime.now());
+        salonService.save(salon);
+        log.debug("Salon profile updated with whatsappLastResetAt for tenantId={}", tenantId);
+    }
 
-        String cleanNumber = phoneNumber.replaceAll("\\D", "");
-
-        if (!cleanNumber.startsWith("55")) {
-            cleanNumber = "55" + cleanNumber;
+    private void deleteInstance(String tenantId) {
+        try {
+            log.debug("Attempting to delete existing WhatsApp instance for tenantId={}", tenantId);
+            whatsappProvider.deleteInstance(tenantId);
+            log.debug("Previous WhatsApp instance deleted for tenantId={}", tenantId);
+        } catch (Exception ex) {
+            log.warn("Failed to delete existing WhatsApp instance for tenantId={}. Continuing setup. Error={}",
+                    tenantId, ex.getMessage());
         }
-
-        if (cleanNumber.length() < 12) throw new BusinessException("O número informado é inválido para conexão");
-
-        return cleanNumber;
     }
 }

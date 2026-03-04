@@ -1,19 +1,15 @@
 package com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionIntegraton;
 import lombok.Builder;
 
-import java.util.List;
-
 @Builder
-public record CreateInstanceRequestDTO(String instanceName,
-                                       String token,
-                                       String integration,
-                                       boolean qrcode,
-                                       String number,
-                                       String webhook,
-                                       @JsonProperty("webhook_by_events")
-                                       boolean webhookByEvents,
-                                       List<EvolutionWebhookEvent> events) {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record CreateInstanceRequestDTO(
+        String instanceName,
+        boolean qrcode,
+        EvolutionIntegraton integration,
+        WebhookDTO webhook
+) {
 }
