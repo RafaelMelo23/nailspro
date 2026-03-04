@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record EvolutionWebhookResponse<T>(
+public record EvolutionWebhookResponseDTO<T>(
         EvolutionWebhookEvent event,
         String instance,
         T data,

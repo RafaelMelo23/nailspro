@@ -2,9 +2,9 @@ package com.rafael.nailspro.webapp.infrastructure.whatsapp.evolution;
 
 import com.rafael.nailspro.webapp.application.whatsapp.WhatsappProvider;
 import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
-import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.CreateInstanceRequestDTO;
-import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.SendTextRequestDTO;
-import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.WebhookDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.instance.CreateInstanceRequestDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.text.SendTextRequestDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.instance.WebhookDTO;
 import com.rafael.nailspro.webapp.infrastructure.helper.PhoneNumberHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

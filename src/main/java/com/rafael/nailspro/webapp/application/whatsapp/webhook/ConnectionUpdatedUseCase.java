@@ -6,8 +6,8 @@ import com.rafael.nailspro.webapp.application.sse.EvolutionConnectionNotificatio
 import com.rafael.nailspro.webapp.application.whatsapp.WhatsappProvider;
 import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
 import com.rafael.nailspro.webapp.domain.model.SalonProfile;
-import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.ConnectionData;
-import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.EvolutionWebhookResponse;
+import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.connection.ConnectionDataDTO;
+import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.EvolutionWebhookResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,15 +31,16 @@ public class ConnectionUpdatedUseCase implements WebhookStrategy {
     @Override
     @Transactional
     public void process(Object payload) {
-        if (payload instanceof EvolutionWebhookResponse<?> response) {
+        if (payload instanceof EvolutionWebhookResponseDTO<?> response) {
             Object data = response.data();
+            String tenantId = response.instance();
 
             if (data instanceof java.util.Map) {
-                data = objectMapper.convertValue(data, ConnectionData.class);
+                data = objectMapper.convertValue(data, ConnectionDataDTO.class);
             }
 
-            if (data instanceof ConnectionData connectionData) {
-                String tenantId = connectionData.instance();
+            if (data instanceof ConnectionDataDTO connectionDataDTO) {
+
                 log.info("Successfully converted LinkedHashMap to ConnectionData for instance: {}", response.instance());
 
                 SalonProfile salon = salonProfileService.findWithOwnerByTenantId(tenantId);
@@ -49,7 +50,7 @@ public class ConnectionUpdatedUseCase implements WebhookStrategy {
                     return;
                 }
 
-                switch (connectionData.state()) {
+                switch (connectionDataDTO.state()) {
                     case OPEN -> {
                         if (shouldIgnoreClose(salon)) {
                             log.info("Ignoring inconsistent CLOSE event for tenant: {}", tenantId);

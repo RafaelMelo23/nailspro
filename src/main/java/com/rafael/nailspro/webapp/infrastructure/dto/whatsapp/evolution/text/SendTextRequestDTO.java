@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution;
+package com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.text;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

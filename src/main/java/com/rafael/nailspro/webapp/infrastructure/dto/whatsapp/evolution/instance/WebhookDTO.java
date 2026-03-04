@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution;
+package com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.instance;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
