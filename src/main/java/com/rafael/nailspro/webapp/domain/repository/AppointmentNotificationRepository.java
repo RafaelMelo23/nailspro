@@ -21,7 +21,7 @@ public interface AppointmentNotificationRepository extends JpaRepository<Appoint
     DELETE FROM AppointmentNotification ap
     WHERE ap.notificationStatus = :status
     AND ap.sentAt < :instant""")
-    void deleteByStatusAndSentAtSmallerThanInBatch(@Param("status") AppointmentNotificationStatus status,
+    int deleteByStatusAndSentAtSmallerThanInBatch(@Param("status") AppointmentNotificationStatus status,
                                                    @Param("instant") Instant instant);
 
     @Query("""

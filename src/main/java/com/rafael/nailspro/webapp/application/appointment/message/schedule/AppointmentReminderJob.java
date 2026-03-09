@@ -26,27 +26,53 @@ public class AppointmentReminderJob {
 
     @Scheduled(cron = "0 0/15 * * * *")
     public void scheduleReminders() {
-        log.info("Initiating search for appointment reminders");
+
+        Instant startTime = Instant.now();
+        log.info("Starting appointment reminder job");
+
         try (EntityManager em = entityManagerFactory.createEntityManager()) {
+
             Session session = em.unwrap(Session.class);
             session.disableFilter("tenantFilter");
 
-            sendReminders();
+            int processed = sendReminders();
+
+            long durationMs = ChronoUnit.MILLIS.between(startTime, Instant.now());
+
+            log.info("Appointment reminder job completed: {} reminders processed in {} ms",
+                    processed, durationMs);
+
+        } catch (Exception ex) {
+            log.error("Appointment reminder job failed", ex);
         }
     }
 
-    private void sendReminders() {
-        Instant windowStart = Instant.now();
-        Instant nowPlusFiveHours = windowStart.plus(5, ChronoUnit.HOURS);
-        List<Appointment> upcomingAppointments =
-                appointmentRepository.findAppointmentsNeedingReminder(windowStart, nowPlusFiveHours);
+    private int sendReminders() {
 
-        upcomingAppointments.forEach(ap -> {
+        Instant windowStart = Instant.now();
+        Instant windowEnd = windowStart.plus(5, ChronoUnit.HOURS);
+
+        List<Appointment> upcomingAppointments =
+                appointmentRepository.findAppointmentsNeedingReminder(windowStart, windowEnd);
+
+        if (upcomingAppointments.isEmpty()) {
+            log.debug("No appointments requiring reminders between {} and {}", windowStart, windowEnd);
+            return 0;
+        }
+
+        log.info("Found {} appointments requiring reminders", upcomingAppointments.size());
+
+        int processed = 0;
+
+        for (Appointment ap : upcomingAppointments) {
             try {
                 messagingUseCase.sendAppointmentReminderMessage(ap.getId());
+                processed++;
             } catch (Exception e) {
-                log.error("Failed to process reminder for appointment ID: {}", ap.getId(), e);
+                log.error("Failed to send reminder for appointmentId={}", ap.getId(), e);
             }
-        });
+        }
+
+        return processed;
     }
 }

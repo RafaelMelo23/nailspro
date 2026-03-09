@@ -20,7 +20,20 @@ public class AppointmentNotificationCleanupJob {
 
     @Scheduled(cron = "0 0 5 * * *")
     public void deleteSentNotifications() {
-        Instant twentyForHoursAgo = Instant.now().minus(24, ChronoUnit.HOURS);
-        notificationRepository.deleteByStatusAndSentAtSmallerThanInBatch(SENT, twentyForHoursAgo);
+        Instant cutoff = Instant.now().minus(24, ChronoUnit.HOURS);
+        try {
+            int deleted =
+                    notificationRepository.deleteByStatusAndSentAtSmallerThanInBatch(SENT, cutoff);
+
+            if (deleted > 0) {
+                log.info(
+                        "Deleted {} SENT appointment notifications older than {}",
+                        deleted,
+                        cutoff
+                );
+            }
+        } catch (Exception ex) {
+            log.error("Failed to cleanup sent appointment notifications", ex);
+        }
     }
 }
