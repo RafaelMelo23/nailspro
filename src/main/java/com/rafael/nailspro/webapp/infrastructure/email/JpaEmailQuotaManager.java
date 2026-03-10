@@ -54,7 +54,7 @@ public class JpaEmailQuotaManager implements EmailQuotaManager {
     }
 
     private boolean isDailyQuotaExceeded(LocalDate today) {
-        Integer dailyUsageCount = emailQuotaRepository.getDailyUsageCount(today)
+        Integer dailyUsageCount = emailQuotaRepository.findUsageQuota(today)
                 .orElse(0);
 
         return dailyUsageCount >= DAY_MAX_QUOTA;

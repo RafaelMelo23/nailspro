@@ -14,7 +14,8 @@ public interface EmailQuotaRepository extends JpaRepository<EmailUsageQuota, Lon
 
     boolean existsByUsageDate(LocalDate usageDate);
 
-    Optional<Integer> getDailyUsageCount(LocalDate usageDate);
+    @Query("SELECT e.usageDate FROM EmailUsageQuota e WHERE e.usageDate = :usageDate")
+    Optional<Integer> findUsageQuota(LocalDate usageDate);
 
     @Query("SELECT COALESCE(SUM(e.dailyCount), 0) FROM EmailUsageQuota e WHERE e.usageDate >= :start AND e.usageDate <= :end")
     Optional<Integer> getMonthlyUsageCount(@Param("start")LocalDate start,
