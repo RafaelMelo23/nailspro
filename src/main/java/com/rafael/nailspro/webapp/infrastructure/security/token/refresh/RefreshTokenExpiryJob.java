@@ -6,13 +6,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenExpiryService {
+public class RefreshTokenExpiryJob {
 
     private final RefreshTokenService service;
 
     @Scheduled(cron = "0 0 3 * * *")
     public void deleteExpiredTokens() {
-
         service.deleteExpiredTokens();
     }
 }
