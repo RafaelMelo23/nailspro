@@ -18,6 +18,7 @@ public class TenantStatusFilter extends OncePerRequestFilter {
     private final SalonProfileService salonProfileService;
 
     //todo: create according front-end page to react to this filter
+    // refactor to be an interceptor instead of filter
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

@@ -22,28 +22,33 @@ public class UserProfileManagementUseCase {
 
     @Transactional
     public void updateEmail(Long userId, ChangeEmailRequestDTO request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new BusinessException("Credenciais inválidas. Não foi possível alterar o email."));
 
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new RuntimeException("Senha incorreta. Não foi possível alterar o e-mail.");
+            if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+                throw new BusinessException("Credenciais inválidas. Não foi possível alterar o email.");
+            }
+
+            if (userRepository.existsByEmail(request.newEmail())) {
+                throw new BusinessException("Email já em uso.");
+            }
+
+            user.setEmail(request.newEmail());
+            userRepository.save(user);
+
+        } catch (Exception e) {
+            throw new BusinessException("A operação falhou. Por favor, tente novamente mais tarde.");
         }
-
-        if (userRepository.existsByEmail(request.newEmail())) {
-            throw new RuntimeException("Este e-mail já está em uso por outra conta.");
-        }
-
-        user.setEmail(request.newEmail());
-        userRepository.save(user);
     }
 
     @Transactional
     public void updatePhone(Long clientId, ChangePhoneRequestDTO request) {
         Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
+                .orElseThrow(() -> new BusinessException("Credenciais inválidas. Não foi possível alterar o email."));
 
         if (!passwordEncoder.matches(request.password(), client.getPassword())) {
-            throw new BusinessException("Senha incorreta. Não foi possível alterar o telefone.");
+            throw new BusinessException("Credenciais inválidas. Não foi possível alterar o email.");
         }
 
         String cleanPhone = request.newPhone().replaceAll("\\D", "");
