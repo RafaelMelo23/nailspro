@@ -13,19 +13,18 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@PrimaryKeyJoinColumn(name = "user_id")
 public class Client extends User {
 
-    @Column(name = "missed_appointments", nullable = false)
+    @Column(name = "missed_appointments")
     private Integer missedAppointments = 0;
 
-    @Column(name = "cancelled_appointments", nullable = false)
+    @Column(name = "cancelled_appointments")
     private Integer canceledAppointments = 0;
 
     @OneToMany(mappedBy = "client")
     private List<Appointment> clientAppointments;
 
-    @Column(name = "phone_number", nullable = false, length = 13)
+    @Column(name = "phone_number", length = 13)
     private String phoneNumber;
 
     @OneToOne(mappedBy = "client", orphanRemoval = true)

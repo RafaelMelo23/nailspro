@@ -20,13 +20,13 @@ public class Professional extends User {
 
     private String professionalPicture;
 
-    @Column(nullable = false)
+    @Column
     private UUID externalId = UUID.randomUUID();
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "is_active")
     private Boolean isActive = false;
 
-    @Column(name = "is_first_login", nullable = false)
+    @Column(name = "is_first_login")
     private Boolean isFirstLogin = false;
 
     @OneToMany(mappedBy = "professional")
