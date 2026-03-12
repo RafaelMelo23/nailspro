@@ -21,6 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         //    registry.addInterceptor(salonMaintenanceInterceptor);
         //    registry.addInterceptor(tenantStatusFilter);
-        registry.addInterceptor(evolutionApiInterceptor);
+        registry.addInterceptor(evolutionApiInterceptor)
+                .addPathPatterns("/api/v1/webhook/**");
     }
 }

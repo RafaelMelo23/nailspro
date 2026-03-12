@@ -22,11 +22,11 @@ public class EvolutionApiInterceptor implements HandlerInterceptor {
         if (EVO_WEBHOOK_ENDPOINT.equalsIgnoreCase(path)) {
             String apiKey = request.getHeader("apiKey");
 
-            if (!evolutionApiKey.equalsIgnoreCase(apiKey)) {
+            if (apiKey == null || !evolutionApiKey.equalsIgnoreCase(apiKey)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }

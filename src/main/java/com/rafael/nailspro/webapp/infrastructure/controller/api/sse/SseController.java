@@ -2,6 +2,12 @@ package com.rafael.nailspro.webapp.infrastructure.controller.api.sse;
 
 import com.rafael.nailspro.webapp.domain.model.UserPrincipal;
 import com.rafael.nailspro.webapp.infrastructure.sse.SseService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,10 +21,18 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/notifications")
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Notifications", description = "Server-Sent Events notifications")
 public class SseController {
 
     private final SseService sseService;
 
+    @Operation(summary = "Subscribe to notifications", description = "Opens an SSE stream for notifications.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "SSE stream opened",
+                    content = @Content(mediaType = MediaType.TEXT_EVENT_STREAM_VALUE)),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@AuthenticationPrincipal UserPrincipal principal) {
         Long userId = principal.getUserId();

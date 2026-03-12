@@ -37,7 +37,6 @@ public class BookingAppointmentUseCase {
             AppointmentCreateDTO dto,
             UserPrincipal principal
     ) {
-
         UUID professionalId = UUID.fromString(dto.professionalExternalId());
 
         Professional professional =

@@ -95,9 +95,21 @@ public class GlobalExceptionHandler {
         String method = request.getMethod();
 
         if (status.is5xxServerError()) {
-            log.error("[INTERNAL ERROR]: STATUS: {} - PATH: {} - METHOD: {} - ERROR: {}", status, uri, method, e.getMessage());
+            log.error(
+                    "[INTERNAL ERROR]: STATUS: {} - PATH: {} - METHOD: {}",
+                    status,
+                    uri,
+                    method,
+                    e
+            );
         } else {
-            log.warn("[APP-WARN]: STATUS: {} - PATH: {} - METHOD: {} - ERROR: {}", status, uri, method, e.getMessage());
+            log.error(
+                    "[APP-WARN]: STATUS: {} - PATH: {} - METHOD: {}",
+                    status,
+                    uri,
+                    method,
+                    e
+            );
         }
     }
 }
