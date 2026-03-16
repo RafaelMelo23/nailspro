@@ -73,10 +73,4 @@ public class ClientManagementService {
                         .build()
                 );
     }
-
-    public Client getClient(Long clientId) {
-
-        return clientRepository.findById(clientId)
-                .orElseThrow(() -> new BusinessException("Cliente não encontrado"));
-    }
 }

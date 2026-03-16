@@ -14,7 +14,8 @@ import java.util.Optional;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-    Page<Appointment> getClientAppointmentsById(Long id, Pageable pageable);
+    @Query("SELECT ap FROM Appointment ap WHERE ap.client.id = :id")
+    Page<Appointment> getClientAppointmentsById(@Param("id") Long id, Pageable pageable);
 
     @Query("""
             SELECT a
