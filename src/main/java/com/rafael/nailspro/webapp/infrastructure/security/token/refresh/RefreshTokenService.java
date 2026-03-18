@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class RefreshTokenService {
 
     private final RefreshTokenRepository repository;
+    private final Clock clock;
 
     @Value("${app.jwt.refreshExpirationMs}")
     private Long tokenDurationMs;
@@ -28,7 +30,7 @@ public class RefreshTokenService {
 
     @Transactional
     public void deleteExpiredTokens() {
-        repository.deleteByExpiryDateBefore(Instant.now());
+        repository.deleteByExpiryDateBefore(Instant.now(clock));
     }
 
     @Transactional
@@ -41,14 +43,14 @@ public class RefreshTokenService {
                 RefreshToken.builder()
                         .user(user)
                         .token(UUID.randomUUID().toString())
-                        .expiryDate(Instant.now().plusMillis(tokenDurationMs))
+                        .expiryDate(Instant.now(clock).plusMillis(tokenDurationMs))
                         .isRevoked(false)
                         .build()
         );
     }
 
     public RefreshToken verifyExpiration(RefreshToken token) {
-        if (token.getExpiryDate().isBefore(Instant.now())) {
+        if (token.getExpiryDate().isBefore(Instant.now(clock))) {
             repository.delete(token);
             throw new TokenRefreshException("Expirado");
         }
