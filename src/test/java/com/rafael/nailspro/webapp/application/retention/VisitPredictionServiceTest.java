@@ -27,6 +27,6 @@ class VisitPredictionServiceTest {
     @Test
     void placeholder() {
         assertTrue(true);
-        // TODO: add unit tests for forecast creation and message send behavior
+
     }
 }

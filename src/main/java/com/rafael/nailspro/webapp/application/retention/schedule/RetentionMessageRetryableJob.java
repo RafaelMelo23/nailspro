@@ -1,6 +1,6 @@
-package com.rafael.nailspro.webapp.application.appointment.message.schedule;
+package com.rafael.nailspro.webapp.application.retention.schedule;
 
-import com.rafael.nailspro.webapp.application.appointment.message.AppointmentMessagingUseCase;
+import com.rafael.nailspro.webapp.application.retention.VisitPredictionService;
 import com.rafael.nailspro.webapp.domain.model.WhatsappMessage;
 import com.rafael.nailspro.webapp.domain.repository.WhatsappMessageRepository;
 import jakarta.persistence.EntityManager;
@@ -13,19 +13,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageStatus.FAILED;
-import static com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageType.CONFIRMATION;
+import static com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageType.RETENTION_MAINTENANCE;
 
 @Service
 @RequiredArgsConstructor
-public class AppointmentConfirmationRetryableJob {
+public class RetentionMessageRetryableJob {
 
-    private final AppointmentMessagingUseCase messagingUseCase;
+    private final VisitPredictionService visitPredictionService;
     private final WhatsappMessageRepository messageRepository;
     private final EntityManagerFactory entityManagerFactory;
-    // todo: consider changing to a circuit-breaker like approach for all scheduled sending message classes
 
     @Scheduled(cron = "0 */5 * * * *")
-    public void retryFailedConfirmationMessages() {
+    public void retryFailedRetentionMessages() {
         final int MAX_RETRIES = 3;
 
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
@@ -33,10 +32,14 @@ public class AppointmentConfirmationRetryableJob {
             session.disableFilter("tenantFilter");
 
             List<WhatsappMessage> messages =
-                    messageRepository.findRetriableMessages(MAX_RETRIES, FAILED, CONFIRMATION);
+                    messageRepository.findRetriableMessages(MAX_RETRIES, FAILED, RETENTION_MAINTENANCE);
 
-            messages.forEach(message ->
-                    messagingUseCase.processNotification(message.getAppointment().getId(), CONFIRMATION));
+            messages.forEach(message -> {
+                if (message.getRetentionForecast() == null) {
+                    return;
+                }
+                visitPredictionService.sendMaintenanceMessage(message.getRetentionForecast().getId());
+            });
         }
     }
 }

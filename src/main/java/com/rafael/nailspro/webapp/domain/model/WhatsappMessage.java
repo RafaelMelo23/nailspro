@@ -1,7 +1,7 @@
 package com.rafael.nailspro.webapp.domain.model;
 
-import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationStatus;
-import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationType;
+import com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageStatus;
+import com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,25 +17,29 @@ import java.time.Instant;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "appointment_notification")
-public class AppointmentNotification extends BaseEntity {
+@Table(name = "whatsapp_message")
+public class WhatsappMessage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "appointment_notification_type", nullable = false)
-    private AppointmentNotificationType notificationType;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "retention_forecast_id")
+    private RetentionForecast retentionForecast;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "appointment_notification_status", nullable = false)
-    private AppointmentNotificationStatus notificationStatus;
+    @Column(name = "whatsapp_message_type", nullable = false)
+    private WhatsappMessageType messageType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "whatsapp_message_status", nullable = false)
+    private WhatsappMessageStatus messageStatus;
 
     @Column(name = "external_message_id")
     private String externalMessageId;
@@ -54,5 +58,4 @@ public class AppointmentNotification extends BaseEntity {
 
     @Column(name = "sent_at")
     private Instant sentAt;
-
 }

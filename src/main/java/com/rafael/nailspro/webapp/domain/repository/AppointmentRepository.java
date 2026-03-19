@@ -44,10 +44,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             WHERE ap.startDate > :now
             AND ap.startDate <= :windowEnd
             AND NOT EXISTS(
-            SELECT 1 FROM AppointmentNotification an
-            WHERE an.appointment = ap
-            AND an.notificationType = 'REMINDER'
-            AND (an.notificationStatus = 'SENT' OR an.attempts >= 3)
+            SELECT 1 FROM WhatsappMessage wm
+            WHERE wm.appointment = ap
+            AND wm.messageType = 'REMINDER'
+            AND (wm.messageStatus = 'SENT' OR wm.attempts >= 3)
                         )
             """)
     List<Appointment> findAppointmentsNeedingReminder(@Param("now") Instant now,

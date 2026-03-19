@@ -1,8 +1,9 @@
 package com.rafael.nailspro.webapp.application.appointment.message;
 
 import com.rafael.nailspro.webapp.application.messages.AppointmentMessageBuilder;
-import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationStatus;
-import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationType;
+import com.rafael.nailspro.webapp.application.whatsapp.WhatsappMessageService;
+import com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageStatus;
+import com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageType;
 import com.rafael.nailspro.webapp.domain.model.Appointment;
 import com.rafael.nailspro.webapp.domain.repository.AppointmentRepository;
 import com.rafael.nailspro.webapp.domain.whatsapp.SentMessageResult;
@@ -12,9 +13,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationStatus.FAILED;
-import static com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationType.CONFIRMATION;
-import static com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationType.REMINDER;
+import static com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageStatus.FAILED;
+import static com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageType.CONFIRMATION;
+import static com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageType.REMINDER;
 
 @Log4j2
 @Service
@@ -23,35 +24,35 @@ public class AppointmentMessagingUseCase {
 
     private final WhatsappProvider whatsappProvider;
     private final AppointmentMessageBuilder messageBuilder;
-    private final AppointmentNotificationService appointmentNotificationService;
+    private final WhatsappMessageService whatsappMessageService;
     private final AppointmentRepository appointmentRepository;
 
-    public void processNotification(Long appointmentId, AppointmentNotificationType type) {
-        var notification = appointmentNotificationService.prepareNotification(appointmentId, type);
+    public void processNotification(Long appointmentId, WhatsappMessageType type) {
+        var message = whatsappMessageService.prepareAppointmentMessage(appointmentId, type);
 
         try {
             var appointment = appointmentRepository.findFullById(appointmentId)
                     .orElseThrow(() -> new IllegalArgumentException("Appointment not found"));
-            var message = buildMessage(appointment, type);
+            var messageBody = buildMessage(appointment, type);
 
             SentMessageResult sentMessageResult = dispatchMessage(
-                    notification.getAppointment().getTenantId(),
-                    message,
-                    notification.getDestinationNumber()
+                    message.getAppointment().getTenantId(),
+                    messageBody,
+                    message.getDestinationNumber()
             );
 
-            appointmentNotificationService.updateNotificationStatus(
-                    AppointmentNotificationStatus.fromEvolutionStatus(sentMessageResult.status()),
+            whatsappMessageService.updateMessageStatus(
+                    WhatsappMessageStatus.fromEvolutionStatus(sentMessageResult.status()),
                     null,
                     sentMessageResult.messageId(),
-                    notification.getId()
+                    message.getId()
             );
         } catch (Exception e) {
-            appointmentNotificationService.updateNotificationStatus(
+            whatsappMessageService.updateMessageStatus(
                     FAILED,
                     e.getMessage(),
                     null,
-                    notification.getId()
+                    message.getId()
             );
         }
     }
@@ -65,10 +66,11 @@ public class AppointmentMessagingUseCase {
         processNotification(appointmentId, REMINDER);
     }
 
-    private String buildMessage(Appointment appointment, AppointmentNotificationType type) {
+    private String buildMessage(Appointment appointment, WhatsappMessageType type) {
         return switch (type) {
             case CONFIRMATION -> messageBuilder.buildAppointmentConfirmationMessage(appointment);
             case REMINDER -> messageBuilder.buildAppointmentReminderMessage(appointment);
+            default -> throw new IllegalArgumentException("Unsupported appointment message type: " + type);
         };
     }
 

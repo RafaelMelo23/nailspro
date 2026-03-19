@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 public interface RetentionForecastRepository extends JpaRepository<RetentionForecast, Long> {
 
@@ -28,4 +29,14 @@ public interface RetentionForecastRepository extends JpaRepository<RetentionFore
                                                                            @Param("status") RetentionStatus status);
 
     int deleteByPredictedReturnDateBefore(Instant predictedReturnDateBefore);
+
+    @Query("""
+            SELECT rf
+            FROM RetentionForecast rf
+            JOIN FETCH rf.client
+            JOIN FETCH rf.originAppointment
+            JOIN FETCH rf.lastService
+            WHERE rf.id = :id
+            """)
+    Optional<RetentionForecast> findWithJoins(@Param("id") Long id);
 }

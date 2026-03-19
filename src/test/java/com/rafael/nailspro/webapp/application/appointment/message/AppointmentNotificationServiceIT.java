@@ -10,9 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("it")
 class AppointmentNotificationServiceIT extends BaseIntegrationTest {
 
-    @Autowired
-    private AppointmentNotificationService appointmentNotificationService;
-
     @Test
     void placeholder() {
         // TODO: add integration tests for notification creation and updates

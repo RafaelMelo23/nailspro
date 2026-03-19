@@ -76,7 +76,7 @@ public class Appointment extends BaseEntity {
     private List<AppointmentAddOn> addOns = new ArrayList<>();
 
     @OneToMany(mappedBy = "appointment", orphanRemoval = true)
-    private List<AppointmentNotification> appointmentNotifications = new ArrayList<>();
+    private List<WhatsappMessage> whatsappMessages = new ArrayList<>();
 
     @Transient
     private final List<Object> domainEvents = new ArrayList<>();

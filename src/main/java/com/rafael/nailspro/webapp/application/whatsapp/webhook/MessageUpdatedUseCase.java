@@ -1,9 +1,9 @@
 package com.rafael.nailspro.webapp.application.whatsapp.webhook;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentNotificationStatus;
+import com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageStatus;
 import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionWebhookEvent;
-import com.rafael.nailspro.webapp.domain.repository.AppointmentNotificationRepository;
+import com.rafael.nailspro.webapp.domain.repository.WhatsappMessageRepository;
 import com.rafael.nailspro.webapp.domain.webhook.WebhookStrategy;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.EvolutionWebhookResponseDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.whatsapp.evolution.webhook.message.update.MessageUpdateData;
@@ -20,7 +20,7 @@ import java.util.Optional;
 public class MessageUpdatedUseCase implements WebhookStrategy {
 
     private final ObjectMapper objectMapper;
-    private final AppointmentNotificationRepository notificationRepository;
+    private final WhatsappMessageRepository messageRepository;
 
     @Override
     public void process(Object payload) {
@@ -43,13 +43,13 @@ public class MessageUpdatedUseCase implements WebhookStrategy {
 
     @Transactional
     protected void updateNotificationStatus(MessageUpdateData updateData) {
-        notificationRepository.findByExternalMessageId(updateData.messageId())
+        messageRepository.findByExternalMessageId(updateData.messageId())
                 .ifPresent(n -> {
-                            n.setNotificationStatus(
-                                    AppointmentNotificationStatus.fromEvolutionStatus(updateData.status())
+                            n.setMessageStatus(
+                                    WhatsappMessageStatus.fromEvolutionStatus(updateData.status())
                             );
-                            log.debug("Updated notification status for message ID: {} to: {}", n.getExternalMessageId(), n.getNotificationStatus());
-                            notificationRepository.save(n);
+                            log.debug("Updated message status for message ID: {} to: {}", n.getExternalMessageId(), n.getMessageStatus());
+                            messageRepository.save(n);
                         }
                 );
     }

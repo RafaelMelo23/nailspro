@@ -29,9 +29,10 @@ public class RetentionMessageBuilder {
                 dateHelper.toZonedDateTime(expectedReturn, originAppointment.getTenantId());
 
         return String.format("""
-                Oi, %s!
-                Passando para lembrar que sua próxima sessão de %s
-                está prevista para %s.
+                Olá, %s!
+                Passando para lembrar que a sua próxima sessão já está prevista.
+                📅 Data sugerida: %s
+                💅 Serviço: %s
                 Como nossa agenda costuma lotar rápido,
                 liberei o link para você garantir sua vaga com antecedência: %s""",
                 originAppointment.getClient().getFullName(),
@@ -39,5 +40,4 @@ public class RetentionMessageBuilder {
                 appointmentTime.format(DATE_FORMATTER),
                 urlProvider.buildBookAppointmentUrl(originAppointment.getTenantId()));
     }
-
 }

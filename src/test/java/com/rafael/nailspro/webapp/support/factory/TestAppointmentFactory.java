@@ -61,7 +61,6 @@ public class TestAppointmentFactory {
                 .salonTradeName("Test Salon")
                 .salonZoneId(ZoneId.of("America/Sao_Paulo"))
                 .addOns(safeAddOns)
-                .appointmentNotifications(new ArrayList<>())
                 .tenantId("tenant-test")
                 .build();
     }
@@ -88,7 +87,6 @@ public class TestAppointmentFactory {
                 .salonTradeName("Test Salon")
                 .salonZoneId(ZoneId.of("America/Sao_Paulo"))
                 .addOns(new ArrayList<>())
-                .appointmentNotifications(new ArrayList<>())
                 .tenantId("tenant-test")
                 .build();
     }
