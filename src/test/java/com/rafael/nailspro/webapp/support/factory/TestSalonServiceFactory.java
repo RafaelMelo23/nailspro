@@ -5,101 +5,81 @@ import com.rafael.nailspro.webapp.domain.model.SalonService;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class TestSalonServiceFactory {
 
-    public static SalonService standard() {
+    private static SalonService.SalonServiceBuilder baseBuilder() {
         return SalonService.builder()
-                .id(1L)
-                .name("Manicure Padrão")
-                .description("Cutilagem e esmaltação simples")
-                .durationInSeconds(3600) // 1 hour
+                .id(ThreadLocalRandom.current().nextLong(1, Long.MAX_VALUE))
+                .name("Service-" + UUID.randomUUID())
+                .description("Desc-" + UUID.randomUUID())
+                .durationInSeconds(3600)
                 .value(50)
                 .active(true)
                 .maintenanceIntervalDays(15)
                 .requiresLoyalty(false)
                 .isAddOn(false)
                 .professionals(new LinkedHashSet<>())
-                .tenantId("tenant-test")
+                .tenantId("tenant-" + UUID.randomUUID());
+    }
+
+    public static SalonService standard() {
+        return baseBuilder().build();
+    }
+
+    public static SalonService withCustomValue(Integer value) {
+        return baseBuilder()
+                .value(value)
                 .build();
     }
 
     public static SalonService standardWithoutMaintenanceInterval() {
-        return SalonService.builder()
-                .id(1L)
-                .name("Manicure Padrão")
-                .description("Cutilagem e esmaltação simples")
-                .durationInSeconds(3600) // 1 hour
-                .value(50)
-                .active(true)
+        return baseBuilder()
                 .maintenanceIntervalDays(null)
-                .requiresLoyalty(false)
-                .isAddOn(false)
-                .professionals(new LinkedHashSet<>())
-                .tenantId("tenant-test")
                 .build();
     }
 
     public static SalonService addOnWithoutMaintenanceInterval() {
-        return SalonService.builder()
-                .id(2L)
-                .name("Nail Art")
-                .description("Arte em uma unha")
-                .nailCount(1)
-                .durationInSeconds(900) // 15 mins
-                .value(15)
-                .active(true)
-                .maintenanceIntervalDays(null)
-                .requiresLoyalty(false)
+        return baseBuilder()
                 .isAddOn(true)
-                .professionals(new LinkedHashSet<>())
-                .tenantId("tenant-test")
+                .nailCount(1)
+                .durationInSeconds(900)
+                .value(15)
+                .maintenanceIntervalDays(null)
                 .build();
     }
 
     public static SalonService addOnWithMaintenanceInterval() {
-        return SalonService.builder()
-                .id(2L)
-                .name("Nail Art")
-                .description("Arte em uma unha")
-                .nailCount(1)
-                .durationInSeconds(900) // 15 mins
-                .value(15)
-                .active(true)
-                .maintenanceIntervalDays(10)
-                .requiresLoyalty(false)
-                .isAddOn(true)
-                .professionals(new LinkedHashSet<>())
-                .tenantId("tenant-test")
-                .build();
+        return addOnWithMaintenanceInterval(10);
     }
 
     public static SalonService addOnWithMaintenanceInterval(int days) {
-        return SalonService.builder()
-                .id(2L)
-                .name("Nail Art")
-                .description("Arte em uma unha")
-                .nailCount(1)
-                .durationInSeconds(900) // 15 mins
-                .value(15)
-                .active(true)
-                .maintenanceIntervalDays(days)
-                .requiresLoyalty(false)
+        return baseBuilder()
                 .isAddOn(true)
-                .professionals(new LinkedHashSet<>())
-                .tenantId("tenant-test")
+                .nailCount(1)
+                .durationInSeconds(900)
+                .value(15)
+                .maintenanceIntervalDays(days)
                 .build();
     }
 
     public static SalonService withMaintenanceInterval(int days) {
-        SalonService service = standard();
-        service.setMaintenanceIntervalDays(days);
-        return service;
+        return baseBuilder()
+                .maintenanceIntervalDays(days)
+                .build();
     }
 
     public static SalonService withProfessionals(Set<Professional> professionals) {
-        SalonService service = standard();
-        service.setProfessionals(professionals);
-        return service;
+        return baseBuilder()
+                .professionals(professionals)
+                .build();
+    }
+
+    public static SalonService withDuration(int durationSeconds) {
+        return baseBuilder()
+                .durationInSeconds(durationSeconds)
+                .build();
     }
 }

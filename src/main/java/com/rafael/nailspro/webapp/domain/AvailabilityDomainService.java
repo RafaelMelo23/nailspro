@@ -10,7 +10,7 @@ import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentTime
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.booking.AppointmentTimeWindow;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.contract.BusyInterval;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.SimpleBusyInterval;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
+import com.rafael.nailspro.webapp.domain.model.TimeInterval;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

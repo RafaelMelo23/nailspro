@@ -28,19 +28,41 @@ public class TestAppointmentFactory {
         return buildWithStatusAndDates(client, professional, mainService, status, 1);
     }
 
-    public static Appointment withAddOns(Client client, Professional professional, SalonService mainService, List<AppointmentAddOn> addOns) {
-        Appointment appointment = standard(client, professional, mainService);
-        appointment.setAddOns(addOns);
+    public static Appointment withAddOns(
+            Client client,
+            Professional professional,
+            SalonService mainService,
+            List<AppointmentAddOn> addOns
+    ) {
+
+        List<AppointmentAddOn> safeAddOns =
+                addOns == null ? new ArrayList<>() : new ArrayList<>(addOns);
 
         BigDecimal total = BigDecimal.valueOf(mainService.getValue());
-        for (AppointmentAddOn addOn : addOns) {
+
+        for (AppointmentAddOn addOn : safeAddOns) {
             BigDecimal addOnTotal = BigDecimal.valueOf(addOn.getService().getValue())
                     .multiply(BigDecimal.valueOf(addOn.getQuantity()));
             total = total.add(addOnTotal);
         }
-        appointment.setTotalValue(total);
 
-        return appointment;
+        Instant baseDate = Instant.now().plus(1, ChronoUnit.DAYS);
+
+        return Appointment.builder()
+                .id(1L)
+                .client(client)
+                .professional(professional)
+                .mainSalonService(mainService)
+                .totalValue(total)
+                .appointmentStatus(AppointmentStatus.PENDING)
+                .startDate(baseDate)
+                .endDate(baseDate.plus(1, ChronoUnit.HOURS))
+                .salonTradeName("Test Salon")
+                .salonZoneId(ZoneId.of("America/Sao_Paulo"))
+                .addOns(safeAddOns)
+                .appointmentNotifications(new ArrayList<>())
+                .tenantId("tenant-test")
+                .build();
     }
 
     private static Appointment buildWithStatusAndDates(
@@ -50,6 +72,7 @@ public class TestAppointmentFactory {
             AppointmentStatus status,
             int daysOffset
     ) {
+
         Instant baseDate = Instant.now().plus(daysOffset, ChronoUnit.DAYS);
 
         return Appointment.builder()
@@ -69,7 +92,12 @@ public class TestAppointmentFactory {
                 .build();
     }
 
-    public static Appointment atSpecificTime(Instant start, Instant end, Professional professional, AppointmentStatus status) {
+    public static Appointment atSpecificTime(
+            Instant start,
+            Instant end,
+            Professional professional,
+            AppointmentStatus status
+    ) {
         return Appointment.builder()
                 .id((long) (Math.random() * 1000))
                 .professional(professional)
@@ -77,6 +105,7 @@ public class TestAppointmentFactory {
                 .startDate(start)
                 .endDate(end)
                 .salonZoneId(ZoneId.of("America/Sao_Paulo"))
+                .addOns(new ArrayList<>())
                 .tenantId("tenant-test")
                 .build();
     }

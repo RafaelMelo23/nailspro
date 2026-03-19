@@ -3,7 +3,6 @@ package com.rafael.nailspro.webapp.domain.model;
 import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentStatus;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.booking.event.AppointmentConfirmedEvent;
-import com.rafael.nailspro.webapp.infrastructure.dto.appointment.date.TimeInterval;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,12 +18,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
-@Getter @Setter
+@Getter
+@Setter(AccessLevel.PROTECTED)
 @Entity
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "appointment")
 @Filter(name = "tenantFilter",
         condition = "tenant_id = :tenantId"
@@ -126,22 +127,31 @@ public class Appointment extends BaseEntity {
 
     public void ensureStatusIsNotFinal() {
         if (this.appointmentStatus == AppointmentStatus.FINISHED ||
-            this.appointmentStatus == AppointmentStatus.MISSED ||
-            this.appointmentStatus == AppointmentStatus.CANCELLED) {
+                this.appointmentStatus == AppointmentStatus.MISSED ||
+                this.appointmentStatus == AppointmentStatus.CANCELLED) {
             throw new BusinessException("Este agendamento já foi finalizado.");
         }
     }
 
     public BigDecimal calculateTotalValue() {
-
+        if (mainSalonService == null || mainSalonService.getValue() == null) {
+            throw new IllegalStateException("Service or value cannot be null.");
+        }
         BigDecimal mainValue = BigDecimal.valueOf(this.mainSalonService.getValue());
 
-        BigDecimal addOnsValue = this.addOns.stream()
-                .map(addon -> BigDecimal.valueOf(addon.getService().getValue())
-                        .multiply(BigDecimal.valueOf(addon.getQuantity())))
+        BigDecimal addOnsValue = this.addOns.stream().map(this::calculateAddonValue)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return mainValue.add(addOnsValue);
+    }
+
+    private BigDecimal calculateAddonValue(AppointmentAddOn addon) {
+        if (addon.getService() == null || addon.getService().getValue() == null) {
+            throw new IllegalStateException("Service addon or value cannot be null.");
+        }
+
+        return BigDecimal.valueOf(addon.getService().getValue())
+                .multiply(BigDecimal.valueOf(addon.getQuantity()));
     }
 
     public static Appointment create(
@@ -154,6 +164,14 @@ public class Appointment extends BaseEntity {
             TimeInterval interval
     ) {
 
+        if (dto == null || client == null || professional == null ||
+                mainService == null || salonProfile == null || interval == null) {
+            throw new IllegalArgumentException("Appointment creation arguments cannot be null.");
+        }
+
+        List<AppointmentAddOn> safeAddOns =
+                addOns == null ? new ArrayList<>() : new ArrayList<>(addOns);
+
         Appointment appointment = Appointment.builder()
                 .appointmentStatus(AppointmentStatus.PENDING)
                 .startDate(interval.realTimeStart())
@@ -161,7 +179,7 @@ public class Appointment extends BaseEntity {
                 .client(client)
                 .professional(professional)
                 .mainSalonService(mainService)
-                .addOns(addOns)
+                .addOns(safeAddOns)
                 .observations(dto.observation().orElse(null))
                 .salonTradeName(salonProfile.getTradeName())
                 .salonZoneId(salonProfile.getZoneId())
@@ -201,9 +219,16 @@ public class Appointment extends BaseEntity {
             SalonService mainService,
             List<AppointmentAddOn> addOns
     ) {
-        return mainService.getDurationInSeconds()
-                + addOns.stream()
+        if (mainService == null) throw new IllegalArgumentException("Main service cannot be null.");
+
+        long mainDuration = mainService.getDurationInSeconds();
+
+        long addOnsDuration = (addOns == null ? List.<AppointmentAddOn>of() : addOns)
+                .stream()
+                .filter(addon -> addon != null && addon.getService() != null)
                 .mapToLong(addon -> addon.getService().getDurationInSeconds())
                 .sum();
+
+        return mainDuration + addOnsDuration;
     }
 }

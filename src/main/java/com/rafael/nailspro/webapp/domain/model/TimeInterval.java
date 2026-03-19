@@ -1,4 +1,4 @@
-package com.rafael.nailspro.webapp.infrastructure.dto.appointment.date;
+package com.rafael.nailspro.webapp.domain.model;
 
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import lombok.Builder;
