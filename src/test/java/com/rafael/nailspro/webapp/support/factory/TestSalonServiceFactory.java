@@ -22,7 +22,7 @@ public class TestSalonServiceFactory {
                 .requiresLoyalty(false)
                 .isAddOn(false)
                 .professionals(new LinkedHashSet<>())
-                .tenantId("tenant-" + UUID.randomUUID());
+                .tenantId("tenant-test");
     }
 
     public static SalonService standard() {
@@ -81,5 +81,10 @@ public class TestSalonServiceFactory {
         return baseBuilder()
                 .durationInSeconds(durationSeconds)
                 .build();
+    }
+
+    public static SalonService withInterval(Integer interval) {
+        return baseBuilder()
+                .maintenanceIntervalDays(interval).build();
     }
 }

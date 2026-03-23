@@ -91,6 +91,29 @@ public class TestAppointmentFactory {
                 .build();
     }
 
+    public static Appointment withNullMainService(
+            Client client,
+            Professional professional,
+            AppointmentStatus status
+    ) {
+        Instant baseDate = Instant.now().plus(1, ChronoUnit.DAYS);
+
+        return Appointment.builder()
+                .id(nextId())
+                .client(client)
+                .professional(professional)
+                .mainSalonService(null)
+                .totalValue(BigDecimal.ZERO)
+                .appointmentStatus(status)
+                .startDate(baseDate)
+                .endDate(baseDate.plus(1, ChronoUnit.HOURS))
+                .salonTradeName("Test Salon")
+                .salonZoneId(ZoneId.of("America/Sao_Paulo"))
+                .addOns(new ArrayList<>())
+                .tenantId("tenant-test")
+                .build();
+    }
+
     public static Appointment atSpecificTime(
             Instant start,
             Instant end,

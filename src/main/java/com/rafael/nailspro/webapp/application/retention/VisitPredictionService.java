@@ -93,6 +93,7 @@ public class VisitPredictionService {
     private void handleFailedMessage(RetentionForecast retentionForecast,
                                      WhatsappMessage messageRecord,
                                      Exception e) {
+
         retentionForecast.setStatus(FAILED_TO_SEND);
         whatsappMessageService.updateMessageStatus(
                 WhatsappMessageStatus.FAILED,
