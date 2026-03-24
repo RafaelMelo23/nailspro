@@ -76,7 +76,7 @@ class BookingPolicyTest {
 
     @Test
     void determineStartDate_returnsToday_WhenMaintenanceIntervalIsNull() {
-        Client client = TestUserFactory.client();
+        Client client = TestClientFactory.standard();
         SalonService salonService = TestSalonServiceFactory.standardWithoutMaintenanceInterval();
 
         Appointment appointment = TestAppointmentFactory.standard(
@@ -115,7 +115,7 @@ class BookingPolicyTest {
 
     @Test
     void determineStartDate_calculatesCorrectDateWithMaintenanceInterval() {
-        Client client = TestUserFactory.client();
+        Client client = TestClientFactory.standard();
         SalonService salonService = TestSalonServiceFactory.withMaintenanceInterval(20);
 
         Appointment appointment = TestAppointmentFactory.standard(
@@ -145,7 +145,7 @@ class BookingPolicyTest {
 
     @Test
     void calculateEarliestRecommendedDate_returnsMainServiceMaintenanceInterval() {
-        Client client = TestUserFactory.client();
+        Client client = TestClientFactory.standard();
         Professional professional = TestProfessionalFactory.standard();
         SalonService salonService = TestSalonServiceFactory.withMaintenanceInterval(20);
         AppointmentAddOn addOn = TestAppointmentAddOnFactory.standard(TestSalonServiceFactory.addOnWithMaintenanceInterval(15));
@@ -165,7 +165,7 @@ class BookingPolicyTest {
 
     @Test
     void calculateEarliestRecommendedDate_returnsAddOnMaintenanceInterval() {
-        Client client = TestUserFactory.client();
+        Client client = TestClientFactory.standard();
         Professional professional = TestProfessionalFactory.standard();
         SalonService salonService = TestSalonServiceFactory.withMaintenanceInterval(20);
         AppointmentAddOn addOn = TestAppointmentAddOnFactory.standard(TestSalonServiceFactory.addOnWithMaintenanceInterval(25));
@@ -185,7 +185,7 @@ class BookingPolicyTest {
 
     @Test
     void calculateEarliestRecommendedDate_returnsNowIfMaintenanceIntervalIsNull() {
-        Client client = TestUserFactory.client();
+        Client client = TestClientFactory.standard();
         Professional professional = TestProfessionalFactory.standard();
         SalonService salonService = TestSalonServiceFactory.standardWithoutMaintenanceInterval();
         AppointmentAddOn addOn = TestAppointmentAddOnFactory.standard(TestSalonServiceFactory.addOnWithoutMaintenanceInterval());

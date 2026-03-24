@@ -4,7 +4,7 @@ import com.rafael.nailspro.webapp.domain.model.Client;
 import com.rafael.nailspro.webapp.domain.model.RefreshToken;
 import com.rafael.nailspro.webapp.domain.repository.RefreshTokenRepository;
 import com.rafael.nailspro.webapp.infrastructure.exception.TokenRefreshException;
-import com.rafael.nailspro.webapp.support.factory.TestUserFactory;
+import com.rafael.nailspro.webapp.support.factory.TestClientFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +42,7 @@ class RefreshTokenServiceTest {
 
     @Test
     void createRefreshToken_successfullyCreatesToken() {
-        Client user = TestUserFactory.client();
+        Client user = TestClientFactory.standard();
 
         when(repository.save(any(RefreshToken.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));

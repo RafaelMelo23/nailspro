@@ -31,7 +31,7 @@ public class SalonService extends BaseEntity {
     @Column(name = "description", nullable = false, length = 250)
     private String description;
 
-    @Column(name = "nail_count", nullable = false)
+    @Column(name = "nail_count")
     private Integer nailCount;
 
     @Column(name = "duration_in_seconds", nullable = false)

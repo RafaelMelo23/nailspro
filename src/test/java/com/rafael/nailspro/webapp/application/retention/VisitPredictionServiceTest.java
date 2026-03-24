@@ -6,15 +6,11 @@ import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentStatus;
 import com.rafael.nailspro.webapp.domain.enums.appointment.RetentionStatus;
 import com.rafael.nailspro.webapp.domain.enums.evolution.EvolutionMessageStatus;
 import com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageStatus;
-import com.rafael.nailspro.webapp.domain.enums.whatsapp.WhatsappMessageType;
 import com.rafael.nailspro.webapp.domain.model.*;
 import com.rafael.nailspro.webapp.domain.repository.RetentionForecastRepository;
 import com.rafael.nailspro.webapp.domain.whatsapp.SentMessageResult;
 import com.rafael.nailspro.webapp.domain.whatsapp.WhatsappProvider;
-import com.rafael.nailspro.webapp.infrastructure.dto.retention.RetentionData;
-import com.rafael.nailspro.webapp.infrastructure.helper.TenantUrlProvider;
 import com.rafael.nailspro.webapp.support.factory.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -28,7 +24,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.client.HttpServerErrorException;
 
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -37,7 +32,6 @@ import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,7 +63,7 @@ class VisitPredictionServiceTest {
     }
 
     private static Appointment standardAppointment() {
-        Client client = TestUserFactory.client();
+        Client client = TestClientFactory.standard();
         Professional professional = TestProfessionalFactory.standard();
         SalonService salonService = TestSalonServiceFactory.standard();
         return TestAppointmentFactory.standard(client, professional, salonService);
@@ -95,7 +89,7 @@ class VisitPredictionServiceTest {
         SalonService addon = TestSalonServiceFactory.withInterval(15);
 
         Appointment appointment = TestAppointmentFactory.withAddOns(
-                TestUserFactory.client(),
+                TestClientFactory.standard(),
                 TestProfessionalFactory.standard(),
                 main,
                 List.of(TestAppointmentAddOnFactory.standard(addon))
@@ -120,7 +114,7 @@ class VisitPredictionServiceTest {
     void createForecast_doesNotSave_whenNoServicesHaveIntervals() {
         SalonService main = TestSalonServiceFactory.withInterval(null);
         Appointment appointment = TestAppointmentFactory.standard(
-                TestUserFactory.client(),
+                TestClientFactory.standard(),
                 TestProfessionalFactory.standard(),
                 main
         );
@@ -131,7 +125,7 @@ class VisitPredictionServiceTest {
 
     @Test
     void createForecast_throwsException_whenAppointmentInvalid() {
-        Client client = TestUserFactory.client();
+        Client client = TestClientFactory.standard();
         Professional professional = TestProfessionalFactory.standard();
         Appointment appointment = TestAppointmentFactory.withNullMainService(client, professional, AppointmentStatus.FINISHED);
 

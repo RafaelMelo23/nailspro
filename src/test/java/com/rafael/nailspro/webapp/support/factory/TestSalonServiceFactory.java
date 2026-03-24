@@ -10,9 +10,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class TestSalonServiceFactory {
 
-    private static SalonService.SalonServiceBuilder baseBuilder() {
+    private TestSalonServiceFactory() {}
+
+    public static SalonService.SalonServiceBuilder<?, ?> builder() {
         return SalonService.builder()
-                .id(ThreadLocalRandom.current().nextLong(1, Long.MAX_VALUE))
                 .name("Service-" + UUID.randomUUID())
                 .description("Desc-" + UUID.randomUUID())
                 .durationInSeconds(3600)
@@ -26,23 +27,28 @@ public class TestSalonServiceFactory {
     }
 
     public static SalonService standard() {
-        return baseBuilder().build();
+        return builder().id(nextId()).build();
+    }
+
+    public static SalonService standardForIt() {
+        return builder().build();
+    }
+
+    public static SalonService standardForIt(String tenantId) {
+        return builder().tenantId(tenantId).build();
     }
 
     public static SalonService withCustomValue(Integer value) {
-        return baseBuilder()
-                .value(value)
-                .build();
+        return builder().id(nextId()).value(value).build();
     }
 
     public static SalonService standardWithoutMaintenanceInterval() {
-        return baseBuilder()
-                .maintenanceIntervalDays(null)
-                .build();
+        return builder().id(nextId()).maintenanceIntervalDays(null).build();
     }
 
     public static SalonService addOnWithoutMaintenanceInterval() {
-        return baseBuilder()
+        return builder()
+                .id(nextId())
                 .isAddOn(true)
                 .nailCount(1)
                 .durationInSeconds(900)
@@ -56,7 +62,8 @@ public class TestSalonServiceFactory {
     }
 
     public static SalonService addOnWithMaintenanceInterval(int days) {
-        return baseBuilder()
+        return builder()
+                .id(nextId())
                 .isAddOn(true)
                 .nailCount(1)
                 .durationInSeconds(900)
@@ -66,25 +73,22 @@ public class TestSalonServiceFactory {
     }
 
     public static SalonService withMaintenanceInterval(int days) {
-        return baseBuilder()
-                .maintenanceIntervalDays(days)
-                .build();
+        return builder().id(nextId()).maintenanceIntervalDays(days).build();
     }
 
     public static SalonService withProfessionals(Set<Professional> professionals) {
-        return baseBuilder()
-                .professionals(professionals)
-                .build();
+        return builder().id(nextId()).professionals(professionals).build();
     }
 
     public static SalonService withDuration(int durationSeconds) {
-        return baseBuilder()
-                .durationInSeconds(durationSeconds)
-                .build();
+        return builder().id(nextId()).durationInSeconds(durationSeconds).build();
     }
 
     public static SalonService withInterval(Integer interval) {
-        return baseBuilder()
-                .maintenanceIntervalDays(interval).build();
+        return builder().id(nextId()).maintenanceIntervalDays(interval).build();
+    }
+
+    private static long nextId() {
+        return ThreadLocalRandom.current().nextLong(1, Long.MAX_VALUE);
     }
 }

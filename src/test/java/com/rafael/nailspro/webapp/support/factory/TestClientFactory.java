@@ -6,25 +6,43 @@ import com.rafael.nailspro.webapp.domain.model.Client;
 
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
-public final class TestUserFactory {
+public final class TestClientFactory {
 
-    private TestUserFactory() {}
+    private TestClientFactory() {}
 
-    public static Client client() {
+    public static Client.ClientBuilder<?, ?> builder() {
         String unique = UUID.randomUUID().toString();
         return Client.builder()
-                .id(nextId())
-                .tenantId("tenantA")
                 .fullName("Test User " + unique)
                 .email("user+" + unique + "@test.local")
                 .password("password")
                 .status(UserStatus.ACTIVE)
                 .userRole(UserRole.CLIENT)
-                .phoneNumber("5500000000000")
+                .phoneNumber(generateRandomPhoneNumber())
                 .missedAppointments(0)
                 .canceledAppointments(0)
-                .build();
+                .tenantId("tenant-test");
+    }
+
+    public static Client standard() {
+        return builder().id(nextId()).build();
+    }
+
+    public static Client standardForIt() {
+        return builder().build();
+    }
+
+    public static Client standardForIt(String tenantId) {
+        return builder().tenantId(tenantId).build();
+    }
+
+    private static String generateRandomPhoneNumber() {
+        return ThreadLocalRandom.current()
+                .ints(13, 0, 10)
+                .mapToObj(Integer::toString)
+                .collect(Collectors.joining());
     }
 
     private static long nextId() {

@@ -7,7 +7,7 @@ import com.rafael.nailspro.webapp.domain.enums.security.TokenPurpose;
 import com.rafael.nailspro.webapp.domain.model.Client;
 import com.rafael.nailspro.webapp.infrastructure.dto.auth.ResetPasswordDTO;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
-import com.rafael.nailspro.webapp.support.factory.TestUserFactory;
+import com.rafael.nailspro.webapp.support.factory.TestClientFactory;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ class TokenServiceTest {
 
     @Test
     void generateAuthToken_createsJwt() {
-        Client user = TestUserFactory.client();
+        Client user = TestClientFactory.standard();
 
         String token = tokenService.generateAuthToken(user);
 
@@ -45,7 +45,7 @@ class TokenServiceTest {
 
     @Test
     void generateAuthToken_createsCorrectClaims() {
-        Client user = TestUserFactory.client();
+        Client user = TestClientFactory.standard();
 
         String token = tokenService.generateAuthToken(user);
         DecodedJWT decodedJWT = JWT.decode(token);
@@ -74,7 +74,7 @@ class TokenServiceTest {
     @Test
     void recover_successfullyExtractsToken() {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        Client user = TestUserFactory.client();
+        Client user = TestClientFactory.standard();
         String token = tokenService.generateAuthToken(user);
 
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
@@ -85,7 +85,7 @@ class TokenServiceTest {
     @Test
     void recover_returnsNullIfAuthNotBearer() {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        Client user = TestUserFactory.client();
+        Client user = TestClientFactory.standard();
         String token = tokenService.generateAuthToken(user);
 
         when(request.getHeader("Authorization")).thenReturn(token);
@@ -111,7 +111,7 @@ class TokenServiceTest {
 
     @Test
     void validateAndDecode_returnsDecodedJwtWhenValid() {
-        Client user = TestUserFactory.client();
+        Client user = TestClientFactory.standard();
         String token = tokenService.generateAuthToken(user);
 
         DecodedJWT decodedJWT = tokenService.validateAndDecode(token);
@@ -156,7 +156,7 @@ class TokenServiceTest {
 
     @Test
     void validateResetPasswordToken_throwsBusinessExceptionWhenWrongPurpose() {
-        Client user = TestUserFactory.client();
+        Client user = TestClientFactory.standard();
         String token = tokenService.generateAuthToken(user);
         ResetPasswordDTO dto = mock(ResetPasswordDTO.class);
 
@@ -171,7 +171,7 @@ class TokenServiceTest {
     @Test
     void recoverAndValidate_returnsDecodedJwtWhenValid() {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        Client user = TestUserFactory.client();
+        Client user = TestClientFactory.standard();
         String token = tokenService.generateAuthToken(user);
 
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
