@@ -48,4 +48,8 @@ public class Client extends User {
 
         return fullName.split("\\s+")[0];
     }
+
+    public void incrementCancelledAppointmentCount() {
+        this.canceledAppointments++;
+    }
 }

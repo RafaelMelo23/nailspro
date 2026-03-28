@@ -26,7 +26,6 @@ class AppointmentMessageBuilderTest {
     private TenantUrlProvider urlProvider;
     @Mock
     private DateAndZoneHelper dateHelper;
-
     @InjectMocks
     private AppointmentMessageBuilder appointmentMessageBuilder;
 

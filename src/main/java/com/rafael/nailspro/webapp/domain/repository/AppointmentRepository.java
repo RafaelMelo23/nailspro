@@ -2,9 +2,11 @@ package com.rafael.nailspro.webapp.domain.repository;
 
 import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentStatus;
 import com.rafael.nailspro.webapp.domain.model.Appointment;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -68,6 +70,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
                                                   @Param("endRange") Instant endRange,
                                                   @Param("statuses") List<AppointmentStatus> status);
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT ap FROM Appointment ap WHERE ap.id = :appointmentId AND ap.client.id = :clientId")
     Optional<Appointment> findAndValidateClientOwnership(@Param("appointmentId") Long appointmentId,
                                                          @Param("clientId") Long clientId);

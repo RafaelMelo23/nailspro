@@ -1,38 +1,48 @@
 package com.rafael.nailspro.webapp.domain.model;
 
 import com.rafael.nailspro.webapp.domain.enums.appointment.AppointmentStatus;
+import com.rafael.nailspro.webapp.infrastructure.dto.appointment.AppointmentCreateDTO;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
-import com.rafael.nailspro.webapp.support.factory.TestAppointmentAddOnFactory;
-import com.rafael.nailspro.webapp.support.factory.TestAppointmentFactory;
-import com.rafael.nailspro.webapp.support.factory.TestProfessionalFactory;
-import com.rafael.nailspro.webapp.support.factory.TestSalonServiceFactory;
+import com.rafael.nailspro.webapp.support.factory.*;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class AppointmentTest {
 
     private static Appointment buildAppointment(AppointmentStatus status) {
-        return TestAppointmentFactory.atSpecificTime(
-                Instant.now().minusSeconds(1800),
-                Instant.now().plusSeconds(1800),
-                TestProfessionalFactory.standard(),
-                status
-        );
+        return Appointment.builder()
+                .client(TestClientFactory.standard())
+                .professional(TestProfessionalFactory.standard())
+                .appointmentStatus(status)
+                .startDate(Instant.now().minusSeconds(1800))
+                .endDate(Instant.now().plusSeconds(1800))
+                .salonZoneId(ZoneId.of("America/Sao_Paulo"))
+                .addOns(new java.util.ArrayList<>())
+                .tenantId("tenant-test")
+                .build();
     }
 
     private static Appointment finishedAppointment(AppointmentStatus status) {
-        return TestAppointmentFactory.atSpecificTime(
-                Instant.now().minusSeconds(7200),
-                Instant.now().minusSeconds(3600),
-                TestProfessionalFactory.standard(),
-                status
-        );
+        return Appointment.builder()
+                .client(TestClientFactory.standard())
+                .professional(TestProfessionalFactory.standard())
+                .appointmentStatus(status)
+                .startDate(Instant.now().minusSeconds(7200))
+                .endDate(Instant.now().minusSeconds(3600))
+                .salonZoneId(ZoneId.of("America/Sao_Paulo"))
+                .addOns(new java.util.ArrayList<>())
+                .tenantId("tenant-test")
+                .build();
     }
 
     @Test
@@ -72,6 +82,38 @@ class AppointmentTest {
         appointment.cancel();
 
         assertEquals(AppointmentStatus.CANCELLED, appointment.getAppointmentStatus());
+    }
+
+    @Test
+    void cancel_whenAppointmentIsWithinTwoDays_shouldIncrementClientCancelledCount() {
+        Client client = TestClientFactory.standard();
+        int initialCancelled = client.getCanceledAppointments();
+        Appointment appointment = Appointment.builder()
+                .client(client)
+                .appointmentStatus(AppointmentStatus.CONFIRMED)
+                .startDate(Instant.now().plus(1, ChronoUnit.DAYS))
+                .endDate(Instant.now().plus(1, ChronoUnit.DAYS).plusSeconds(3600))
+                .build();
+
+        appointment.cancel();
+
+        assertEquals(initialCancelled + 1, client.getCanceledAppointments());
+    }
+
+    @Test
+    void cancel_whenAppointmentIsBeyondTwoDays_shouldNotIncrementClientCancelledCount() {
+        Client client = TestClientFactory.standard();
+        int initialCancelled = client.getCanceledAppointments();
+        Appointment appointment = Appointment.builder()
+                .client(client)
+                .appointmentStatus(AppointmentStatus.CONFIRMED)
+                .startDate(Instant.now().plus(3, ChronoUnit.DAYS))
+                .endDate(Instant.now().plus(3, ChronoUnit.DAYS).plusSeconds(3600))
+                .build();
+
+        appointment.cancel();
+
+        assertEquals(initialCancelled, client.getCanceledAppointments());
     }
 
     @Test
@@ -142,61 +184,78 @@ class AppointmentTest {
     }
 
     @Test
-    void calculateTotalValue_calculateWithNoAddOn_ReturnsMainServiceValue() {
-        SalonService salonService = TestSalonServiceFactory.standard();
-
-        Appointment appointment = Appointment.builder()
-                .addOns(List.of())
-                .mainSalonService(salonService)
+    void create_whenSuccessful_shouldReturnPendingAppointment() {
+        AppointmentCreateDTO dto = AppointmentCreateDTO.builder()
+                .observation(Optional.of("Testing"))
+                .zonedAppointmentDateTime(ZonedDateTime.now())
+                .build();
+        Client client = TestClientFactory.standard();
+        Professional professional = TestProfessionalFactory.standard();
+        SalonService mainService = TestSalonServiceFactory.standard();
+        SalonProfile salonProfile = TestSalonProfileFactory.standard();
+        TimeInterval interval = TimeInterval.builder()
+                .realTimeStart(Instant.now())
+                .realTimeEnd(Instant.now().plusSeconds(3600))
+                .endTimeWithBuffer(Instant.now().plusSeconds(4500))
+                .salonZoneId(ZoneId.of("America/Sao_Paulo"))
                 .build();
 
-        BigDecimal result = appointment.calculateTotalValue();
+        Appointment appointment = Appointment.create(dto, client, professional, mainService, List.of(), salonProfile, interval);
 
-        assertEquals(0, result.compareTo(BigDecimal.valueOf(50)));
+        assertNotNull(appointment);
+        assertEquals(AppointmentStatus.PENDING, appointment.getAppointmentStatus());
+        assertEquals(client, appointment.getClient());
+        assertEquals(professional, appointment.getProfessional());
+        assertEquals(mainService, appointment.getMainSalonService());
+        assertEquals("Testing", appointment.getObservations());
+        assertEquals(salonProfile.getTradeName(), appointment.getSalonTradeName());
     }
 
     @Test
-    void calculateTotalValue_WithMultipleAddOns_ReturnsSumOfAll() {
-        SalonService main = TestSalonServiceFactory.standard(); // 50
-        Appointment appointment = Appointment.builder()
-                .mainSalonService(main)
-                .addOns(List.of(
-                        TestAppointmentAddOnFactory.standard(TestSalonServiceFactory.withCustomValue(5)),
-                        TestAppointmentAddOnFactory.standard(TestSalonServiceFactory.withCustomValue(10)),
-                        TestAppointmentAddOnFactory.standard(TestSalonServiceFactory.withCustomValue(15))
-                ))
+    void create_whenSalonProfileHasAutoConfirmation_shouldReturnConfirmedAppointment() {
+        AppointmentCreateDTO dto = AppointmentCreateDTO.builder()
+                .observation(Optional.empty())
+                .zonedAppointmentDateTime(ZonedDateTime.now())
+                .build();
+        Client client = TestClientFactory.standard();
+        Professional professional = TestProfessionalFactory.standard();
+        SalonService mainService = TestSalonServiceFactory.standard();
+        SalonProfile salonProfile = TestSalonProfileFactory.standard();
+        salonProfile.setAutoConfirmationAppointment(true);
+
+        TimeInterval interval = TimeInterval.builder()
+                .realTimeStart(Instant.now())
+                .realTimeEnd(Instant.now().plusSeconds(3600))
+                .endTimeWithBuffer(Instant.now().plusSeconds(4500))
+                .salonZoneId(ZoneId.of("America/Sao_Paulo"))
                 .build();
 
-        BigDecimal result = appointment.calculateTotalValue();
+        Appointment appointment = Appointment.create(dto, client, professional, mainService, List.of(), salonProfile, interval);
 
-        assertEquals(0, result.compareTo(BigDecimal.valueOf(80)));
+        assertEquals(AppointmentStatus.CONFIRMED, appointment.getAppointmentStatus());
     }
 
     @Test
-    void calculateTotalValue_WithZeroValueServices_ReturnsCorrectTotal() {
-        SalonService main = TestSalonServiceFactory.withCustomValue(0);
-        Appointment appointment = Appointment.builder()
-                .mainSalonService(main)
-                .addOns(List.of(
-                        TestAppointmentAddOnFactory.standard(TestSalonServiceFactory.withCustomValue(0))
-                ))
-                .build();
-
-        BigDecimal result = appointment.calculateTotalValue();
-
-        assertEquals(0, result.compareTo(BigDecimal.ZERO));
+    void create_whenArgumentsAreNull_shouldThrowIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () ->
+                Appointment.create(null, null, null, null, null, null, null));
     }
 
     @Test
-    void calculateTotalValue_WhenServiceValueIsNull_ThrowsIllegalStateException() {
-        SalonService serviceNoValue = TestSalonServiceFactory.withCustomValue(null);
-
-        Appointment appointment = Appointment.builder()
-                .mainSalonService(serviceNoValue)
-                .addOns(List.of())
+    void calculateIntervalAndBuffer_shouldCalculateCorrectly() {
+        ZonedDateTime startTime = ZonedDateTime.of(2023, 10, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"));
+        AppointmentCreateDTO dto = AppointmentCreateDTO.builder()
+                .zonedAppointmentDateTime(startTime)
                 .build();
+        long duration = 3600; // 1 hour
+        SalonProfile profile = TestSalonProfileFactory.withCustomBuffer(15);
 
-        assertThrows(IllegalStateException.class, appointment::calculateTotalValue);
+        TimeInterval result = Appointment.calculateIntervalAndBuffer(dto, duration, profile);
+
+        assertEquals(startTime.toInstant(), result.realTimeStart());
+        assertEquals(startTime.toInstant().plusSeconds(3600), result.realTimeEnd());
+        assertEquals(startTime.toInstant().plusSeconds(3600 + 900), result.endTimeWithBuffer());
+        assertEquals(profile.getZoneId(), result.salonZoneId());
     }
 
     @Test
@@ -251,5 +310,22 @@ class AppointmentTest {
         long totalDuration = Appointment.calculateDurationInSeconds(main, addOns);
 
         assertEquals(4200, totalDuration);
+    }
+
+    @Test
+    void ensureAppointmentIsActive_whenEnded_shouldThrowBusinessException() {
+        Appointment appointment = finishedAppointment(AppointmentStatus.CONFIRMED);
+        assertThrows(BusinessException.class, appointment::ensureAppointmentIsActive);
+    }
+
+    @Test
+    void ensureStatusIsNotFinal_whenFinalStatus_shouldThrowBusinessException() {
+        Appointment finished = buildAppointment(AppointmentStatus.FINISHED);
+        Appointment missed = buildAppointment(AppointmentStatus.MISSED);
+        Appointment cancelled = buildAppointment(AppointmentStatus.CANCELLED);
+
+        assertThrows(BusinessException.class, finished::ensureStatusIsNotFinal);
+        assertThrows(BusinessException.class, missed::ensureStatusIsNotFinal);
+        assertThrows(BusinessException.class, cancelled::ensureStatusIsNotFinal);
     }
 }

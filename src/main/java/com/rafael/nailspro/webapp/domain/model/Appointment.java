@@ -97,20 +97,31 @@ public class Appointment extends BaseEntity {
 
     public void miss() {
         ensureStatusIsNotFinal();
-        if (Instant.now().isBefore(this.endDate)) {
+
+        if (!hasEnded()) {
             throw new BusinessException("O agendamento ainda não terminou.");
         }
+
         this.setAppointmentStatus(AppointmentStatus.MISSED);
     }
 
     public void cancel() {
         ensureStatusIsNotFinal();
+        ensureAppointmentIsActive();
+
+        Instant now = Instant.now();
+
         this.setAppointmentStatus(AppointmentStatus.CANCELLED);
+
+        Instant twoDaysFromNow = now.plus(2, ChronoUnit.DAYS);
+        if (this.getStartDate().isBefore(twoDaysFromNow)) {
+            this.client.incrementCancelledAppointmentCount();
+        }
     }
 
     public void finish() {
         ensureStatusIsNotFinal();
-        if (!Instant.now().isAfter(this.endDate)) {
+        if (!hasEnded()) {
             throw new BusinessException("O agendamento ainda não terminou.");
         }
         this.setAppointmentStatus(AppointmentStatus.FINISHED);
@@ -120,9 +131,20 @@ public class Appointment extends BaseEntity {
         if (this.appointmentStatus == AppointmentStatus.CONFIRMED) {
             return;
         }
+        ensureAppointmentIsActive();
 
         this.appointmentStatus = AppointmentStatus.CONFIRMED;
         registerEvent(new AppointmentConfirmedEvent(this.id));
+    }
+
+    public void ensureAppointmentIsActive() {
+        if (hasEnded()) {
+            throw new BusinessException("Este agendamento já terminou e não pode mais ser modificado.");
+        }
+    }
+
+    public boolean hasEnded() {
+        return Instant.now().isAfter(this.endDate);
     }
 
     public void ensureStatusIsNotFinal() {
