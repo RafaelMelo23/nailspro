@@ -4,23 +4,38 @@ import com.rafael.nailspro.webapp.domain.model.*;
 import com.rafael.nailspro.webapp.infrastructure.dto.appointment.booking.AppointmentTimeWindow;
 import com.rafael.nailspro.webapp.infrastructure.exception.BusinessException;
 import com.rafael.nailspro.webapp.support.factory.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 class BookingPolicyTest {
 
     @InjectMocks
     private BookingPolicy bookingPolicy;
+
+    @Mock
+    private Clock clock;
+
+    private static final Instant FIXED_INSTANT = Instant.parse("2026-03-28T10:00:00Z");
+    private static final ZoneId ZONE_ID = ZoneId.of("America/Sao_Paulo");
+    private static final LocalDate TODAY = LocalDate.ofInstant(FIXED_INSTANT, ZONE_ID);
+
+    @BeforeEach
+    void setUp() {
+        lenient().when(clock.instant()).thenReturn(FIXED_INSTANT);
+        lenient().when(clock.getZone()).thenReturn(ZONE_ID);
+    }
 
     @Test
     void resolveAllowedWindowDays_returnsStandardDefault() {
@@ -48,26 +63,24 @@ class BookingPolicyTest {
 
     @Test
     void validateBookingHorizon_doesNotThrowWhenInsideWindow() {
-        LocalDate today = LocalDate.now();
-        LocalDate requestedDate = today.plusDays(3);
+        LocalDate requestedDate = TODAY.plusDays(3);
 
-        assertDoesNotThrow(() -> bookingPolicy.validateBookingHorizon(requestedDate, 7, today));
+        assertDoesNotThrow(() -> bookingPolicy.validateBookingHorizon(requestedDate, 7, TODAY));
     }
 
     @Test
     void validateBookingHorizon_throwsExceptionWhenOutsideWindow() {
-        LocalDate today = LocalDate.now();
-        LocalDate requestedDate = today.plusDays(8);
+        LocalDate requestedDate = TODAY.plusDays(8);
 
         BusinessException exception = assertThrows(BusinessException.class,
-                () -> bookingPolicy.validateBookingHorizon(requestedDate, 7, today));
+                () -> bookingPolicy.validateBookingHorizon(requestedDate, 7, TODAY));
 
         assertEquals("Sua janela de agendamento não é preferencial, aguarde alguns dias para reservar esta data.", exception.getMessage());
     }
 
     @Test
     void buildWindow_createsCorrectWindow() {
-        LocalDate start = LocalDate.now();
+        LocalDate start = TODAY;
         AppointmentTimeWindow window = bookingPolicy.buildWindow(start, 7);
 
         assertEquals(start, window.start());
@@ -85,11 +98,9 @@ class BookingPolicyTest {
                 salonService
         );
 
-        LocalDate today = LocalDate.now();
-
         LocalDate startDate = bookingPolicy.determineStartDate(List.of(salonService), appointment);
 
-        assertEquals(today, startDate);
+        assertEquals(TODAY, startDate);
     }
 
     @Test
@@ -98,19 +109,16 @@ class BookingPolicyTest {
 
         LocalDate bookingPolicyStartDate = bookingPolicy.determineStartDate(List.of(salonService), null);
 
-        LocalDate today = LocalDate.now();
-        assertEquals(today, bookingPolicyStartDate);
+        assertEquals(TODAY, bookingPolicyStartDate);
     }
 
     @Test
     void determineStartDate_returnsTodayWhenLastAppointmentIsEmpty() {
         SalonService salonService = TestSalonServiceFactory.standardWithoutMaintenanceInterval();
 
-        LocalDate today = LocalDate.now();
-
         LocalDate startDate = bookingPolicy.determineStartDate(List.of(salonService), null);
 
-        assertEquals(today, startDate);
+        assertEquals(TODAY, startDate);
     }
 
     @Test
@@ -133,14 +141,8 @@ class BookingPolicyTest {
 
     @Test
     void calculateEarliestRecommendedDate_returnsNowIfAppointmentNull() {
-        Instant before = Instant.now();
         Instant recommendedDate = bookingPolicy.calculateEarliestRecommendedDate(null);
-        Instant after = Instant.now();
-
-        assertTrue(
-                !recommendedDate.isBefore(before) &&
-                        !recommendedDate.isAfter(after)
-        );
+        assertEquals(FIXED_INSTANT, recommendedDate);
     }
 
     @Test
@@ -197,13 +199,8 @@ class BookingPolicyTest {
                 List.of(addOn)
         );
 
-        Instant before = Instant.now();
         Instant recommendedDate = bookingPolicy.calculateEarliestRecommendedDate(appointment);
-        Instant after = Instant.now();
 
-        assertTrue(
-                !recommendedDate.isBefore(before) &&
-                        !recommendedDate.isAfter(after)
-        );
+        assertEquals(FIXED_INSTANT, recommendedDate);
     }
 }
