@@ -35,7 +35,7 @@ public final class TestClientFactory {
                 .id(nextId())
                 .fullName("Jane Doe")
                 .email("jane.doe@test.com")
-                .tenantId("tenant-123")
+                .tenantId("tenant-test")
                 .build();
     }
 

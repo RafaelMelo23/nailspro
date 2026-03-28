@@ -19,7 +19,7 @@ public class TestAppointmentAddOnFactory {
         return baseBuilder(service)
                 .quantity(1)
                 .unitPriceSnapshot(service.getValue())
-                .tenantId("tenant-123")
+                .tenantId("tenant-test")
                 .build();
     }
 

@@ -86,7 +86,7 @@ public class TestSalonProfileFactory {
         return SalonProfile.builder()
                 .id(nextId())
                 .tradeName("Test Salon " + unique)
-                .tenantId("tenant-" + unique)
+                .tenantId("tenant-test")
                 .primaryColor("#FB7185")
                 .logoPath("default-logo.png")
                 .comercialPhone(generatePhone())

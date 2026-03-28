@@ -41,7 +41,7 @@ public class TestProfessionalFactory {
         return builder()
                 .id(nextId())
                 .fullName("John Professional")
-                .tenantId("tenant-123")
+                .tenantId("tenant-test")
                 .build();
     }
 

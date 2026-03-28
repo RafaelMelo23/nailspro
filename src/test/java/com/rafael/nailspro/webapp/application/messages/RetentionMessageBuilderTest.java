@@ -47,7 +47,7 @@ class RetentionMessageBuilderTest {
                 returnInstant
         );
 
-        when(urlProvider.buildBookAppointmentUrl("tenant-123")).thenReturn("https://agenda.com/123");
+        when(urlProvider.buildBookAppointmentUrl("tenant-test")).thenReturn("https://agenda.com/123");
 
         String result = retentionMessageBuilder.buildRetentionMessage(forecast);
 
@@ -73,7 +73,7 @@ class RetentionMessageBuilderTest {
 
         RetentionForecast forecast = TestRetentionForecastFactory.standardEnglish(professional, client, List.of(service), appointment, returnInstant);
 
-        when(urlProvider.buildBookAppointmentUrl("tenant-123")).thenReturn("https://agenda.com/123");
+        when(urlProvider.buildBookAppointmentUrl("tenant-test")).thenReturn("https://agenda.com/123");
 
         String result = retentionMessageBuilder.buildRetentionMessage(forecast);
 
@@ -94,7 +94,7 @@ class RetentionMessageBuilderTest {
         Client client = TestClientFactory.standardEnglish();
         SalonService s1 = TestSalonServiceFactory.manicure();
         SalonService s2 = TestSalonServiceFactory.pedicure();
-        SalonService s3 = TestSalonServiceFactory.builder().name("Nail Art").tenantId("tenant-123").build();
+        SalonService s3 = TestSalonServiceFactory.builder().name("Nail Art").build();
         
         Appointment appointment = TestAppointmentFactory.standardEnglish(client, professional, s1, List.of());
 
@@ -103,7 +103,7 @@ class RetentionMessageBuilderTest {
         RetentionForecast forecast = TestRetentionForecastFactory.standardEnglish(
                 professional, client, List.of(s1, s2, s3), appointment, returnInstant);
 
-        when(urlProvider.buildBookAppointmentUrl("tenant-123")).thenReturn("https://agenda.com/123");
+        when(urlProvider.buildBookAppointmentUrl("tenant-test")).thenReturn("https://agenda.com/123");
 
         String result = retentionMessageBuilder.buildRetentionMessage(forecast);
 
@@ -124,7 +124,7 @@ class RetentionMessageBuilderTest {
         RetentionForecast forecast = TestRetentionForecastFactory.standardEnglish(
                 professional, client, List.of(service), appointment, returnInstant);
 
-        when(urlProvider.buildBookAppointmentUrl("tenant-123")).thenReturn("https://agenda.com/123");
+        when(urlProvider.buildBookAppointmentUrl("tenant-test")).thenReturn("https://agenda.com/123");
 
         String result = retentionMessageBuilder.buildRetentionMessage(forecast);
 
@@ -143,7 +143,7 @@ class RetentionMessageBuilderTest {
         RetentionForecast forecast = TestRetentionForecastFactory.standardEnglish(
                 professional, client, List.of(service), appointment, returnInstant);
 
-        when(urlProvider.buildBookAppointmentUrl("tenant-123")).thenReturn("https://agenda.com/123");
+        when(urlProvider.buildBookAppointmentUrl("tenant-test")).thenReturn("https://agenda.com/123");
 
         String result = retentionMessageBuilder.buildRetentionMessage(forecast);
 
@@ -159,7 +159,7 @@ class RetentionMessageBuilderTest {
         RetentionForecast forecast = TestRetentionForecastFactory.standardEnglish(
                 professional, client, List.of(), appointment, Instant.now());
 
-        when(urlProvider.buildBookAppointmentUrl("tenant-123")).thenReturn("https://agenda.com/123");
+        when(urlProvider.buildBookAppointmentUrl("tenant-test")).thenReturn("https://agenda.com/123");
 
         String result = retentionMessageBuilder.buildRetentionMessage(forecast);
 
@@ -171,22 +171,19 @@ class RetentionMessageBuilderTest {
     void shouldHandleVeryLongNames() {
         Professional professional = TestProfessionalFactory.builder()
                 .fullName("A".repeat(100))
-                .tenantId("tenant-123")
                 .build();
         Client client = TestClientFactory.builder()
                 .fullName("B".repeat(100))
-                .tenantId("tenant-123")
                 .build();
         SalonService service = TestSalonServiceFactory.builder()
                 .name("C".repeat(100))
-                .tenantId("tenant-123")
                 .build();
         
         Appointment appointment = TestAppointmentFactory.standardEnglish(client, professional, service, List.of());
         RetentionForecast forecast = TestRetentionForecastFactory.standardEnglish(
                 professional, client, List.of(service), appointment, Instant.now());
 
-        when(urlProvider.buildBookAppointmentUrl("tenant-123")).thenReturn("https://agenda.com/123");
+        when(urlProvider.buildBookAppointmentUrl("tenant-test")).thenReturn("https://agenda.com/123");
 
         String result = retentionMessageBuilder.buildRetentionMessage(forecast);
 

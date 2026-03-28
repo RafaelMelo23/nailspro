@@ -61,7 +61,7 @@ class AppointmentMessageBuilderTest {
     @Test
     void buildAppointmentConfirmationMessage_returnsMessageWithoutExtras_whenNoAddOns() {
         Professional professional = TestProfessionalFactory.standardEnglish();
-        Client client = TestClientFactory.builder().fullName("Maria Silva").tenantId("tenant-123").build();
+        Client client = TestClientFactory.builder().fullName("Maria Silva").build();
         SalonService mainService = TestSalonServiceFactory.manicure();
         
         Appointment appointment = TestAppointmentFactory.standardEnglish(client, professional, mainService, List.of());
@@ -104,14 +104,14 @@ class AppointmentMessageBuilderTest {
     @Test
     void buildAppointmentConfirmationMessage_handlesLongNames_whenExtremelyLongNamesProvided() {
         String longClientName = "Maria".repeat(20) + " Silva";
-        Client client = TestClientFactory.builder().fullName(longClientName).tenantId("tenant-123").build();
-        Professional professional = TestProfessionalFactory.builder().fullName("Prof".repeat(20)).tenantId("tenant-123").build();
+        Client client = TestClientFactory.builder().fullName(longClientName).build();
+        Professional professional = TestProfessionalFactory.builder().fullName("Prof".repeat(20)).build();
         SalonService service = TestSalonServiceFactory.manicure();
 
         Appointment appointment = TestAppointmentFactory.standardEnglish(client, professional, service, List.of());
         
         ZonedDateTime zonedDateTime = ZonedDateTime.of(2026, 4, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"));
-        when(dateHelper.toZonedDateTime(appointment.getStartDate(), "tenant-123")).thenReturn(zonedDateTime);
+        when(dateHelper.toZonedDateTime(appointment.getStartDate(), "tenant-test")).thenReturn(zonedDateTime);
 
         String result = appointmentMessageBuilder.buildAppointmentConfirmationMessage(appointment);
 
@@ -121,14 +121,14 @@ class AppointmentMessageBuilderTest {
 
     @Test
     void buildAppointmentConfirmationMessage_usesDefaultGreeting_whenClientNameIsEmpty() {
-        Client client = TestClientFactory.builder().fullName("").tenantId("tenant-123").build();
+        Client client = TestClientFactory.builder().fullName("").build();
         Professional professional = TestProfessionalFactory.standardEnglish();
         SalonService service = TestSalonServiceFactory.manicure();
 
         Appointment appointment = TestAppointmentFactory.standardEnglish(client, professional, service, List.of());
         
         ZonedDateTime zonedDateTime = ZonedDateTime.of(2026, 4, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"));
-        when(dateHelper.toZonedDateTime(appointment.getStartDate(), "tenant-123")).thenReturn(zonedDateTime);
+        when(dateHelper.toZonedDateTime(appointment.getStartDate(), "tenant-test")).thenReturn(zonedDateTime);
 
         String result = appointmentMessageBuilder.buildAppointmentConfirmationMessage(appointment);
 

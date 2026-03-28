@@ -33,7 +33,7 @@ public class TestSalonServiceFactory {
         return builder()
                 .id(nextId())
                 .name("Manicure")
-                .tenantId("tenant-123")
+                .tenantId("tenant-test")
                 .build();
     }
 
@@ -41,7 +41,7 @@ public class TestSalonServiceFactory {
         return builder()
                 .id(nextId())
                 .name("Pedicure")
-                .tenantId("tenant-123")
+                .tenantId("tenant-test")
                 .build();
     }
 
