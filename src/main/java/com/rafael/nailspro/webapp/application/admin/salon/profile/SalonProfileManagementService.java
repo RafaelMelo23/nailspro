@@ -39,7 +39,7 @@ public class SalonProfileManagementService {
         setIfNotNull(profile.loyalClientBookingWindowDays(), salonProfile::setLoyalClientBookingWindowDays);
         setIfNotNull(profile.standardBookingWindow(), salonProfile::setStandardBookingWindow);
 
-        if (profile.isLoyalClientelePrioritized() && (
+        if (Boolean.TRUE.equals(profile.isLoyalClientelePrioritized()) && (
                 profile.loyalClientBookingWindowDays() == null ||
                 profile.standardBookingWindow() == null)) {
             throw new BusinessException("""

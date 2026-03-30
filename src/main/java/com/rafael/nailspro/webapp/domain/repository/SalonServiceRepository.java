@@ -15,7 +15,7 @@ public interface SalonServiceRepository extends JpaRepository<SalonService, Long
 
     Optional<Set<SalonService>> findByIdIn(Collection<Long> ids);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE SalonService ss SET ss.active = :active where ss.id = :id")
     void changeSalonServiceVisibility(@Param("id") Long id,
                                       @Param("active") Boolean active);

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public interface ProfessionalRepository extends JpaRepository<Professional, Long> {
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE Professional p set p.isActive = false WHERE p.id = :id")
     void deactivateProfessional(@Param("id") Long id);
 
@@ -55,5 +55,8 @@ public interface ProfessionalRepository extends JpaRepository<Professional, Long
     Optional<Professional> findSalonOwnerByTenantId(@Param("id") String tenantId);
 
     Optional<Professional> findByExternalId(UUID uuid);
+
+    Optional<Professional> findByEmailIgnoreCase(String email);
+
 
 }

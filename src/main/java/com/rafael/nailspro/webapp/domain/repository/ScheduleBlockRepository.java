@@ -13,13 +13,15 @@ public interface ScheduleBlockRepository extends JpaRepository<ScheduleBlock, Lo
 
     List<ScheduleBlock> findByProfessional_IdAndDateStartTimeGreaterThanEqual(Long professionalId, Instant from);
 
+    List<ScheduleBlock> findByProfessional_Id(Long professionalId);
+
     @Query("SELECT sb FROM ScheduleBlock sb WHERE sb.professional.id = :prof " +
             "AND sb.dateStartTime < :end AND sb.dateEndTime > :start")
     List<ScheduleBlock> findBusyBlocksInRange(@Param("prof") Long professionalId,
                                               @Param("start") Instant startRange,
                                               @Param("end") Instant endRange);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("DELETE FROM ScheduleBlock sb WHERE sb.id = :blockId AND sb.professional.id = :professionalId")
     void deleteByIdAndProfessionalId(@Param("blockId") Long blockId,
                                      @Param("professionalId") Long professionalId);

@@ -6,9 +6,11 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 import java.time.ZoneId;
 
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record SalonProfileDTO(
         @Size(max = 100, message = "Nome comercial deve ter no máximo 100 caracteres")

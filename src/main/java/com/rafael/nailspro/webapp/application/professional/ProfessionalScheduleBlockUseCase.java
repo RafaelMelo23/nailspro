@@ -17,7 +17,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +43,7 @@ public class ProfessionalScheduleBlockUseCase {
     public List<ScheduleBlockOutDTO> getBlocks(UserPrincipal principal, LocalDateTime from) {
         ZoneId salonZoneId = salonProfileService.getSalonZoneId(principal.getTenantId());
 
-        var fromInstant = Instant.MIN;
+        var fromInstant = Instant.EPOCH;
         if (from != null) {
             fromInstant = from.atZone(salonZoneId).toInstant();
         }
