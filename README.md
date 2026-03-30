@@ -1,126 +1,89 @@
-Plataforma SaaS com foco em backend para estúdios de unhas e salões de beleza, orientada a dois resultados:
-- Aumentar a ocupação da agenda com agendamento inteligente e automações
-- Melhorar retenção e visibilidade de receita com CRM + analytics
+# SaaS de agendamento para salões/manicures
 
-## Por Que Este Projeto Se Destaca
-- Não é apenas uma API de agendamento: combina agenda, inteligência de cliente, previsão de retenção, automação via WhatsApp e dashboards de negócio.
-- Foi desenhado para expansão SaaS, com onboarding tenant-aware, claim de tenant no JWT e dados orientados por tenant.
-- Utiliza fluxos orientados a eventos, então ações operacionais (agendar, finalizar, cancelar, falta) disparam automações e atualização de métricas.
+[![Java 21](https://img.shields.io/badge/Java-21-orange?logo=java)](https://jdk.java.net/21/)
+[![Spring Boot 3.4](https://img.shields.io/badge/Spring%20Boot-3.4-brightgreen?logo=springboot)](https://spring.io/projects/spring-boot)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?logo=postgresql)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-blue?logo=docker)](https://www.docker.com/)
 
-## Mapa de Funcionalidades (Por Módulo do Sistema)
+Plataforma SaaS (Software as a Service) de alta performance para estúdios de unhas e salões de beleza. 
+O projeto resolve a complexidade de gestão de agenda e retenção de clientes através de automação inteligente, 
+oferecendo uma solução completa desde o agendamento até o follow-up pós-atendimento.
 
-### 1. Experiência de Agendamento do Cliente
-- Agendamento e cancelamento de atendimento (`/api/v1/booking`)
-- Consulta de horários disponíveis com janela calculada (`/api/v1/booking/times`)
-- Política inteligente de agendamento
-- Clientes fiéis podem receber uma janela maior de agendamento
-- Clientes novos podem ter uma janela menor
-- Data recomendada de retorno com base no intervalo de manutenção do serviço
-- Prevenção de conflito
-- Lock pessimista no fluxo de reserva
-- Validação de conflitos com agenda/bloqueios do profissional
+---
 
-### 2. Operação de Agenda do Profissional
-- CRUD de horários de trabalho (`/api/v1/schedule`)
-- Gestão de bloqueios de agenda (`/api/v1/schedule/block`)
-- Visualização da agenda diária do profissional (`/professional/appointments`)
-- Ações de ciclo de vida do atendimento (confirmar, finalizar, cancelar, faltou) com eventos de domínio
+## 🚀 Diferenciais de Engenharia
 
-### 3. Admin, CRM e Insights
-- Endpoint de onboarding para novo salão (`/api/internal/onboard`)
-- Gestão de perfil do salão (`/api/v1/admin/salon/profile`)
-- Gestão de serviços do salão (`/api/v1/admin/salon/service`)
-- Gestão de clientes e status (`/api/v1/admin/client`)
-- Insight de CRM por cliente (`/api/v1/admin/insight/clients/{clientId}`)
-- Total gasto
-- Atendimentos concluídos
-- Cancelamentos
-- Faltas
-- Última visita
-- Auditoria de atendimentos por cliente (`/api/v1/admin/appointments/users/{userId}`)
-- Dashboard de receita (`/api/v1/admin/insight/salon/revenue`)
-- Receita mensal
-- Receita semanal
-- Ticket médio
-- Série diária para gráfico
+Este sistema foi construído com foco em escalabilidade e maturidade técnica, aplicando padrões de mercado para sistemas corporativos:
 
-### 4. Mensageria e Automação de Retenção
-- Integração com WhatsApp via Evolution API
-- Envio de confirmação após commit da transação de agendamento
-- Scheduler de lembretes a cada 15 minutos para atendimentos próximos
-- Geração de previsão de retenção após finalização do atendimento
-- Job diário de follow-up para clientes no período previsto de retorno
-- Rastreamento de falhas de envio para monitoramento/retentativa
+- **Arquitetura Multi-Tenant com Isolamento Físico de Dados**: Utiliza AOP (Aspect Oriented Programming) via `TenantAspect` para garantir que cada salão acesse apenas seus próprios dados, com resolução dinâmica por Header ou Subdomínio.
+- **Núcleo Reativo & Orientado a Eventos**: Implementação de listeners transacionais (`@TransactionalEventListener`) para processamento assíncrono de métricas, auditoria e mensageria sem impactar a latência do usuário.
+- **Inteligência de Retenção (CRM Predictor)**: Algoritmo que calcula automaticamente a data ideal de retorno com base no "Maintenance Interval" de cada serviço (ex: alongamento de unhas vs. esmaltação simples).
+- **Integração Real-time com Evolution API**: Gestão completa de instâncias de WhatsApp, permitindo pareamento via QR Code ou Pairing Code com feedback em tempo real via **SSE (Server-Sent Events)**.
+- **Segurança de Nível Bancário**: Spring Security com JWT, Refresh Tokens seguros via Cookies HTTP-Only e fluxos de recuperação de senha com tokens de propósito único.
 
-### 5. Operação em Tempo Real
-- Canal SSE de inscrição (`/api/v1/notifications/subscribe`)
-- Atualização em tempo real de QR Code para pareamento do WhatsApp
-- Notificações em tempo real de conexão/desconexão para o dono do salão
+---
 
-### 6. Segurança e Controle de Acesso
-- Spring Security + JWT com claims de papel e tenant
-- Autenticação com JWT + refresh tokens (fluxo de renovação seguro via cookie HTTP-only e secure)
-- Autorização por papéis para áreas admin/profissional
-- Tokens de reset de senha com propósito e expiração
-- Implementação robusta de logging com Sentry
+## 🛠️ Mapa de Funcionalidades Completo
 
-### 7. Validação e Tratamento de Erros
-- Validação de entrada com Jakarta Bean Validation (`@NotNull`, `@NotBlank`, `@Email`, etc.) aplicada a DTOs e parâmetros de requisição
-- Uso de `@Valid` em controllers para acionar validação automaticamente em `@RequestBody` e parâmetros anotados
-- `GlobalExceptionHandler` com `@ControllerAdvice` centralizando o tratamento de:
-  - Erros de validação de corpo de requisição (`MethodArgumentNotValidException`)
-  - Erros de validação de parâmetros (`ConstraintViolationException`)
-  - Exceções de negócio e autenticação (por exemplo, `BusinessException`, `TokenRefreshException`, `UserAlreadyExistsException`)
-- Respostas padronizadas em JSON (`StandardError`) com mensagens amigáveis em português-BR, incluindo campo inválido, mensagem e path da requisição
+### 1. Gestão de Agendamento (Booking Engine)
+- **Janelas Inteligentes**: Definição de antecedência permitida com base no nível de fidelidade do cliente (Configurável por Salon Profile).
+- **Prevenção de Conflitos**: Validação rigorosa de horários de trabalho, intervalos de descanso e bloqueios manuais do profissional.
+- **Multi-Service Booking**: Suporte a agendamentos com múltiplos "Add-ons" (serviços extras), recalculando automaticamente a duração total.
+- **Lock Pessimista**: Proteção contra agendamentos simultâneos no mesmo slot através de bloqueio em nível de banco de dados.
 
-## Destaques de Engenharia
-- Organização pragmática em DDD (`application`, `domain`, `infrastructure`)
-- Núcleo orientado a eventos com listeners transacionais
-- Processamento assíncrono para mensageria e listeners de métricas
-- Modelagem multi-tenant em entidades e contexto de requisição
-- Ambiente local containerizado (app + PostgreSQL + Evolution API + Evolution DB)
+### 2. Automação de CRM & Retenção
+- **Previsão de Visita**: Geração de `RetentionForecast` no momento da finalização do atendimento.
+- **Follow-up Automatizado**: Job diário que identifica clientes "sumidos" ou em período de manutenção e dispara convites personalizados.
+- **Métricas de Fidelidade**: Cálculo automático de "Loyal Status" baseado no histórico de comparecimento para liberação de janelas preferenciais.
 
-## Stack
-- Java 21
-- Spring Boot 3.4.x
-- Spring Security + JWT
-- Spring Data JPA
-- PostgreSQL
-- Docker + Docker Compose
-- Evolution API (WhatsApp)
-- Sentry
+### 3. Painel Administrativo & Business Intelligence
+- **Onboarding de Tenants**: Fluxo automatizado de criação de conta, perfil do salão e primeiro administrador.
+- **Insights de Receita**: Dashboards com faturamento mensal, semanal, ticket médio e série histórica diária.
+- **Auditoria de Clientes**: Perfil 360º do cliente com total gasto, taxa de cancelamento, histórico de faltas (No-show) e última visita.
+- **Gestão de Serviços**: CRUD completo de serviços com controle de status ativo/inativo e intervalos de manutenção customizados.
 
-## Execução Local
+### 4. Gestão de Profissionais
+- **Work Schedules**: Configuração granular de dias de trabalho e horários (entrada, saída, almoço).
+- **Schedule Blocks**: Bloqueios rápidos de agenda para imprevistos ou folgas.
+- **Profile Management**: Upload de fotos de perfil e gestão de informações profissionais.
 
-* **O compose é apenas para demonstração, contando com
-  todas as portas expostas para teste local**
+### 5. Mensageria & Notificações
+- **WhatsApp Lifecycle**: Notificações automáticas de confirmação, lembretes de agendamento (15 min antes) e mensagens de retenção.
+- **Retry Mechanism**: Controle de tentativas de envio de mensagens com log de erros e status detalhado (Sent, Failed, Pending).
+- **Email System**: Suporte a notificações via E-mail (Resend/SMTP) com controle de quota para evitar spam.
 
-### Pré-requisitos
-- Docker
-- Docker Compose
-- Maven (ou `./mvnw`)
+---
 
-### Ambiente
-- Ajuste os valores do `.env.example` conforme necessário (`EVO_DB_PASSWORD`, `RESEND_API_KEY`)
-- Configuraçães principais da aplicação em `src/main/resources/application.properties`
+## 🏗️ Stack Tecnológica
 
-### Build e Subida
+- **Backend**: Java 21, Spring Boot 3.4.
+- **Persistência**: Spring Data JPA, PostgreSQL 15, Flyway.
+- **Segurança**: Spring Security, JWT (Auth0), BCrypt.
+- **Integrações**: Evolution API (WhatsApp), Resend (E-mail), Sentry (Observabilidade).
+- **Infraestrutura**: Docker & Docker Compose, GitHub Actions (CI/CD Ready).
+- **Testes**: JUnit 5, Mockito, Testcontainers.
+
+---
+
+## 🏛️ Destaques de Arquitetura (Clean Code & DDD)
+
+O projeto é organizado seguindo princípios de **Screaming Architecture**:
+- `application`: Casos de uso puros (UseCases) que orquestram a lógica sem depender de frameworks.
+- `domain`: O coração do negócio, contendo as entidades ricas, eventos de domínio e regras de política.
+- `infrastructure`: Adaptadores para o mundo externo (Controllers, Repositories, API Clients).
+- `shared/tenant`: Lógica transversal para multi-tenancy.
+
+---
+
+## 🚦 Execução Local
+
 ```bash
+# Clone e configure o .env
+cp .env.example .env
+
+# Build e Up
 ./mvnw clean package -DskipTests
 docker compose up -d --build
 ```
 
-Serviços:
-- App: `http://localhost:8080 (Sem interface de usuário)`
-- PostgreSQL: `localhost:5432`
-- Evolution API: `http://localhost:8081`
-
-## Status Atual
-- O backend é o foco principal e segue em evolução ativa.
-- Implementação API-first com arquitetura pronta para produção, enquanto o client apenas tem algumas views validadas.
-
-## Valor para Recrutadores e Empresas
-- Demonstra visão de negócio, não apenas implementação CRUD
-- Mostra capacidade de desenhar políticas de domínio (agendamento por fidelidade, previsão de retenção)
-- Comprova integração com provedores externos de mensageria e canais em tempo real
-- Aplica padrões escaláveis de backend: eventos, assíncrono, serviços modulares, segurança por papéis e entrega containerizada replicável
+Acesse a documentação interativa em: `http://localhost:8080/swagger-ui/index.html`
