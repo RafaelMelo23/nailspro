@@ -111,7 +111,13 @@ public class SecurityConfiguration {
                                 "/js/**",
                                 "/agendar",
                                 "/entrar",
-                                "/cadastro").permitAll()
+                                "/cadastro",
+                                "/perfil",
+                                "/admin/servicos",
+                                "/admin/configuracoes",
+                                "/profissional/agendamentos",
+                                "/manutencao")
+                        .permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/v1/salon/service").permitAll()
 

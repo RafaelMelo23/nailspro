@@ -23,6 +23,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("""
             SELECT a
             FROM Appointment a
+            LEFT JOIN FETCH a.mainSalonService
+            LEFT JOIN FETCH a.addOns
+            LEFT JOIN FETCH a.professional
             WHERE a.client.id = :userId
             """)
     Page<Appointment> findByClientId(@Param("userId") Long userId, Pageable pageable);

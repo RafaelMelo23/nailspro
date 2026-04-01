@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.error('Login error:', error);
             } finally {
-                UI.setLoading(btnLogin, false, 'Entrar no Sistema');
+                UI.setLoading(btnLogin, false, 'Entrar');
             }
         });
     }

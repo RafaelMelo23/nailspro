@@ -61,4 +61,4 @@ window.fetch = async (url, options = {}) => {
     return response;
 };
 
-console.log('Nails Pro initialized');
+console.log('initialized');
