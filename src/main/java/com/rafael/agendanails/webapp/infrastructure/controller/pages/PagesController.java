@@ -32,7 +32,6 @@ public class PagesController {
 
     @RequestMapping("/offline")
     public String renderMaintenanceHtml(Model model) {
-
         String salonOperationalMessage =
                 salonProfileService.getSalonOperationalMessageByTenantId(TenantContext.getTenant());
 
@@ -66,8 +65,9 @@ public class PagesController {
     }
 
     @RequestMapping("/admin/servicos")
-    public String adminServices() {
-        return "";
+    public String adminServices(Model model) {
+        applySalonProfileToModel(model);
+        return "pages/admin/services";
     }
 
     @RequestMapping("/admin/configuracoes")

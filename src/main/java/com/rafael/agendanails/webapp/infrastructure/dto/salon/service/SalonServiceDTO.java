@@ -31,7 +31,6 @@ public record SalonServiceDTO(
         @Positive(message = "O intervalo de manutenção deve ser maior que zero")
         Integer maintenanceIntervalDays,
 
-        Boolean requiresLoyalty,
         Boolean isAddOn,
         List<Long> professionalsIds
 ) {}

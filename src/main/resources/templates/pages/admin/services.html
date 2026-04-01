@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main-layout}">
+<head>
+    <title>Gestão de Serviços</title>
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/pages/admin/services.css}">
+        <link rel="stylesheet" th:href="@{/css/pages/profile.css}">
+    </th:block>
+</head>
+<body>
+
+<main layout:fragment="content">
+    <div class="container">
+        <div class="page-header">
+            <h2>Catálogo de Serviços</h2>
+            <button class="btn-add" onclick="adminServicesApp.openModal()">+ Novo Serviço</button>
+        </div>
+
+        <div id="service-list" class="service-list">
+            <div class="empty-state">Carregando serviços...</div>
+        </div>
+    </div>
+
+    <div id="service-modal" class="modal-overlay hidden" onclick="adminServicesApp.closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 550px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 id="modal-title" style="margin-bottom: 0;">Novo Serviço</h2>
+                <span style="font-size: 11px; color: var(--text-muted); background: #f0f0f0; padding: 4px 8px; border-radius: 4px;">
+                    <span style="color: #e53e3e;">*</span> Campos obrigatórios
+                </span>
+            </div>
+
+            <form id="service-form" onsubmit="adminServicesApp.handleSave(event)">
+                <input type="hidden" id="service-id">
+
+                <div class="form-group">
+                    <label>Nome do Serviço <span class="required-mark">*</span></label>
+                    <input type="text" id="service-name" class="form-input" placeholder="Ex: Blindagem de Diamante, Manicure..." required>
+                    <small class="field-hint">Como o cliente verá no menu de agendamento.</small>
+                </div>
+
+                <div class="form-row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Valor (R$) <span class="required-mark">*</span></label>
+                        <input type="number" id="service-value" class="form-input" step="0.01" placeholder="0,00" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Duração (min) <span class="required-mark">*</span></label>
+                        <input type="number" id="service-duration" class="form-input" placeholder="Ex: 60" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Descrição Detalhada <span class="required-mark">*</span></label>
+                    <textarea id="service-description" class="form-textarea" rows="2" placeholder="Explique o que está incluso no procedimento..." required></textarea>
+                </div>
+
+                <div class="form-row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Manutenção <span class="optional-badge">Opcional</span></label>
+                        <input type="number" id="service-maintenance" class="form-input" placeholder="Sugestão em dias">
+                        <small class="field-hint">Intervalo ideal para retorno.</small>
+                    </div>
+                    <div class="form-group" style="flex: 1; display: flex; align-items: flex-end; padding-bottom: 12px;">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="service-is-addon">
+                            <span class="checkbox-label">É um item Adicional?</span>
+                            <small class="field-hint" style="display: block; font-weight: 400; margin-top: 2px;">Aparecerá na lista de extras.</small>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px dashed var(--border);">
+                    <label style="margin-bottom: 10px; display: block;">Profissionais Habilitados <span class="required-mark">*</span></label>
+                    <div class="prof-selection-list" id="prof-selection-list" style="background: white;">
+                        <p style="padding: 10px; font-size: 0.8rem; color: var(--text-muted);">Carregando profissionais...</p>
+                    </div>
+                    <small class="field-hint" style="margin-top: 8px;">Selecione ao menos um profissional para este serviço aparecer na agenda.</small>
+                </div>
+
+                <div class="modal-actions" style="margin-top: 30px;">
+                    <button type="button" class="btn btn-outline" onclick="adminServicesApp.closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-service" style="min-width: 160px;">
+                        Salvar Serviço
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</main>
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/pages/admin/services.js}"></script>
+</th:block>
+
+</body>
+</html>
