@@ -5,6 +5,7 @@ import com.rafael.agendanails.webapp.domain.repository.SalonProfileRepository;
 import com.rafael.agendanails.webapp.infrastructure.dto.admin.salon.profile.SalonProfileDTO;
 import com.rafael.agendanails.webapp.infrastructure.exception.BusinessException;
 import com.rafael.agendanails.webapp.infrastructure.files.FileUploadService;
+import com.rafael.agendanails.webapp.shared.tenant.IgnoreTenantFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,12 @@ public class SalonProfileManagementService {
         setIfNotNull(profile.loyalClientBookingWindowDays(), salonProfile::setLoyalClientBookingWindowDays);
         setIfNotNull(profile.standardBookingWindow(), salonProfile::setStandardBookingWindow);
 
+        validateLoyalClientFeature(profile);
+
+        repository.save(salonProfile);
+    }
+
+    private static void validateLoyalClientFeature(SalonProfileDTO profile) {
         if (Boolean.TRUE.equals(profile.isLoyalClientelePrioritized()) && (
                 profile.loyalClientBookingWindowDays() == null ||
                 profile.standardBookingWindow() == null)) {
@@ -47,19 +54,6 @@ public class SalonProfileManagementService {
                     para clientes fiéis deve ser informado
                     quando a priorização de clientes fiéis estiver ativada.""");
         }
-
-        if (profile.logoBase64() != null) {
-            String oldLogo = salonProfile.getLogoPath();
-            String newLogo = fileUploadService.uploadBase64Image(profile.logoBase64());
-
-            salonProfile.setLogoPath(newLogo);
-
-            if (oldLogo != null) {
-                fileUploadService.delete(oldLogo);
-            }
-        }
-
-        repository.save(salonProfile);
     }
 
     public <T> void setIfNotNull(T value, Consumer<T> setter) {

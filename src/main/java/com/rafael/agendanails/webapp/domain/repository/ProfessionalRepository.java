@@ -19,6 +19,10 @@ public interface ProfessionalRepository extends JpaRepository<Professional, Long
     @Query("UPDATE Professional p set p.isActive = false WHERE p.id = :id")
     void deactivateProfessional(@Param("id") Long id);
 
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Professional p set p.isActive = true WHERE p.id = :id")
+    void activateProfessional(@Param("id") Long id);
+
     @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("""
             SELECT (COUNT(p) > 0)

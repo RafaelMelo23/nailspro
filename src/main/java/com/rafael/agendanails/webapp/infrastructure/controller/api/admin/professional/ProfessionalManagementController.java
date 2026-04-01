@@ -75,6 +75,23 @@ public class ProfessionalManagementController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Activate professional", description = "Activate a professional by id.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Activate deactivated"),
+            @ApiResponse(responseCode = "400", description = "Invalid professional id"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<Void> activateProfessional(
+            @Parameter(example = "2002")
+            @PathVariable Long id) {
+
+        managementService.activateProfessional(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "List professionalsIds", description = "Returns all professionalsIds.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Professionals returned",

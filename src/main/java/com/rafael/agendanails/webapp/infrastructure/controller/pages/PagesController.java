@@ -71,8 +71,9 @@ public class PagesController {
     }
 
     @RequestMapping("/admin/configuracoes")
-    public String adminSettings() {
-        return "";
+    public String adminSettings(Model model) {
+        applySalonProfileToModel(model);
+        return "pages/admin/settings";
     }
 
     @RequestMapping("/profissional/agendamentos")

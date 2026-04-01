@@ -52,4 +52,9 @@ public class ProfessionalManagementService {
     public void deactivateProfessional(Long id) {
         professionalRepository.deactivateProfessional(id);
     }
+
+    @Transactional
+    public void activateProfessional(Long id) {
+        professionalRepository.activateProfessional(id);
+    }
 }

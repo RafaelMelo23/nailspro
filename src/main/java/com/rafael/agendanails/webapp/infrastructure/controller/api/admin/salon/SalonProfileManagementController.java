@@ -30,7 +30,7 @@ import java.io.IOException;
 @RequestMapping("/api/v1/admin/salon/profile")
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Admin - Salon", description = "Salon profile management")
-public class SalonProfileController {
+public class SalonProfileManagementController {
 
     private final SalonProfileManagementService salonProfileManagementService;
 

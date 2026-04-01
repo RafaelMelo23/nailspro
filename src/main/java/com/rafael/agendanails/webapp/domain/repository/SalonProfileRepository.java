@@ -12,7 +12,8 @@ import java.util.Optional;
 
 public interface SalonProfileRepository extends JpaRepository<SalonProfile, Long> {
 
-    Optional<SalonProfile> findByOwner_Id(Long id);
+    @Query("SELECT sp FROM SalonProfile sp WHERE sp.owner.id = :id")
+    Optional<SalonProfile> findByOwner_Id(@Param("id") Long id);
 
     @IgnoreTenantFilter
     @Query("SELECT s.appointmentBufferMinutes FROM SalonProfile s WHERE s.tenantId = :tenantId")
