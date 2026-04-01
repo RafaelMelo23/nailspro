@@ -10,11 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/base.css}">
     <link rel="stylesheet" th:href="@{/css/components.css}">
 
-    <style th:inline="css" th:if="${salon?.primaryColor?.matches('^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$')}">
-      :root {
-        --primary: [(${salon.primaryColor})];
-      }
-    </style>
+    <th:block th:replace="~{fragments/navigation :: tenant-style}"></th:block>
 
     <th:block layout:fragment="styles"></th:block>
 </head>

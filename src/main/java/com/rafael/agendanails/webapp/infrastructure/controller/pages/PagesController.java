@@ -13,6 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class PagesController {
 
+    private void applySalonProfileToModel(Model model) {
+        SalonProfile salon = salonProfileService.getByTenantIdElseNull(TenantContext.getTenant());
+        if (salon != null) {
+            model.addAttribute("salon", salon);
+        }
+    }
+
     private final SalonProfileService salonProfileService;
 
     @RequestMapping("/redefinir-senha")
@@ -38,10 +45,7 @@ public class PagesController {
 
     @RequestMapping("/agendar")
     public String scheduling(Model model) {
-        SalonProfile salon = salonProfileService.getByTenantIdElseNull(TenantContext.getTenant());
-        if (salon != null) {
-            model.addAttribute("salon", salon);
-        }
+        applySalonProfileToModel(model);
         return "pages/booking/index";
     }
 
@@ -56,27 +60,23 @@ public class PagesController {
     }
 
     @RequestMapping("/perfil")
-    public String profile() {
+    public String profile(Model model) {
+        applySalonProfileToModel(model);
         return "pages/public/profile";
     }
-//
-//    @RequestMapping("/agendar")
-//    public String createAppointment() {
-//        return "";
-//    }
-//
-//    @RequestMapping("/admin/servicos")
-//    public String adminServices() {
-//        return "";
-//    }
-//
-//    @RequestMapping("/admin/configuracoes")
-//    public String adminSettings() {
-//        return "";
-//    }
-//
-//    @RequestMapping("/agenda-profissional")
-//    public String professionalAppointments() {
-//        return "";
-//    }
+
+    @RequestMapping("/admin/servicos")
+    public String adminServices() {
+        return "";
+    }
+
+    @RequestMapping("/admin/configuracoes")
+    public String adminSettings() {
+        return "";
+    }
+
+    @RequestMapping("/profissional/agendamentos")
+    public String professionalAppointments() {
+        return "";
+    }
 }

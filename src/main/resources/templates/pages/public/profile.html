@@ -22,16 +22,106 @@
         <div class="tabs">
             <button class="tab-btn active" id="tab-upcoming">Próximos</button>
             <button class="tab-btn" id="tab-history">Histórico</button>
+            <button class="tab-btn" id="tab-settings">Configurações</button>
         </div>
 
-        <div id="list-upcoming" class="appointment-list">
+        <div id="section-appointments">
+            <div id="list-upcoming" class="appointment-list">
+                <div class="empty-state">Carregando seus agendamentos...</div>
+            </div>
 
-            <div class="empty-state">Carregando seus agendamentos...</div>
+            <div id="list-history" class="appointment-list hidden">
+                <div class="empty-state">Nenhum histórico encontrado.</div>
+            </div>
         </div>
 
-        <div id="list-history" class="appointment-list hidden">
+        <div id="section-settings" class="hidden">
+            <div class="settings-card">
+                <div class="settings-group">
+                    <label>Nome Completo</label>
+                    <div class="field-row">
+                        <span id="set-name">...</span>
+                    </div>
+                </div>
 
+                <div class="settings-group">
+                    <label>E-mail</label>
+                    <div class="field-row">
+                        <span id="set-email">...</span>
+                        <button class="btn-link" onclick="profileApp.showEdit('email')">Alterar</button>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label>Telefone</label>
+                    <div class="field-row">
+                        <span id="set-phone">...</span>
+                        <button class="btn-link" onclick="profileApp.showEdit('phone')">Alterar</button>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label>Segurança</label>
+                    <div class="field-row">
+                        <span>Senha</span>
+                        <button class="btn-link" onclick="profileApp.showEdit('password')">Alterar Senha</button>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <!-- Modals or Hidden Forms for Editing -->
+    <div id="modal-overlay" class="modal-overlay hidden" onclick="profileApp.closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 id="modal-title">Alterar Dados</h2>
+            <form id="edit-form" onsubmit="profileApp.handleUpdate(event)">
+                <input type="hidden" id="edit-type">
+                
+                <div id="email-fields" class="hidden">
+                    <div class="form-group">
+                        <label>Novo E-mail</label>
+                        <input type="email" id="new-email" class="form-input" placeholder="exemplo@email.com">
+                    </div>
+                </div>
+
+                <div id="phone-fields" class="hidden">
+                    <div class="form-group">
+                        <label>Novo Telefone</label>
+                        <input type="text" id="new-phone" class="form-input" placeholder="(11) 99999-9999">
+                    </div>
+                </div>
+
+                <div id="password-fields" class="hidden">
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Para sua segurança, um link de redefinição será enviado para seu e-mail.</p>
+                </div>
+
+                <div id="password-confirm-field" class="form-group">
+                    <label>Sua Senha Atual</label>
+                    <input type="password" id="confirm-pass" class="form-input" placeholder="••••••••">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" onclick="profileApp.closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cancellation Confirmation Modal -->
+    <div id="modal-cancel" class="modal-overlay hidden" onclick="profileApp.closeCancelModal()">
+        <div class="modal-content" onclick="event.stopPropagation()" style="text-align: center;">
+            <div style="font-size: 48px; color: var(--status-busy); margin-bottom: 15px;">⚠️</div>
+            <h2 style="margin-bottom: 10px;">Cancelar Agendamento?</h2>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Esta ação não pode ser desfeita. O horário ficará disponível para outras clientes.</p>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" onclick="profileApp.closeCancelModal()">Manter</button>
+                <button type="button" class="btn btn-danger" id="btn-confirm-cancel">Sim, Cancelar</button>
+            </div>
+        </div>
+    </div>
     </div>
 
     <a th:href="@{/agendar}" class="fab-add" title="Novo Agendamento">+</a>

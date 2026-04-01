@@ -52,8 +52,7 @@ const ErrorHandler = {
     handle: async function(response) {
         const messages = await this.parseError(response);
         const fullMessage = messages.join('\n');
-        
-        // Simple deduplication: avoid showing the same message multiple times in 500ms
+
         const now = Date.now();
         if (this.lastMessage === fullMessage && (now - this.lastTime) < 500) {
             return fullMessage;
