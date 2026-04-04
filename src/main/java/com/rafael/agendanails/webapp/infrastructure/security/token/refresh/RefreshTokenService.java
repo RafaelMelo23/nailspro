@@ -40,6 +40,13 @@ public class RefreshTokenService {
         return saveRefreshToken(user);
     }
 
+    @Transactional
+    public RefreshToken createRefreshTokenWithExpiry(User user, Instant expiryDate) {
+        RefreshToken refreshToken = saveRefreshToken(user);
+        refreshToken.setExpiryDate(expiryDate);
+        return refreshToken;
+    }
+
     private RefreshToken saveRefreshToken(User user) {
         return repository.save(
                 RefreshToken.builder()

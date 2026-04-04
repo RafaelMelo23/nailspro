@@ -28,8 +28,8 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/professional/schedule/block")
 @SecurityRequirement(name = "bearerAuth")
+@RequestMapping("/api/v1/professional/schedule/block")
 @Tag(name = "Professional - Schedule", description = "Professional schedule blocks")
 public class ProfessionalScheduleBlockController {
 

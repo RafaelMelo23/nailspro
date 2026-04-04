@@ -216,7 +216,7 @@ class AuthenticationServiceTest {
 
         when(refreshTokenService.findByToken(oldTokenStr)).thenReturn(Optional.of(oldToken));
         when(refreshTokenService.verifyExpiration(oldToken)).thenReturn(oldToken);
-        when(refreshTokenService.createRefreshToken(user)).thenReturn(RefreshToken.builder().token("new-refresh-token").build());
+        when(refreshTokenService.createRefreshTokenWithExpiry(eq(user), any())).thenReturn(RefreshToken.builder().token("new-refresh-token").build());
         when(tokenService.generateAuthToken(user)).thenReturn("new-jwt-token");
 
         TokenRefreshResponseDTO result = authenticationService.refreshToken(oldTokenStr);

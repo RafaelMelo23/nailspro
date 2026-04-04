@@ -134,7 +134,7 @@ public class AuthenticationService {
                     User user = token.getUser();
                     token.setRevoked(true);
 
-                    RefreshToken newRefresh = refreshTokenService.createRefreshToken(user);
+                    RefreshToken newRefresh = refreshTokenService.createRefreshTokenWithExpiry(user, token.getExpiryDate());
                     String newJwt = tokenService.generateAuthToken(user);
 
                     return new TokenRefreshResponseDTO(newJwt, newRefresh.getToken());
