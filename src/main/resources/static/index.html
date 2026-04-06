@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scheduling Nails Pro</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    </noscript>
+
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/components.css">
     
@@ -29,10 +35,38 @@
 
     <footer id="main-footer"></footer>
 
+    <!-- WhatsApp Connection Popup -->
+    <div id="whatsapp-popup" class="whatsapp-popup hidden">
+        <div class="whatsapp-popup-header">
+            <h3>Conectar WhatsApp</h3>
+            <button class="whatsapp-popup-close" onclick="NotificationService.hideWhatsappPopup()">&times;</button>
+        </div>
+        <div class="whatsapp-popup-body">
+            <div id="whatsapp-loading" class="hidden">
+                <p>Iniciando conexão...</p>
+            </div>
+            <div id="whatsapp-qr-container" class="qr-code-container hidden">
+                <!-- QR Code will be injected here -->
+            </div>
+            <div id="whatsapp-pairing-container" class="hidden">
+                <p style="margin-bottom: 10px;">Digite este código no seu WhatsApp:</p>
+                <div id="whatsapp-pairing-code" class="whatsapp-pairing-code"></div>
+            </div>
+            <div id="whatsapp-instructions">
+                <p id="whatsapp-status-text">Conecte seu WhatsApp para enviar notificações automáticas.</p>
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn btn-primary btn-sm btn-block" onclick="NotificationService.startWhatsappConnection('QR_CODE')">QR Code</button>
+                    <button class="btn btn-secondary btn-sm btn-block" onclick="NotificationService.startWhatsappConnection('PAIRING_CODE')">Código</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Core Scripts -->
-    <script src="/js/modules/auth.js"></script>
-    <script src="/js/modules/ui-helper.js"></script>
-    <script src="/js/modules/error-handler.js"></script>
-    <script src="/js/main.js"></script>
+    <script src="/js/modules/auth.js" defer></script>
+    <script src="/js/modules/ui-helper.js" defer></script>
+    <script src="/js/modules/notifications.js" defer></script>
+    <script src="/js/modules/error-handler.js" defer></script>
+    <script src="/js/main.js" defer></script>
 </body>
 </html>

@@ -87,7 +87,7 @@ const adminServicesApp = {
                             ? s.professionals.map(p => `
                                 <div class="mini-avatar" title="${p.name}">
                                     ${p.professionalPicture 
-                                        ? `<img src="${p.professionalPicture}" alt="${p.name}">` 
+                                        ? `<img src="${p.professionalPicture}" alt="${p.name}" loading="lazy" width="28" height="28">` 
                                         : p.name.charAt(0).toUpperCase()}
                                 </div>
                             `).join('')

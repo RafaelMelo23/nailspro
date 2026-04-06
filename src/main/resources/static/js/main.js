@@ -52,6 +52,7 @@ const App = {
     tenantError: false,
     salon: null,
     currentPath: null,
+    templateCache: new Map(),
 
     init: async function() {
         if (this.initialized) return;
@@ -65,7 +66,10 @@ const App = {
              return;
         }
         this.checkAuth();
-        await this.handleRouting();
+        if (typeof NotificationService !== 'undefined') {
+            NotificationService.init();
+        }
+        await this.handleRouting(true);
         window.addEventListener('popstate', () => this.handleRouting());
     },
 
@@ -74,19 +78,20 @@ const App = {
         this.handleRouting();
     },
 
-    handleRouting: async function() {
+    handleRouting: async function(isInitial = false) {
         if (this.tenantError) return;
         const path = window.location.pathname;
         const fullPath = path + window.location.search;
         if (this.currentPath === fullPath) return;
         this.currentPath = fullPath;
 
-        if (this.salon) {
+        if (this.salon && (isInitial || Auth.getToken())) {
             UI.renderGlobalHeader(this.salon);
         }
 
         const appContent = document.getElementById('app-content');
         if (!appContent) return;
+
         if (path.startsWith('/admin') || path.startsWith('/perfil') || path.startsWith('/profissional')) {
             if (!Auth.getToken()) {
                 this.navigate('/entrar');
@@ -101,73 +106,81 @@ const App = {
                 return;
             }
         }
+
         let templatePath = '';
         let scriptPath = '';
         let isModule = false;
         let pageTitle = 'Agendamento';
-        if (path === '/entrar') {
-            templatePath = '/pages/public/login.html';
-            scriptPath = '/js/pages/login.js';
-            pageTitle = 'Entrar';
-        } else if (path === '/cadastro') {
-            templatePath = '/pages/public/register.html';
-            scriptPath = '/js/pages/register.js';
-            pageTitle = 'Cadastro';
-        } else if (path === '/admin/configuracoes') {
-            templatePath = '/pages/admin/settings.html';
-            scriptPath = '/js/pages/admin/settings.js';
-            isModule = true;
-            pageTitle = 'Configurações';
-        } else if (path === '/admin/servicos') {
-            templatePath = '/pages/admin/services.html';
-            scriptPath = '/js/pages/admin/services.js';
-            pageTitle = 'Serviços';
-        } else if (path === '/' || path === '/agendar') {
-            templatePath = '/pages/booking/index.html';
-            scriptPath = '/js/pages/booking.js';
-            pageTitle = 'Agendar';
-        } else if (path.startsWith('/perfil')) {
-            templatePath = '/pages/public/profile.html';
-            scriptPath = '/js/pages/profile.js';
-            pageTitle = 'Meu Perfil';
-        } else if (path === '/profissional/agenda') {
-            templatePath = '/pages/professional/schedule.html';
-            scriptPath = '/js/pages/professional/schedule.js';
-            isModule = true;
-            pageTitle = 'Minha Agenda';
-        } else {
-            templatePath = '/pages/booking/index.html';
-            scriptPath = '/js/pages/booking.js';
-        }
+
+        const routeMap = {
+            '/entrar': { template: '/pages/public/login.html', script: '/js/pages/login.js', title: 'Entrar' },
+            '/cadastro': { template: '/pages/public/register.html', script: '/js/pages/register.js', title: 'Cadastro' },
+            '/admin/configuracoes': { template: '/pages/admin/settings.html', script: '/js/pages/admin/settings.js', title: 'Configurações', isModule: true },
+            '/admin/servicos': { template: '/pages/admin/services.html', script: '/js/pages/admin/services.js', title: 'Serviços' },
+            '/': { template: '/pages/booking/index.html', script: '/js/pages/booking.js', title: 'Agendar' },
+            '/agendar': { template: '/pages/booking/index.html', script: '/js/pages/booking.js', title: 'Agendar' },
+            '/perfil': { template: '/pages/public/profile.html', script: '/js/pages/profile.js', title: 'Meu Perfil' },
+            '/profissional/agenda': { template: '/pages/professional/schedule.html', script: '/js/pages/professional/schedule.js', title: 'Minha Agenda', isModule: true }
+        };
+
+        const route = routeMap[path] || (path.startsWith('/perfil') ? routeMap['/perfil'] : routeMap['/']);
+        
+        templatePath = route.template;
+        scriptPath = route.script;
+        isModule = !!route.isModule;
+        pageTitle = route.title;
+
         if (templatePath) {
             document.title = this.salon ? `${this.salon.tradeName} - ${pageTitle}` : pageTitle;
-            appContent.innerHTML = '<div class="container" style="text-align: center; padding: 50px;"><p>Carregando...</p></div>';
+
+            if (!isInitial && (appContent.innerHTML.trim() === '' || appContent.innerHTML.includes('Carregando...'))) {
+                appContent.innerHTML = '<div class="container" style="text-align: center; padding: 50px;"><p>Carregando...</p></div>';
+            }
+
             try {
-                const res = await fetch(templatePath);
-                if (res.ok) {
-                    const html = await res.text();
+                let html;
+                if (this.templateCache.has(templatePath)) {
+                    html = this.templateCache.get(templatePath);
+                } else {
+                    const res = await fetch(templatePath);
+                    if (res.ok) {
+                        html = await res.text();
+                        this.templateCache.set(templatePath, html);
+                    } else if (res.status === 400) {
+                        this.tenantError = true;
+                        appContent.innerHTML = '<div class="container" style="padding: 50px; text-align: center;"><h2>URL de acesso inválida</h2><p>Certifique-se de acessar pelo link correto do salão.</p></div>';
+                        return;
+                    }
+                }
+
+                if (html) {
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
                     const snippetContent = doc.querySelector('main') || doc.body;
-                    appContent.innerHTML = snippetContent.innerHTML;
-                    const styles = doc.querySelectorAll('link[rel="stylesheet"]');
-                    styles.forEach(s => {
-                        const href = s.getAttribute('href');
-                        if (!document.querySelector(`link[href="${href}"]`)) {
-                            const newLink = document.createElement('link');
-                            newLink.rel = 'stylesheet';
-                            newLink.href = href;
-                            document.head.appendChild(newLink);
-                        }
+
+                    requestAnimationFrame(() => {
+                        appContent.innerHTML = snippetContent.innerHTML;
+
+                        const styles = doc.querySelectorAll('link[rel="stylesheet"]');
+                        styles.forEach(s => {
+                            const href = s.getAttribute('href');
+                            if (!document.querySelector(`link[href="${href}"]`)) {
+                                const newLink = document.createElement('link');
+                                newLink.rel = 'stylesheet';
+                                newLink.href = href;
+                                newLink.media = 'print';
+                                newLink.onload = () => { newLink.media = 'all'; };
+                                document.head.appendChild(newLink);
+                            }
+                        });
+                        
+                        this.applyBranding();
                     });
-                    this.applyBranding();
+
                     if (scriptPath) {
                         await this.loadScript(scriptPath, isModule);
                         this.initPage(path);
                     }
-                } else if (res.status === 400) {
-                     this.tenantError = true;
-                     appContent.innerHTML = '<div class="container" style="padding: 50px; text-align: center;"><h2>URL de acesso inválida</h2><p>Certifique-se de acessar pelo link correto do salão.</p></div>';
                 }
             } catch (err) {
                 appContent.innerHTML = '<div class="container" style="padding: 50px;">Erro ao carregar página.</div>';
@@ -194,7 +207,7 @@ const App = {
             }
             const script = document.createElement('script');
             script.src = src;
-            script.async = true;
+            script.defer = true;
             if (isModule) {
                 script.type = 'module';
             }

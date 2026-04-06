@@ -157,6 +157,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  will-change: transform, opacity;
 }
 
 @media (max-width: 480px) {
@@ -226,6 +227,7 @@
   max-width: 500px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   animation: modalAppear 0.3s ease-out;
+  will-change: transform, opacity;
 }
 
 @keyframes modalAppear {
@@ -385,6 +387,105 @@
 .btn-sm {
   padding: 8px 16px;
   font-size: 13px;
+}
+
+/* WhatsApp Connection Status */
+.connection-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 5px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.status-open { background-color: var(--status-avail); box-shadow: 0 0 8px var(--status-avail); }
+.status-dot.status-connecting { background-color: var(--status-part); box-shadow: 0 0 8px var(--status-part); }
+.status-dot.status-close { background-color: var(--status-busy); box-shadow: 0 0 8px var(--status-busy); }
+
+/* WhatsApp Popup */
+.whatsapp-popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  z-index: 3000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.whatsapp-popup-header {
+  background: #25D366;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.whatsapp-popup-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.whatsapp-popup-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.whatsapp-popup-body {
+  padding: 20px;
+  text-align: center;
+}
+
+.qr-code-container {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 15px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-code-container img {
+  max-width: 100%;
+  height: auto;
+}
+
+.whatsapp-pairing-code {
+  font-family: monospace;
+  font-size: 24px;
+  letter-spacing: 4px;
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: var(--text-main);
 }
 
 #main-footer {

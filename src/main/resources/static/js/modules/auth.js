@@ -53,7 +53,6 @@ const Auth = {
                 if (res.ok) {
                     const token = await res.text();
                     this.setToken(token);
-                    console.log('Token refreshed successfully');
                     return true;
                 }
             } catch (e) {

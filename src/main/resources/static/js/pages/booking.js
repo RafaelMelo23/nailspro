@@ -98,7 +98,7 @@ const bookingApp = {
             <div class="card-item" onclick="bookingApp.selectProf('${p.externalId}')" id="prof-${p.externalId}">
                 <div class="item-left">
                     <div class="avatar">
-                        ${p.professionalPicture ? `<img src="${p.professionalPicture}" alt="${p.name}">` : p.name.charAt(0)}
+                        ${p.professionalPicture ? `<img src="${p.professionalPicture}" alt="${p.name}" loading="lazy" width="48" height="48">` : p.name.charAt(0)}
                     </div>
                     <div class="item-info">
                         <h3>${p.name}</h3>
