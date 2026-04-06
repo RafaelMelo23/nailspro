@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -88,7 +89,7 @@ class SecurityFilterIT extends BaseIntegrationTest {
         String token = tokenService.generateAuthToken(professional);
 
         mvc.perform(get("/api/v1/professional/schedule/block")
-                        .param("dateAndTime", LocalDateTime.now().toString())
+                        .param("dateAndTime", ZonedDateTime.now().toString())
                         .header(HttpHeaders.HOST, "tenant-test.localhost")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isOk());

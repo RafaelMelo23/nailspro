@@ -16,6 +16,7 @@ public record ProfessionalAppointmentScheduleDTO(Long appointmentId,
                                                  Integer clientCanceledAppointments,
 
                                                  AppointmentStatus status,
+                                                 String serviceName,
                                                  BigDecimal totalValue,
                                                  String observations,
 

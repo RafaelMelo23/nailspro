@@ -33,6 +33,7 @@ public class ProfessionalMapper {
                 .clientMissedAppointments(ap.getClient().getMissedAppointments())
                 .clientCanceledAppointments(ap.getClient().getCanceledAppointments())
                 .status(ap.getAppointmentStatus())
+                .serviceName(ap.getMainSalonService().getName())
                 .totalValue(ap.calculateTotalValue())
                 .observations(ap.getObservations())
                 .startDate(ap.getStartDate().atZone(ap.getSalonZoneId()))

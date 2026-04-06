@@ -1,6 +1,6 @@
 export const CoreModule = {
     init: async function() {
-        const fragments = ['work-schedule', 'blocks', 'modals'];
+        const fragments = ['agenda', 'work-schedule', 'blocks', 'modals'];
         const contentArea = document.getElementById('schedule-content-area');
 
         await Promise.all(fragments.map(async (tabId) => {
@@ -15,7 +15,7 @@ export const CoreModule = {
             }
         }));
 
-        const hash = window.location.hash.substring(1) || 'work-schedule';
+        const hash = window.location.hash.substring(1) || 'agenda';
         this.switchTabUI(hash);
         this.loadTabData(hash);
     },
@@ -29,7 +29,7 @@ export const CoreModule = {
     switchTabUI: function(tabId) {
         document.querySelectorAll('.tab-btn').forEach(btn => {
             const onClick = btn.getAttribute('onclick') || '';
-            btn.classList.toggle('active', onClick.includes(tabId));
+            btn.classList.toggle('active', onClick.includes(`'${tabId}'`));
         });
 
         document.querySelectorAll('.tab-content').forEach(content => {
@@ -38,7 +38,9 @@ export const CoreModule = {
     },
 
     loadTabData: function(tabId) {
-        if (tabId === 'work-schedule') {
+        if (tabId === 'agenda') {
+            professionalScheduleApp.initAgenda();
+        } else if (tabId === 'work-schedule') {
             professionalScheduleApp.loadWorkSchedule();
         } else if (tabId === 'blocks') {
             professionalScheduleApp.loadBlocks();

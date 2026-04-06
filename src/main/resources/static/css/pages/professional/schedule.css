@@ -269,3 +269,401 @@
         flex-grow: 1;
     }
 }
+
+/* Agenda Styles */
+.agenda-header-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-flat);
+}
+
+.date-navigation {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-icon {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-main);
+    box-shadow: var(--shadow-flat);
+    font-size: 12px;
+    border: none;
+    outline: none;
+}
+
+.btn-icon:hover {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: var(--shadow);
+}
+
+.current-date-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-body);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    position: relative;
+}
+
+#display-date {
+    font-weight: 600;
+    color: var(--text-main);
+    min-width: 180px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.hidden-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.calendar-icon {
+    cursor: pointer;
+    color: var(--primary);
+    font-size: 18px;
+    transition: transform 0.2s;
+}
+
+.calendar-icon:hover {
+    transform: scale(1.1);
+}
+
+.agenda-summary {
+    display: flex;
+    gap: 32px;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.summary-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summary-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.appointment-card {
+    display: flex;
+    background: var(--bg-card);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--primary);
+    box-shadow: var(--shadow-flat);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.appointment-card.status-pending { border-left-color: #1d4ed8; }
+.appointment-card.status-confirmed { border-left-color: #15803d; }
+.appointment-card.status-finished { border-left-color: #475569; }
+.appointment-card.status-cancelled { border-left-color: #b91c1c; }
+.appointment-card.status-missed { border-left-color: #be123c; }
+
+.appointment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.appointment-time-column {
+    padding: 20px;
+    background: var(--primary-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    border-right: 1px solid var(--border);
+}
+
+.time-start {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.time-duration {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.appointment-main-content {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.client-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.warning-badge {
+    background: #fffbeb;
+    color: #b45309;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-pending { background: #eff6ff; color: #1d4ed8; }
+.status-confirmed { background: #f0fdf4; color: #15803d; }
+.status-finished { background: #f8fafc; color: #475569; }
+.status-cancelled { background: #fef2f2; color: #b91c1c; }
+.status-missed { background: #fff1f2; color: #be123c; }
+
+.service-name {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.appointment-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.total-price {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.whatsapp-btn {
+    color: #25d366;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.whatsapp-btn:hover {
+    text-decoration: underline;
+}
+
+.btn-toggle-obs {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.btn-toggle-obs:hover {
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+.obs-content {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--bg-main);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    border-left: 3px solid var(--border-color);
+}
+
+.appointment-actions-column {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+    background: rgba(var(--primary-rgb), 0.02);
+    min-width: 140px;
+}
+
+.btn-action {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.btn-confirm {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-confirm:hover {
+    opacity: 0.9;
+}
+
+.btn-finish {
+    background: #059669;
+    color: white;
+}
+
+.btn-miss {
+    background: white;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.btn-miss:hover {
+    background: #fef2f2;
+}
+
+.btn-cancel-link {
+    background: none;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.btn-cancel-link:hover {
+    color: #dc2626;
+    text-decoration: underline;
+}
+
+.empty-placeholder {
+    padding: 60px;
+    text-align: center;
+    color: var(--text-muted);
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 2px dashed var(--border-color);
+}
+
+@media (max-width: 600px) {
+    .agenda-header-card {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        padding: 16px;
+    }
+    
+    .date-navigation {
+        width: 100%;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .current-date-container {
+        padding: 6px 12px;
+        flex: 1;
+        justify-content: center;
+        max-width: 220px;
+    }
+
+    #display-date {
+        min-width: unset;
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .btn-icon {
+        flex-shrink: 0;
+    }
+
+    .agenda-summary {
+        width: 100%;
+        justify-content: space-around;
+        padding-top: 15px;
+        border-top: 1px dashed var(--border);
+    }
+
+    .summary-item {
+        align-items: center;
+    }
+    
+    .appointment-card {
+        flex-direction: column;
+    }
+    
+    .appointment-time-column {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 12px 20px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .appointment-actions-column {
+        flex-direction: row;
+        width: 100%;
+        gap: 8px;
+        padding: 12px;
+    }
+    
+    .btn-action {
+        flex: 1;
+        padding: 10px 5px;
+        font-size: 12px;
+    }
+}

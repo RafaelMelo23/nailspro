@@ -1,0 +1,71 @@
+<div id="tab-agenda" class="tab-content">
+    <div class="agenda-header-card card">
+        <div class="date-navigation">
+            <button id="prev-day" class="btn-icon" title="Dia Anterior">
+                <span>❮</span>
+            </button>
+            <div class="current-date-container">
+                <span id="display-date">Hoje, 6 de Abril</span>
+                <input type="date" id="agenda-datepicker" class="hidden-input">
+                <label for="agenda-datepicker" class="calendar-icon">
+                    <span>📅</span>
+                </label>
+            </div>
+            <button id="next-day" class="btn-icon" title="Próximo Dia">
+                <span>❯</span>
+            </button>
+        </div>
+        <div class="agenda-summary">
+            <div class="summary-item">
+                <span class="summary-label">Total</span>
+                <span class="summary-value" id="summary-count">0</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Previsto</span>
+                <span class="summary-value" id="summary-revenue">R$ 0,00</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="agenda-container" class="appointment-list mt-20">
+        <div class="loading-placeholder">Carregando agendamentos...</div>
+    </div>
+</div>
+
+<template id="appointment-card-template">
+    <div class="appointment-card">
+        <div class="appointment-time-column">
+            <span class="time-start"></span>
+            <span class="time-duration"></span>
+        </div>
+        <div class="appointment-main-content">
+            <div class="appointment-header">
+                <h4 class="client-name"></h4>
+                <div class="header-right">
+                    <span class="warning-badge" title="Histórico de faltas/cancelamentos" style="display: none;">
+                        <span>⚠️</span> <span class="warning-count"></span>
+                    </span>
+                    <span class="status-badge"></span>
+                </div>
+            </div>
+            <div class="service-name"></div>
+            <div class="appointment-footer">
+                <div class="footer-left">
+                    <span class="total-price"></span>
+                    <a href="" class="whatsapp-btn" target="_blank">
+                        <span>💬</span> WhatsApp
+                    </a>
+                </div>
+                <div class="footer-right">
+                    <button class="btn-toggle-obs" style="display: none;">
+                        <span>📝</span> Obs
+                    </button>
+                </div>
+            </div>
+            <div class="obs-content" style="display: none;"></div>
+        </div>
+        <div class="appointment-actions-column">
+            <!-- Buttons will be injected here dynamically -->
+        </div>
+    </div>
+</template>
