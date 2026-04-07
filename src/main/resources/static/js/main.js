@@ -158,23 +158,28 @@ const App = {
                     const doc = parser.parseFromString(html, 'text/html');
                     const snippetContent = doc.querySelector('main') || doc.body;
 
-                    requestAnimationFrame(() => {
-                        appContent.innerHTML = snippetContent.innerHTML;
+                    await new Promise(resolve => {
+                        requestAnimationFrame(() => {
+                            appContent.innerHTML = snippetContent.innerHTML;
 
-                        const styles = doc.querySelectorAll('link[rel="stylesheet"]');
-                        styles.forEach(s => {
-                            const href = s.getAttribute('href');
-                            if (!document.querySelector(`link[href="${href}"]`)) {
-                                const newLink = document.createElement('link');
-                                newLink.rel = 'stylesheet';
-                                newLink.href = href;
-                                newLink.media = 'print';
-                                newLink.onload = () => { newLink.media = 'all'; };
-                                document.head.appendChild(newLink);
-                            }
+                            const styles = doc.querySelectorAll('link[rel="stylesheet"]');
+                            styles.forEach(s => {
+                                const href = s.getAttribute('href');
+                                if (!document.querySelector(`link[href="${href}"]`)) {
+                                    const newLink = document.createElement('link');
+                                    newLink.rel = 'stylesheet';
+                                    newLink.href = href;
+                                    newLink.media = 'print';
+                                    newLink.onload = () => { newLink.media = 'all'; };
+                                    document.head.appendChild(newLink);
+                                }
+                            });
+                            
+                            this.applyBranding();
+                            
+                            // Double rAF to ensure browser has processed the innerHTML change
+                            requestAnimationFrame(() => resolve());
                         });
-                        
-                        this.applyBranding();
                     });
 
                     if (scriptPath) {

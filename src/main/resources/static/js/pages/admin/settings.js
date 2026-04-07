@@ -1,4 +1,4 @@
-import { CoreModule } from './settings/core.js';
+import { CoreModule } from './settings/settings-core.js';
 import { ProfessionalsModule } from './settings/professionals.js';
 import { ClientsModule } from './settings/clients.js';
 import { SalonModule } from './settings/salon.js';

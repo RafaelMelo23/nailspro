@@ -225,6 +225,7 @@
         margin: 10px;
         max-height: 95vh;
         width: calc(100% - 20px);
+        min-width: unset;
     }
 
     .tab-btn {
@@ -407,6 +408,8 @@
     border-radius: var(--radius);
     width: 100%;
     max-width: 500px;
+    min-width: 320px;
+    flex-shrink: 0;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     animation: modalAppear 0.3s ease-out;
     overflow-y: auto;

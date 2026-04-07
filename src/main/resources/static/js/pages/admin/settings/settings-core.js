@@ -1,9 +1,14 @@
 export const CoreModule = {
     init: async function() {
-        const fragments = ['modals', 'professionals', 'clients', 'salon', 'insights'];
         const contentArea = document.getElementById('settings-content-area');
         const modalsArea = document.getElementById('settings-modals-area');
 
+        if (!contentArea || !modalsArea) {
+            return;
+        }
+
+        const fragments = ['modals', 'professionals', 'clients', 'salon', 'insights'];
+        
         await Promise.all(fragments.map(async (tabId) => {
             try {
                 const response = await fetch(`/pages/admin/settings-fragments/${tabId}.html`);
@@ -18,6 +23,12 @@ export const CoreModule = {
             } catch (e) {
             }
         }));
+
+        await new Promise(resolve => {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => resolve());
+            });
+        });
 
         adminSettingsApp.setupColorPicker();
         

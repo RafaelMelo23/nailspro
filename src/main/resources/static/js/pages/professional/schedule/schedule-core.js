@@ -1,7 +1,11 @@
 export const CoreModule = {
     init: async function() {
-        const fragments = ['agenda', 'work-schedule', 'blocks', 'modals'];
         const contentArea = document.getElementById('schedule-content-area');
+        if (!contentArea) {
+            return;
+        }
+
+        const fragments = ['agenda', 'work-schedule', 'blocks', 'modals'];
 
         await Promise.all(fragments.map(async (tabId) => {
             try {
