@@ -1,9 +1,6 @@
 package com.rafael.agendanails.webapp.infrastructure.config;
 
-import com.rafael.agendanails.webapp.infrastructure.security.interceptor.EvolutionApiInterceptor;
-import com.rafael.agendanails.webapp.infrastructure.security.interceptor.SalonMaintenanceInterceptor;
-import com.rafael.agendanails.webapp.infrastructure.security.interceptor.TenantStatusInterceptor;
-import com.rafael.agendanails.webapp.infrastructure.security.interceptor.UserStatusInterceptor;
+import com.rafael.agendanails.webapp.infrastructure.security.interceptor.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
     private final TenantStatusInterceptor tenantStatusInterceptor;
     private final EvolutionApiInterceptor evolutionApiInterceptor;
     private final UserStatusInterceptor userStatusInterceptor;
+    private final DemoReadOnlyInterceptor demoReadOnlyInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -39,6 +37,10 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(evolutionApiInterceptor)
                 .addPathPatterns("/api/v1/webhook", "/api/v1/webhook/**");
+
+        registry.addInterceptor(demoReadOnlyInterceptor)
+                .addPathPatterns("/api/v1/**")
+                .excludePathPatterns("/api/v1/auth/**", "/api/v1/webhook/**", "/api/internal/**");
     }
 
     @Override

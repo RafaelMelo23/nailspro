@@ -6,6 +6,15 @@ window.fetch = async (url, options = {}) => {
         options.headers['Authorization'] = `Bearer ${token}`;
     }
     const method = (options.method || 'GET').toUpperCase();
+    
+    if (method === 'DELETE' && Auth.isDemo()) {
+        UI.showToast('Ação bloqueada: Exclusões não são permitidas no modo demonstração.', 'error');
+        return new Response(JSON.stringify({ message: 'Exclusão não permitida no modo demo.' }), {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     if (method !== 'GET' && !options.headers['X-XSRF-TOKEN']) {
         const getCookie = (name) => {
             const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));

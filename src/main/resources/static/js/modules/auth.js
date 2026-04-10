@@ -39,6 +39,11 @@ const Auth = {
         return this.getUserRoles().includes(role);
     },
 
+    isDemo: function() {
+        const payload = this.getPayload();
+        return payload && payload.tenantId === 'demo-salon-2026';
+    },
+
     refreshToken: async function() {
         if (this.refreshPromise) {
             return this.refreshPromise;

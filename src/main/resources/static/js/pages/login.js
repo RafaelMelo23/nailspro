@@ -2,9 +2,37 @@ const loginApp = {
     init: function() {
         const loginForm = document.getElementById('login-form');
         this.btnLogin = document.getElementById('btn-login');
+        this.btnDemo = document.getElementById('btn-demo');
 
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+        }
+    },
+
+    handleDemoLogin: async function() {
+        UI.setLoading(this.btnDemo, true, 'Iniciando Demo...');
+
+        try {
+            const response = await fetch('/api/v1/auth/demo', {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                Auth.setToken(data.jwtToken);
+
+                UI.showToast('Bem-vindo ao modo demonstração!', 'success');
+
+                setTimeout(() => {
+                    App.navigate('/admin/configuracoes');
+                }, 1000);
+            } else {
+                UI.showToast('Não foi possível iniciar o modo demo.', 'error');
+            }
+        } catch (error) {
+            UI.showToast('Erro ao iniciar modo demonstração.', 'error');
+        } finally {
+            UI.setLoading(this.btnDemo, false, '✨ Experimentar Modo Demonstração');
         }
     },
 

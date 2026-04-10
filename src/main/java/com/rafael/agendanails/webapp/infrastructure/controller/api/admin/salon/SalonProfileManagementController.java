@@ -19,8 +19,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
@@ -40,7 +38,7 @@ public class SalonProfileManagementController {
     })
     @GetMapping
     public ResponseEntity<SalonProfileDTO> getProfile(@AuthenticationPrincipal UserPrincipal user) {
-        return ResponseEntity.ok(salonProfileManagementService.getProfile(user.getUserId()));
+        return ResponseEntity.ok(salonProfileManagementService.getProfile(user.getTenantId()));
     }
 
     @Operation(summary = "Update salon profile", description = "Updates the salon profile.")
@@ -58,9 +56,9 @@ public class SalonProfileManagementController {
     )
     @PatchMapping
     public ResponseEntity<Void> updateProfile(@AuthenticationPrincipal UserPrincipal user,
-                                              @Valid @RequestBody SalonProfileDTO dto) throws IOException {
+                                              @Valid @RequestBody SalonProfileDTO dto) {
 
-        salonProfileManagementService.updateProfile(user.getUserId(), dto);
+        salonProfileManagementService.updateProfile(user.getTenantId(), dto);
         return ResponseEntity.ok().build();
     }
 }

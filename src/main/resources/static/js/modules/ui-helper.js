@@ -111,8 +111,15 @@ const UI = {
         const token = Auth.getToken();
         const isAdmin = Auth.hasRole('ADMIN');
         const isProfessional = Auth.hasRole('PROFESSIONAL');
+        const isDemo = Auth.isDemo();
 
         header.innerHTML = `
+            ${isDemo ? `
+                <div class="demo-banner">
+                    <span>✨</span>
+                    Modo Demonstração: Não insira qualquer informação pessoal no sistema.
+                </div>
+            ` : ''}
             <div class="container">
                 <nav class="main-nav">
                     <div class="nav-left">

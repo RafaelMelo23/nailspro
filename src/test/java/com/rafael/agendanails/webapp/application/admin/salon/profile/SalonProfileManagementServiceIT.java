@@ -18,8 +18,6 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 class SalonProfileManagementServiceIT extends BaseIntegrationTest {
 
@@ -41,7 +39,7 @@ class SalonProfileManagementServiceIT extends BaseIntegrationTest {
                 .appointmentBufferMinutes(30)
                 .build();
 
-        salonProfileManagementService.updateProfile(owner.getId(), dto);
+        salonProfileManagementService.updateProfile(owner.getTenantId(), dto);
 
         SalonProfile updatedProfile = salonProfileRepository.findById(profile.getId()).orElseThrow();
         assertThat(updatedProfile.getTradeName()).isEqualTo("Updated Name");
@@ -61,13 +59,13 @@ class SalonProfileManagementServiceIT extends BaseIntegrationTest {
                 .standardBookingWindow(null)
                 .build();
 
-        assertThatThrownBy(() -> salonProfileManagementService.updateProfile(owner.getId(), dto))
+        assertThatThrownBy(() -> salonProfileManagementService.updateProfile(owner.getTenantId(), dto))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("O número de dias de antecedência");
     }
 
     @Test
-    void shouldNotUpdateProfileFromAnotherTenant() throws IOException {
+    void shouldNotUpdateProfileFromAnotherTenant() {
         String tenantA = "tenant-a";
         String tenantB = "tenant-b";
 
@@ -81,7 +79,7 @@ class SalonProfileManagementServiceIT extends BaseIntegrationTest {
 
         TenantContext.setTenant(tenantB);
         
-        assertThatThrownBy(() -> salonProfileManagementService.updateProfile(ownerA.getId(), dto))
+        assertThatThrownBy(() -> salonProfileManagementService.updateProfile(ownerA.getTenantId(), dto))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("O perfil do salão não foi encontrado.");
 

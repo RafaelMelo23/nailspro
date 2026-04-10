@@ -18,8 +18,8 @@ public class SalonProfileManagementService {
     private final SalonProfileRepository repository;
 
     @Transactional(readOnly = true)
-    public SalonProfileDTO getProfile(Long ownerId) {
-        SalonProfile salonProfile = repository.findByOwner_Id(ownerId)
+    public SalonProfileDTO getProfile(String tenantId) {
+        SalonProfile salonProfile = repository.findByTenantId(tenantId)
                 .orElseThrow(() -> new BusinessException("O perfil do salão não foi encontrado."));
 
         return SalonProfileDTO.builder()
@@ -41,9 +41,8 @@ public class SalonProfileManagementService {
     }
 
     @Transactional
-    public void updateProfile(Long ownerId, SalonProfileDTO profile) {
-
-        SalonProfile salonProfile = repository.findByOwner_Id(ownerId)
+    public void updateProfile(String tenantId, SalonProfileDTO profile) {
+        SalonProfile salonProfile = repository.findByTenantId(tenantId)
                 .orElseThrow(() -> new BusinessException("O perfil do salão não foi encontrado."));
 
         setIfNotNull(profile.tradeName(), salonProfile::setTradeName);
