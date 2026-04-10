@@ -1,0 +1,53 @@
+<div id="tab-appointments" class="tab-content">
+    <div class="card">
+        <div class="card-header">
+            <h3>Visão Geral de Agendamentos</h3>
+            <p>Consulte todos os agendamentos do salão com filtros personalizados.</p>
+        </div>
+        <div class="card-body">
+            <div class="filters-bar" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px; align-items: flex-end;">
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+                    <label class="form-label">Profissional</label>
+                    <select id="filter-appt-professional" class="form-input">
+                        <option value="">Todos os Profissionais</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 150px;">
+                    <label class="form-label">Status</label>
+                    <select id="filter-appt-status" class="form-input">
+                        <option value="">Todos os Status</option>
+                        <option value="PENDING">Pendente</option>
+                        <option value="CONFIRMED">Confirmado</option>
+                        <option value="FINISHED">Finalizado</option>
+                        <option value="CANCELLED">Cancelado</option>
+                        <option value="MISSED">Faltou</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 150px;">
+                    <label class="form-label">Data</label>
+                    <input type="date" id="filter-appt-date" class="form-input">
+                </div>
+                <button class="btn btn-primary" onclick="adminSettingsApp.loadAppointmentsOverview(0)" style="height: 42px;">Filtrar</button>
+            </div>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Cliente</th>
+                            <th>Profissional</th>
+                            <th>Serviço</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointments-overview-list">
+                        <tr><td colspan="6" class="empty-state">Selecione os filtros e clique em filtrar.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="appointments-overview-pagination" class="pagination mt-20"></div>
+        </div>
+    </div>
+</div>

@@ -1,8 +1,11 @@
 package com.rafael.agendanails.webapp.infrastructure.controller.api.professional;
 
+import com.rafael.agendanails.webapp.application.admin.salon.profile.AppointmentAuditService;
 import com.rafael.agendanails.webapp.application.professional.ProfessionalAppointmentStatusUseCase;
 import com.rafael.agendanails.webapp.application.professional.ProfessionalScheduleQueryUseCase;
+import com.rafael.agendanails.webapp.domain.enums.appointment.AppointmentStatus;
 import com.rafael.agendanails.webapp.domain.model.UserPrincipal;
+import com.rafael.agendanails.webapp.infrastructure.dto.appointment.AdminUserAppointmentDTO;
 import com.rafael.agendanails.webapp.infrastructure.dto.appointment.ProfessionalAppointmentScheduleDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,12 +18,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -34,6 +41,22 @@ public class ProfessionalAppointmentManagementController {
 
     private final ProfessionalScheduleQueryUseCase professionalScheduleQueryUseCase;
     private final ProfessionalAppointmentStatusUseCase professionalAppointmentStatusUseCase;
+    private final AppointmentAuditService appointmentAuditService;
+
+    @Operation(summary = "Professional appointments overview", description = "Lists appointments for the authenticated professional with optional filters.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Appointments returned"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    @GetMapping("/overview")
+    public ResponseEntity<Page<AdminUserAppointmentDTO>> professionalOverview(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestParam(required = false) AppointmentStatus status,
+            @RequestParam(required = false) LocalDate date,
+            @PageableDefault(sort = "startDate", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(appointmentAuditService.searchAppointments(userPrincipal.getUserId(), status, date, pageable));
+    }
 
     @Operation(summary = "List appointments by day", description = "Returns appointments for the professional in a date range.")
     @ApiResponses({

@@ -1,6 +1,7 @@
 package com.rafael.agendanails.webapp.infrastructure.controller.api.admin;
 
 import com.rafael.agendanails.webapp.application.admin.salon.profile.AppointmentAuditService;
+import com.rafael.agendanails.webapp.domain.enums.appointment.AppointmentStatus;
 import com.rafael.agendanails.webapp.infrastructure.dto.appointment.AdminUserAppointmentDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,10 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +31,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class AppointmentAuditingController {
 
     private final AppointmentAuditService service;
+
+    @Operation(summary = "Salon appointments overview", description = "Lists all appointments with optional filters for professional, status, and date.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Appointments returned"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @GetMapping("/overview")
+    public ResponseEntity<Page<AdminUserAppointmentDTO>> salonOverview(
+            @RequestParam(required = false) Long professionalId,
+            @RequestParam(required = false) AppointmentStatus status,
+            @RequestParam(required = false) LocalDate date,
+            @PageableDefault(sort = "startDate", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(service.searchAppointments(professionalId, status, date, pageable));
+    }
 
     @Operation(summary = "List user appointments", description = "Lists appointments for a user with pagination.")
     @ApiResponses({

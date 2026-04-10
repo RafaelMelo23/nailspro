@@ -92,7 +92,7 @@ public class AuthenticationService {
                 .refreshToken(refresh).build();
     }
 
-    private static void checkUsersTenant(User user) {
+    protected static void checkUsersTenant(User user) {
         if (user.getUserRole().equals(UserRole.SUPER_ADMIN)) return;
 
         if (!user.getTenantId().equals(TenantContext.getTenant())) {
@@ -100,13 +100,13 @@ public class AuthenticationService {
         }
     }
 
-    private void checkUserPassword(LoginDTO loginDTO, User user) {
+    void checkUserPassword(LoginDTO loginDTO, User user) {
         if (!passwordEncoder.matches(loginDTO.password(), user.getPassword())) {
             throw new BusinessException("Os dados informados são inválidos");
         }
     }
 
-    private static void checkUserStatus(User user) {
+    protected static void checkUserStatus(User user) {
         if (user.getStatus().equals(BANNED)) {
             throw new LoginException("Você foi banido deste estabelecimento");
         }

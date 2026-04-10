@@ -6,7 +6,7 @@ export const CoreModule = {
             return;
         }
 
-        const fragments = ['agenda', 'work-schedule', 'blocks', 'modals'];
+        const fragments = ['agenda', 'overview', 'work-schedule', 'blocks', 'modals'];
 
         await Promise.all(fragments.map(async (tabId) => {
             try {
@@ -49,6 +49,8 @@ export const CoreModule = {
     loadTabData: function(tabId) {
         if (tabId === 'agenda') {
             professionalScheduleApp.initAgenda();
+        } else if (tabId === 'overview') {
+            professionalScheduleApp.loadOverview();
         } else if (tabId === 'work-schedule') {
             professionalScheduleApp.loadWorkSchedule();
         } else if (tabId === 'blocks') {

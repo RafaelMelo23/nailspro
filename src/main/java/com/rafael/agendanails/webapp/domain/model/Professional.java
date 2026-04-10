@@ -1,5 +1,7 @@
 package com.rafael.agendanails.webapp.domain.model;
 
+import com.rafael.agendanails.webapp.domain.enums.user.UserRole;
+import com.rafael.agendanails.webapp.domain.enums.user.UserStatus;
 import com.rafael.agendanails.webapp.infrastructure.dto.professional.schedule.WorkScheduleRecordDTO;
 import com.rafael.agendanails.webapp.infrastructure.exception.BusinessException;
 import jakarta.persistence.*;
@@ -47,8 +49,31 @@ public class Professional extends User {
     @Override
     public void prePersist() {
         this.isActive = Boolean.TRUE;
-        this.isFirstLogin = Boolean.TRUE;
+        isFirstLogin = isFirstLogin == null;
         this.externalId = UUID.randomUUID();
+    }
+
+    public static Professional createAdminProfessional(
+            String name,
+            String email
+    ) {
+        Professional professional = Professional.builder()
+                .fullName(name)
+                .email(email)
+                .professionalPicture(null)
+                .isActive(true)
+                .isFirstLogin(true)
+                .salonServices(new LinkedHashSet<>())
+                .workSchedules(new HashSet<>())
+                .scheduleBlocks(new LinkedHashSet<>())
+                .professionalAppointments(new ArrayList<>())
+                .userRole(UserRole.ADMIN)
+                .status(UserStatus.ACTIVE)
+                .build();
+
+        professional.setExternalId(UUID.randomUUID());
+
+        return professional;
     }
 
     public Set<WorkSchedule> registerNewSchedules(List<WorkScheduleRecordDTO> dtos) {

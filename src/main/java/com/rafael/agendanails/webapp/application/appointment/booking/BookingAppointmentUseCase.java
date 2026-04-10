@@ -5,6 +5,7 @@ import com.rafael.agendanails.webapp.application.professional.ProfessionalWorkSc
 import com.rafael.agendanails.webapp.application.salon.business.SalonProfileService;
 import com.rafael.agendanails.webapp.application.salon.business.SalonServiceService;
 import com.rafael.agendanails.webapp.domain.AvailabilityDomainService;
+import com.rafael.agendanails.webapp.domain.enums.user.UserRole;
 import com.rafael.agendanails.webapp.domain.model.*;
 import com.rafael.agendanails.webapp.domain.repository.AppointmentRepository;
 import com.rafael.agendanails.webapp.domain.repository.ClientRepository;
@@ -49,6 +50,10 @@ public class BookingAppointmentUseCase {
 
         Client client = clientRepository.findById(principal.getUserId())
                 .orElseThrow(() -> new BusinessException("Cliente não encontrado"));
+
+        if (!client.getUserRole().equals(UserRole.CLIENT)) {
+            throw new BusinessException("Apenas clientes podem agendar");
+        }
 
         SalonProfile salonProfile =
                 salonProfileService.getByTenantId(principal.getTenantId());

@@ -60,7 +60,6 @@ public class AuthenticationController {
 
         AuthResultDTO authResultDTO = authenticationService.login(loginDTO);
 
-        cookieService.addAccessTokenCookie(response, authResultDTO.jwtToken());
         cookieService.addRefreshTokenCookie(response, authResultDTO.refreshToken());
 
         return ResponseEntity.ok(new LoginResponseDTO(authResultDTO.jwtToken()));

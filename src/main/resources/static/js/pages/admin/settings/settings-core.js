@@ -8,7 +8,7 @@ export const CoreModule = {
         }
 
         // Sequential loading to avoid race conditions and ensure DOM stability
-        const fragments = ['modals', 'professionals', 'clients', 'salon', 'insights'];
+        const fragments = ['modals', 'professionals', 'appointments', 'clients', 'salon', 'insights'];
         
         for (const tabId of fragments) {
             try {
@@ -56,6 +56,9 @@ export const CoreModule = {
     loadTabData: function(tabId) {
         if (tabId === 'professionals') {
             adminSettingsApp.loadProfessionals();
+        } else if (tabId === 'appointments') {
+            adminSettingsApp.populateProfessionalsFilter();
+            adminSettingsApp.loadAppointmentsOverview();
         } else if (tabId === 'clients') {
             adminSettingsApp.loadClients();
         } else if (tabId === 'insights') {

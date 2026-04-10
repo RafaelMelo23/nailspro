@@ -63,11 +63,14 @@ export const ProfessionalsModule = {
     loadSchedules: async function(id) {
         const container = document.getElementById('schedules-container');
         if (!container) return;
+        container.innerHTML = '<p class="empty-state">Carregando...</p>';
         try {
             const response = await fetch(`/api/v1/admin/professional/schedule/${id}`);
             if (response.ok) {
                 const schedules = await response.json();
                 this.renderSchedules(schedules);
+            } else {
+                container.innerHTML = '<p class="empty-state">Nenhum horário configurado.</p>';
             }
         } catch (error) {
             container.innerHTML = '<p class="empty-state">Erro ao carregar horários.</p>';
@@ -122,11 +125,14 @@ export const ProfessionalsModule = {
     loadBlocks: async function(id) {
         const container = document.getElementById('blocks-container');
         if (!container) return;
+        container.innerHTML = '<p class="empty-state">Carregando...</p>';
         try {
             const response = await fetch(`/api/v1/admin/professional/schedule/block/${id}`);
             if (response.ok) {
                 const blocks = await response.json();
                 this.renderBlocks(blocks);
+            } else {
+                container.innerHTML = '<p class="empty-state">Nenhum bloqueio ativo.</p>';
             }
         } catch (error) {
             container.innerHTML = '<p class="empty-state">Erro ao carregar bloqueios.</p>';

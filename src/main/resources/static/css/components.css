@@ -289,7 +289,7 @@
 #main-header {
   background: white;
   border-bottom: 1px solid var(--border);
-  padding: 12px 0;
+  padding: 0;
   position: sticky;
   top: 0;
   z-index: 500;
@@ -298,7 +298,7 @@
 #main-header .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 12px 20px;
 }
 
 .main-nav {
@@ -648,6 +648,27 @@
 .footer-bottom p {
   font-size: 0.7rem;
   color: var(--text-muted);
+}
+
+.demo-banner {
+  background-color: #FFF3E0;
+  color: #E65100;
+  border-bottom: 1px solid #FFE0B2;
+  text-align: center;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  width: 100%;
+  position: relative;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.demo-banner span {
+  font-size: 14px;
 }
 
 .form-group.full-width > div[style*="display: flex"] {
