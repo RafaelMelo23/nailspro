@@ -1,7 +1,8 @@
 export const CoreModule = {
     init: async function() {
         const contentArea = document.getElementById('schedule-content-area');
-        if (!contentArea) {
+        const modalsArea = document.getElementById('schedule-modals-area');
+        if (!contentArea || !modalsArea) {
             return;
         }
 
@@ -12,7 +13,11 @@ export const CoreModule = {
                 const response = await fetch(`/pages/professional/schedule-fragments/${tabId}.html`);
                 if (response.ok) {
                     const html = await response.text();
-                    contentArea.insertAdjacentHTML('beforeend', html);
+                    if (tabId === 'modals') {
+                        modalsArea.innerHTML = html;
+                    } else {
+                        contentArea.insertAdjacentHTML('beforeend', html);
+                    }
                 }
             } catch (e) {
                 console.error(`Error loading fragment ${tabId}:`, e);

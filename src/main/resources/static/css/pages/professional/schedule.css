@@ -193,13 +193,7 @@
     background: rgba(239, 68, 68, 0.05);
 }
 
-/* Modal centering and size optimization on desktop */
-@media (min-width: 769px) {
-    .modal-content {
-        max-width: 450px;
-        margin: auto; /* Extra insurance for centering */
-    }
-}
+
 
 /* Blocks Styles */
 .header-flex {

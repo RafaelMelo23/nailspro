@@ -166,6 +166,9 @@ const App = {
 
                     await new Promise(resolve => {
                         requestAnimationFrame(() => {
+                            // Remove previous page-specific styles to avoid pollution
+                            document.querySelectorAll('link[data-page-style="true"]').forEach(el => el.remove());
+
                             appContent.innerHTML = snippetContent.innerHTML;
 
                             const styles = doc.querySelectorAll('link[rel="stylesheet"]');
@@ -175,6 +178,7 @@ const App = {
                                     const newLink = document.createElement('link');
                                     newLink.rel = 'stylesheet';
                                     newLink.href = href;
+                                    newLink.setAttribute('data-page-style', 'true');
                                     newLink.media = 'print';
                                     newLink.onload = () => { newLink.media = 'all'; };
                                     document.head.appendChild(newLink);
@@ -267,7 +271,7 @@ const App = {
         if (document.getElementById('first-login-modal')) return;
         const modalHtml = `
             <div id="first-login-modal" class="modal-overlay">
-                <div class="modal-content fade-in" style="max-width: 400px;">
+                <div class="modal-content modal-sm fade-in">
                     <div style="text-align: center; margin-bottom: 20px;">
                         <span style="font-size: 40px;">🔒</span>
                         <h2 style="margin-top: 10px; color: var(--text-main);">Primeiro Acesso</h2>
