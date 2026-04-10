@@ -35,9 +35,7 @@ public record SalonProfileDTO(
         @NotBlank(message = "Endereço completo é obrigatório")
         @Size(max = 300, message = "Endereço completo deve ter no máximo 300 caracteres")
         String fullAddress,
-        
-        @Pattern(regexp = "^(https?://)?(www\\.)?(facebook|instagram|twitter|linkedin|youtube|tiktok)\\.com/.+",
-                 message = "Link de rede social deve ser uma URL válida")
+
         String socialMediaLink,
         
         @NotNull(message = "Status operacional é obrigatório")

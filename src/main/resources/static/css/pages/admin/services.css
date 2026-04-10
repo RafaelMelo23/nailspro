@@ -272,3 +272,45 @@ input:checked + .slider:before {
     accent-color: var(--primary);
     vertical-align: middle;
 }
+
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .btn-add {
+        width: 100%;
+    }
+
+    .service-card {
+        padding: 15px;
+    }
+
+    .card-top {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .actions {
+        width: 100%;
+        justify-content: space-between;
+        padding-top: 10px;
+        border-top: 1px dashed var(--border);
+    }
+
+    .service-info h3 {
+        font-size: 1.2rem;
+    }
+
+    .service-meta {
+        flex-wrap: wrap;
+        gap: 8px 15px;
+    }
+}

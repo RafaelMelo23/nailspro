@@ -204,13 +204,7 @@ const adminServicesApp = {
                 Toast.success('Serviço salvo com sucesso!');
                 this.closeModal();
                 await this.loadServices();
-            } else {
-                const err = await res.json();
-                Toast.error(err.message || 'Erro ao salvar serviço.');
             }
-        } catch (error) {
-            console.error('Save error:', error);
-            Toast.error('Erro de conexão.');
         } finally {
             UI.setLoading(btn, false, 'Salvar Serviço');
         }

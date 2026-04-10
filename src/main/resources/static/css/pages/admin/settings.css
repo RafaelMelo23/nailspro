@@ -17,21 +17,15 @@
 
 .admin-tabs {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 4px;
-    scrollbar-width: none;
-}
-
-.admin-tabs::-webkit-scrollbar {
-    display: none;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .tab-btn {
-    flex: 1;
+    flex: 1 1 auto;
     white-space: nowrap;
-    min-width: 120px;
-    padding: 12px 16px;
+    min-width: fit-content;
+    padding: 10px 16px;
     border: none;
     background: none;
     font-weight: 600;
@@ -44,10 +38,27 @@
 }
 
 @media (max-width: 600px) {
+    .tabs-container {
+        padding: 4px;
+        background: var(--bg-body);
+        border: none;
+        box-shadow: none;
+    }
+
+    .admin-tabs {
+        gap: 6px;
+    }
+
     .tab-btn {
-        min-width: 100px;
-        padding: 10px 8px;
-        font-size: 0.8rem;
+        flex: 1 1 calc(50% - 6px);
+        background: white;
+        border: 1px solid var(--border);
+        padding: 8px 4px;
+        font-size: 0.75rem;
+    }
+
+    .tab-btn.active {
+        border-color: var(--primary);
     }
 }
 
@@ -146,14 +157,14 @@
 /* Form Layout Stability */
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 24px;
     margin-bottom: 20px;
 }
 
 @media (max-width: 1024px) {
     .form-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 }
 
@@ -218,6 +229,11 @@
         gap: 30px;
     }
 
+    .settings-group {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+    }
+
     .section-header {
         flex-direction: column;
         align-items: flex-start;
@@ -235,6 +251,10 @@
 
     .admin-table, .admin-table thead, .admin-table tbody, .admin-table th, .admin-table td, .admin-table tr { 
         display: block; 
+    }
+
+    .admin-table {
+        min-width: 100%;
     }
 
     .admin-table thead {

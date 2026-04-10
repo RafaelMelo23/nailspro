@@ -11,6 +11,14 @@ const Toast = {
     show: function(message, type = 'error', duration = 5000) {
         if (!this.container) this.init();
 
+        const existingToasts = Array.from(this.container.querySelectorAll('.toast span'));
+        const isDuplicate = existingToasts.some(el => {
+            const txt = el.innerText;
+            return txt === message || (txt.includes(message) && message.length > 10) || (message.includes(txt) && txt.length > 10);
+        });
+        
+        if (isDuplicate) return;
+
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
 

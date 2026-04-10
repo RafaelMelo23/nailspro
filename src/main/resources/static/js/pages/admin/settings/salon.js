@@ -106,12 +106,7 @@ export const SalonModule = {
                 if (typeof App !== 'undefined' && App.initTheme) {
                     await App.initTheme();
                 }
-            } else {
-                const err = await response.json();
-                Toast.error(err.message || 'Erro ao salvar configurações.');
             }
-        } catch (e) {
-            Toast.error('Erro de conexão ao salvar.');
         } finally {
             this.setLoading(btn, false);
         }

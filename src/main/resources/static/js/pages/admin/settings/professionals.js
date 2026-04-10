@@ -94,12 +94,13 @@ export const ProfessionalsModule = {
 
         container.innerHTML = `
             <table class="admin-table">
-                <thead><tr><th>Dia</th><th>Início</th><th>Fim</th></tr></thead>
+                <thead><tr><th>Dia</th><th>Início</th><th>Intervalo</th><th>Fim</th></tr></thead>
                 <tbody>
                     ${sorted.map(s => `
                         <tr>
                             <td data-label="Dia"><strong>${daysMap[s.dayOfWeek]}</strong></td>
                             <td data-label="Início">${s.startTime.substring(0, 5)}</td>
+                            <td data-label="Intervalo">${s.lunchBreakStartTime.substring(0, 5)} - ${s.lunchBreakEndTime.substring(0, 5)}</td>
                             <td data-label="Fim">${s.endTime.substring(0, 5)}</td>
                         </tr>
                     `).join('')}

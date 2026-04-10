@@ -10,15 +10,35 @@
 }
 
 @media (max-width: 480px) {
+    .tabs-container {
+        padding: 4px;
+        background: var(--bg-body);
+        border: none;
+        margin-bottom: 15px;
+    }
+
     .professional-tabs {
-        gap: 12px 16px;
+        gap: 6px;
     }
     
     .tab-btn {
-        flex: 1 1 auto;
+        flex: 1 1 calc(50% - 6px);
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 4px;
+        font-size: 13px;
         text-align: center;
-        padding: 8px 0;
-        font-size: 14px;
+    }
+
+    .tab-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .tab-btn.active::after {
+        display: none;
     }
 }
 
