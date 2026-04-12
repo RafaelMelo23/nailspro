@@ -101,9 +101,9 @@ export const ClientsModule = {
         };
 
         const statusMap = {
-            'SCHEDULED': { label: 'Agendado', class: 'badge-success' },
+            'PENDING': { label: 'Pendente', class: 'badge-pending' },
             'CONFIRMED': { label: 'Confirmado', class: 'badge-success' },
-            'COMPLETED': { label: 'Finalizado', class: 'badge-success' },
+            'FINISHED': { label: 'Finalizado', class: 'badge-success' },
             'CANCELLED': { label: 'Cancelado', class: 'badge-danger' },
             'MISSED': { label: 'Faltou', class: 'badge-danger' }
         };

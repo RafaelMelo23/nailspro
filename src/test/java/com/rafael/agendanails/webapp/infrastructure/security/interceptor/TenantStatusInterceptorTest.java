@@ -86,7 +86,7 @@ class TenantStatusInterceptorTest {
         assertThat(result).isFalse();
         verify(response).setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
         verify(response).setContentType("application/json");
-        assertThat(stringWriter.toString()).contains("Locatário suspenso");
+        assertThat(stringWriter.toString()).contains("Acesso do locatário suspenso.");
     }
 
     @Test

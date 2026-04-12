@@ -1,7 +1,7 @@
 package com.rafael.agendanails.webapp.application.retention;
 
 import com.rafael.agendanails.webapp.application.messages.RetentionMessageBuilder;
-import com.rafael.agendanails.webapp.application.whatsapp.WhatsappMessageService;
+import com.rafael.agendanails.webapp.application.whatsapp.message.WhatsappMessageService;
 import com.rafael.agendanails.webapp.domain.enums.appointment.AppointmentStatus;
 import com.rafael.agendanails.webapp.domain.enums.appointment.RetentionStatus;
 import com.rafael.agendanails.webapp.domain.enums.evolution.EvolutionMessageStatus;

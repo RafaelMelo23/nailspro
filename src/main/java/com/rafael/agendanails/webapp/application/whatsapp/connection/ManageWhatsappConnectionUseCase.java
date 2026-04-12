@@ -1,4 +1,4 @@
-package com.rafael.agendanails.webapp.application.whatsapp;
+package com.rafael.agendanails.webapp.application.whatsapp.connection;
 
 import com.rafael.agendanails.webapp.application.salon.business.SalonProfileService;
 import com.rafael.agendanails.webapp.domain.enums.evolution.WhatsappConnectionMethod;
@@ -6,7 +6,6 @@ import com.rafael.agendanails.webapp.domain.model.SalonProfile;
 import com.rafael.agendanails.webapp.domain.whatsapp.WhatsappProvider;
 import com.rafael.agendanails.webapp.infrastructure.dto.whatsapp.WhatsappConnectionResponseDTO;
 import com.rafael.agendanails.webapp.infrastructure.exception.BusinessException;
-import com.rafael.agendanails.webapp.infrastructure.helper.PhoneNumberHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

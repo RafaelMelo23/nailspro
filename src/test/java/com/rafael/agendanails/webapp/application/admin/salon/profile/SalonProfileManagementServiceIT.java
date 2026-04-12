@@ -28,7 +28,7 @@ class SalonProfileManagementServiceIT extends BaseIntegrationTest {
     private FileUploadService fileUploadService;
 
     @Test
-    void shouldUpdateProfile() throws IOException {
+    void shouldUpdateProfile() {
         Professional owner = professionalRepository.save(TestProfessionalFactory.builder().build());
         SalonProfile profile = salonProfileRepository.save(TestSalonProfileFactory.standardForIT(owner));
 

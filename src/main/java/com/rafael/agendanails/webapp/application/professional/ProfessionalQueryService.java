@@ -1,5 +1,6 @@
 package com.rafael.agendanails.webapp.application.professional;
 
+import com.rafael.agendanails.webapp.domain.enums.user.UserRole;
 import com.rafael.agendanails.webapp.domain.model.Professional;
 import com.rafael.agendanails.webapp.domain.repository.ProfessionalRepository;
 import com.rafael.agendanails.webapp.infrastructure.dto.professional.ProfessionalResponseDTO;
@@ -39,5 +40,9 @@ public class ProfessionalQueryService {
 
     public List<ProfessionalResponseDTO> findAllProfessionals() {
         return ProfessionalMapper.toDTOList(repository.findAll());
+    }
+
+    public List<Professional> findAllAdminsByTenant(String tenantId) {
+        return repository.findAllByUserRoleAndTenantId(UserRole.ADMIN, tenantId);
     }
 }

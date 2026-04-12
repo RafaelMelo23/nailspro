@@ -49,6 +49,9 @@ export const SalonModule = {
 
                 if (typeof NotificationService !== 'undefined' && salon.connectionState) {
                     NotificationService.updateStatusUI(salon.connectionState);
+                    if (salon.connectionState === 'CLOSE' || salon.connectionState === 'DISCONNECTED') {
+                        NotificationService.showWhatsappPopup(true);
+                    }
                 }
             }
         } catch (e) {

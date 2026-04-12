@@ -1,6 +1,6 @@
 package com.rafael.agendanails.webapp.infrastructure.controller.api.evolution;
 
-import com.rafael.agendanails.webapp.application.whatsapp.ManageWhatsappConnectionUseCase;
+import com.rafael.agendanails.webapp.application.whatsapp.connection.ManageWhatsappConnectionUseCase;
 import com.rafael.agendanails.webapp.domain.enums.evolution.WhatsappConnectionMethod;
 import com.rafael.agendanails.webapp.domain.model.UserPrincipal;
 import com.rafael.agendanails.webapp.infrastructure.dto.whatsapp.WhatsappConnectionResponseDTO;

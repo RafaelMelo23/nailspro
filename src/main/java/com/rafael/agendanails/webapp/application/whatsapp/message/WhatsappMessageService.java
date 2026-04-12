@@ -1,4 +1,4 @@
-package com.rafael.agendanails.webapp.application.whatsapp;
+package com.rafael.agendanails.webapp.application.whatsapp.message;
 
 import com.rafael.agendanails.webapp.domain.enums.whatsapp.WhatsappMessageStatus;
 import com.rafael.agendanails.webapp.domain.enums.whatsapp.WhatsappMessageType;

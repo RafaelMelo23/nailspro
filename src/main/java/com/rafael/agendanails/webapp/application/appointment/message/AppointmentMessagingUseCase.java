@@ -1,7 +1,7 @@
 package com.rafael.agendanails.webapp.application.appointment.message;
 
 import com.rafael.agendanails.webapp.application.messages.AppointmentMessageBuilder;
-import com.rafael.agendanails.webapp.application.whatsapp.WhatsappMessageService;
+import com.rafael.agendanails.webapp.application.whatsapp.message.WhatsappMessageService;
 import com.rafael.agendanails.webapp.domain.enums.whatsapp.WhatsappMessageStatus;
 import com.rafael.agendanails.webapp.domain.enums.whatsapp.WhatsappMessageType;
 import com.rafael.agendanails.webapp.domain.model.Appointment;

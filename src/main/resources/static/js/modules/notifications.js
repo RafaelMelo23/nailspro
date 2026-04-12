@@ -1,6 +1,7 @@
 window.NotificationService = {
     eventSource: null,
     whatsappStatus: 'CLOSE',
+    connectionTimeout: null,
 
     init: function() {
         console.log("Initializing NotificationService...");
@@ -77,6 +78,8 @@ window.NotificationService = {
         
         if (!qrContainer) return;
 
+        this.clearConnectionTimeout();
+
         if (loading) loading.classList.add('hidden');
         if (retry) retry.classList.remove('hidden');
         if (alert) alert.classList.add('hidden');
@@ -104,6 +107,9 @@ window.NotificationService = {
         const state = typeof data === 'string' ? data : (data.state || data.status);
         if (!state) return;
 
+        // Clear timeout on any valid state update from server
+        this.clearConnectionTimeout();
+
         this.whatsappStatus = state;
         this.updateStatusUI(state);
 
@@ -121,6 +127,8 @@ window.NotificationService = {
         const qrContainer = document.getElementById('whatsapp-qr-container');
         const loading = document.getElementById('whatsapp-loading');
         const alert = document.getElementById('whatsapp-disconnected-alert');
+
+        this.clearConnectionTimeout();
 
         if (codeEl) {
             // Format 8-digit code as XXXX-XXXX for better readability
@@ -151,9 +159,6 @@ window.NotificationService = {
             if (state === 'OPEN') {
                 dot.classList.add('status-open');
                 text.innerText = 'Conectado';
-            } else if (state === 'CONNECTING') {
-                dot.classList.add('status-connecting');
-                text.innerText = 'Conectando...';
             } else {
                 dot.classList.add('status-close');
                 text.innerText = 'Desconectado';
@@ -161,22 +166,11 @@ window.NotificationService = {
         });
     },
 
-    showWhatsappPopup: function(isDisconnected = false) {
+    showWhatsappPopup: function() {
         const popup = document.getElementById('whatsapp-popup');
-        const alert = document.getElementById('whatsapp-disconnected-alert');
-        const title = document.querySelector('#whatsapp-popup .whatsapp-popup-header h3');
-
         if (popup) {
+            this.resetPopup(); // Ensure instructions are visible and others hidden
             popup.classList.remove('hidden');
-            if (isDisconnected) {
-                popup.classList.add('disconnected');
-                if (alert) alert.classList.remove('hidden');
-                if (title) title.innerText = 'WhatsApp Desconectado';
-            } else {
-                popup.classList.remove('disconnected');
-                if (alert) alert.classList.add('hidden');
-                if (title) title.innerText = 'Conectar WhatsApp';
-            }
         }
     },
 
@@ -196,6 +190,8 @@ window.NotificationService = {
         const popup = document.getElementById('whatsapp-popup');
         const title = document.querySelector('#whatsapp-popup .whatsapp-popup-header h3');
 
+        this.clearConnectionTimeout();
+
         if (qrContainer) qrContainer.classList.add('hidden');
         if (pairingContainer) pairingContainer.classList.add('hidden');
         if (loading) loading.classList.add('hidden');
@@ -204,10 +200,22 @@ window.NotificationService = {
         if (alert) alert.classList.add('hidden');
         if (popup) popup.classList.remove('disconnected');
         if (title) title.innerText = 'Conectar WhatsApp';
+
+        // Force UI to reflect disconnected state if not OPEN
+        if (this.whatsappStatus !== 'OPEN') {
+            this.updateStatusUI('CLOSE');
+        }
     },
 
     retryConnection: function() {
         this.resetPopup();
+    },
+
+    clearConnectionTimeout: function() {
+        if (this.connectionTimeout) {
+            clearTimeout(this.connectionTimeout);
+            this.connectionTimeout = null;
+        }
     },
 
     startWhatsappConnection: async function(method) {
@@ -223,18 +231,27 @@ window.NotificationService = {
         if (qrContainer) qrContainer.classList.add('hidden');
         if (pairingContainer) pairingContainer.classList.add('hidden');
 
+        this.clearConnectionTimeout();
+        this.connectionTimeout = setTimeout(() => {
+            const currentLoading = document.getElementById('whatsapp-loading');
+            const currentRetry = document.getElementById('whatsapp-retry');
+            if (currentLoading && !currentLoading.classList.contains('hidden')) {
+                if (currentRetry) currentRetry.classList.remove('hidden');
+            }
+        }, 15000); // 15 seconds timeout
+
         try {
             const res = await fetch(`/api/v1/whatsapp?connectionMethod=${method}`, {
                 method: 'POST'
             });
 
             if (!res.ok) {
+                this.clearConnectionTimeout();
                 Toast.error("Erro ao iniciar conexão com WhatsApp.");
                 if (loading) loading.classList.add('hidden');
                 if (instructions) instructions.classList.remove('hidden');
             } else {
                 const data = await res.json();
-                this.updateStatusUI('CONNECTING');
                 
                 // If the response contains a pairing code, show it immediately
                 if (data.pairingCode) {
@@ -242,6 +259,7 @@ window.NotificationService = {
                 }
             }
         } catch (err) {
+            this.clearConnectionTimeout();
             console.error("WhatsApp connection error:", err);
             Toast.error("Erro de rede ao conectar WhatsApp.");
             if (loading) loading.classList.add('hidden');

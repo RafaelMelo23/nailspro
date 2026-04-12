@@ -1,6 +1,7 @@
 package com.rafael.agendanails.webapp.domain.repository;
 
 import com.rafael.agendanails.webapp.domain.enums.appointment.AppointmentStatus;
+import com.rafael.agendanails.webapp.domain.enums.user.UserRole;
 import com.rafael.agendanails.webapp.domain.model.Professional;
 import com.rafael.agendanails.webapp.shared.tenant.IgnoreTenantFilter;
 import jakarta.persistence.LockModeType;
@@ -63,6 +64,8 @@ public interface ProfessionalRepository extends JpaRepository<Professional, Long
     Optional<Professional> findByExternalId(UUID uuid);
 
     Optional<Professional> findByEmailIgnoreCase(String email);
+
+    List<Professional> findAllByUserRoleAndTenantId(UserRole userRole, String tenantId);
 
 
 }

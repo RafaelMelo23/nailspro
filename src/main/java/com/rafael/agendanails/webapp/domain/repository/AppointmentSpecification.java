@@ -24,8 +24,19 @@ public class AppointmentSpecification {
     public static Specification<Appointment> withDate(LocalDate date, ZoneId zoneId) {
         if (date == null) return null;
         Instant startOfDay = date.atStartOfDay(zoneId).toInstant();
-        Instant endOfDay = date.plusDays(1).atStartOfDay(zoneId).toInstant();
-        return (root, query, cb) -> cb.between(root.get("startDate"), startOfDay, endOfDay);
+        Instant startOfNextDay = date.plusDays(1).atStartOfDay(zoneId).toInstant();
+        return (root, query, cb) -> cb.and(
+                cb.greaterThanOrEqualTo(root.get("startDate"), startOfDay),
+                cb.lessThan(root.get("startDate"), startOfNextDay)
+        );
+    }
+
+    public static Specification<Appointment> withDateRange(Instant start, Instant end) {
+        if (start == null || end == null) return null;
+        return (root, query, cb) -> cb.and(
+                cb.greaterThanOrEqualTo(root.get("startDate"), start),
+                cb.lessThan(root.get("startDate"), end)
+        );
     }
 
     public static Specification<Appointment> fetchRelationships() {

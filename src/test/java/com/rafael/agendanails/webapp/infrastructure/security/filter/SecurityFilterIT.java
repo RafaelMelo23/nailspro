@@ -26,6 +26,8 @@ class SecurityFilterIT extends BaseIntegrationTest {
 
     @Test
     void shouldAllowAccessWhenUserIsAuthenticatedWithValidToken() throws Exception {
+        var professional = professionalRepository.save(TestProfessionalFactory.standardForIt());
+        salonProfileRepository.save(TestSalonProfileFactory.standardForIT(professional, "tenant-test"));
         var client = clientRepository.save(TestClientFactory.standardForIt());
 
         String token = tokenService.generateAuthToken(client);

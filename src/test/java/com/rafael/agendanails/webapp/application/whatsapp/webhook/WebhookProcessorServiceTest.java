@@ -27,7 +27,7 @@ class WebhookProcessorServiceTest {
 
     @BeforeEach
     void setUp() {
-        when(strategy1.getSupportedTypeEvent()).thenReturn("MESSAGE_UPDATE");
+        when(strategy1.getSupportedTypeEvent()).thenReturn("MESSAGES_UPDATE");
         when(strategy2.getSupportedTypeEvent()).thenReturn("CONNECTION_UPDATE");
 
         webhookProcessorService = new WebhookProcessorService(List.of(strategy1, strategy2));

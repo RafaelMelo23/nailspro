@@ -12,17 +12,19 @@ export const OverviewModule = {
         list.innerHTML = '<tr><td colspan="5" class="empty-state">Carregando...</td></tr>';
 
         try {
-            const params = new URLSearchParams({
-                status,
-                date,
-                page,
-                size: 10
-            });
+            const params = new URLSearchParams();
+            if (status) params.append('status', status);
+            if (date) params.append('date', date);
+            params.append('page', page);
+            params.append('size', 10);
+
             const res = await fetch(`/api/v1/professional/appointments/overview?${params.toString()}`);
             if (res.ok) {
                 const data = await res.json();
                 this.renderOverview(data.content);
                 this.renderPagination(data);
+            } else {
+                list.innerHTML = `<tr><td colspan="5" class="empty-state">Erro ao carregar agendamentos (Status: ${res.status}).</td></tr>`;
             }
         } catch (error) {
             list.innerHTML = '<tr><td colspan="5" class="empty-state">Erro ao carregar histórico.</td></tr>';

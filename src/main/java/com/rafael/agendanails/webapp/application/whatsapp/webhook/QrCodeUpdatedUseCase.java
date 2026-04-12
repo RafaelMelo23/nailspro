@@ -15,10 +15,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Objects;
+
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @IgnoreTenantFilter
+@RequiredArgsConstructor
 public class QrCodeUpdatedUseCase implements WebhookStrategy {
 
     private final ProfessionalQueryService professionalQueryService;
@@ -40,10 +43,14 @@ public class QrCodeUpdatedUseCase implements WebhookStrategy {
             String tenantId = evolutionWebhookResponseDTO.instance();
             log.debug("Received QRCODE_UPDATED event for instance: {}", tenantId);
 
-            Professional salonOwner = professionalQueryService.findByTenantId(tenantId);
+            List<Professional> salonAdmins = professionalQueryService.findAllAdminsByTenant(tenantId);
 
-            connectionNotificationService.notifyQrCodeUpdate(salonOwner.getId(), qrcodeDetailsDTO);
-            log.info("New QR Code/Pairing Code pushed via SSE to Professional ID: {} (Instance: {})", salonOwner.getId(), tenantId);
+            salonAdmins.stream()
+                    .filter(Objects::nonNull)
+                    .forEach(admin -> {
+                connectionNotificationService.notifyQrCodeUpdate(admin.getId(), qrcodeDetailsDTO);
+                log.info("New QR Code/Pairing Code pushed via SSE to Professional ID: {} (Instance: {})", admin.getId(), tenantId);
+            });
         }
     }
 
