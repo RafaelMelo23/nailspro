@@ -33,7 +33,7 @@ public class TenantIdFilter implements Filter {
         try {
             String path = request.getRequestURI();
 
-            if (path.equals("/")
+            boolean isPublicPath = path.equals("/")
                     || path.equals("/index.html")
                     || path.startsWith("/actuator")
                     || path.startsWith("/swagger-ui")
@@ -49,21 +49,17 @@ public class TenantIdFilter implements Filter {
                     || path.startsWith("/assets")
                     || path.startsWith("/favicon.svg")
                     || path.startsWith("/error")
-                    || path.startsWith("/uploads")) {
-
-                filterChain.doFilter(request, response);
-                return;
-            }
+                    || path.startsWith("/uploads");
 
             String tenantId = tenantResolver.resolve(request);
 
-            if (tenantId == null) {
+            if (tenantId != null) {
+                MDC.put("tenant", tenantId);
+                TenantContext.setTenant(tenantId);
+            } else if (!isPublicPath) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Tenant cannot be null");
                 return;
             }
-
-            MDC.put("tenant", tenantId);
-            TenantContext.setTenant(tenantId);
 
             filterChain.doFilter(request, response);
 

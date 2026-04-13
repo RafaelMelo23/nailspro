@@ -82,7 +82,8 @@ const App = {
     init: async function() {
         if (this.initialized) return;
         this.initialized = true;
-
+        
+        // Start theme initialization and routing in parallel
         const themePromise = this.initTheme();
         const routingPromise = this.handleRouting(true);
         
@@ -171,8 +172,9 @@ const App = {
         if (templatePath) {
             document.title = this.salon ? `${this.salon.tradeName} - ${pageTitle}` : pageTitle;
 
-            if (!isInitial && (appContent.innerHTML.trim() === '' || appContent.innerHTML.includes('Carregando...'))) {
-                appContent.innerHTML = '<div class="container" style="text-align: center; padding: 50px;"><p>Carregando...</p></div>';
+            // Only show loader if we don't have the template yet
+            if (!this.templateCache.has(templatePath) && !isInitial) {
+                 appContent.innerHTML = '<div class="container" style="text-align: center; padding: 50px;"><div class="skeleton-title skeleton"></div><div class="skeleton" style="height: 200px;"></div></div>';
             }
 
             try {
@@ -196,28 +198,36 @@ const App = {
                     const doc = parser.parseFromString(html, 'text/html');
                     const snippetContent = doc.querySelector('main') || doc.body;
 
+                    // Load styles BEFORE showing content to prevent FOUC
+                    const styles = doc.querySelectorAll('link[rel="stylesheet"]');
+                    const stylePromises = Array.from(styles).map(s => {
+                        const href = s.getAttribute('href');
+                        if (!document.querySelector(`link[href="${href}"]`)) {
+                            return new Promise(resolve => {
+                                const newLink = document.createElement('link');
+                                newLink.rel = 'stylesheet';
+                                newLink.href = href;
+                                newLink.setAttribute('data-page-style', 'true');
+                                newLink.onload = resolve;
+                                newLink.onerror = resolve; // Don't block forever if CSS fails
+                                document.head.appendChild(newLink);
+                            });
+                        }
+                        return Promise.resolve();
+                    });
+
+                    await Promise.all(stylePromises);
+
                     await new Promise(resolve => {
                         requestAnimationFrame(() => {
-                            document.querySelectorAll('link[data-page-style="true"]').forEach(el => el.remove());
+                            // Cleanup old styles that are not part of the new page
+                            const currentHrefs = Array.from(styles).map(s => s.getAttribute('href'));
+                            document.querySelectorAll('link[data-page-style="true"]').forEach(el => {
+                                if (!currentHrefs.includes(el.getAttribute('href'))) el.remove();
+                            });
 
                             appContent.innerHTML = snippetContent.innerHTML;
-
-                            const styles = doc.querySelectorAll('link[rel="stylesheet"]');
-                            styles.forEach(s => {
-                                const href = s.getAttribute('href');
-                                if (!document.querySelector(`link[href="${href}"]`)) {
-                                    const newLink = document.createElement('link');
-                                    newLink.rel = 'stylesheet';
-                                    newLink.href = href;
-                                    newLink.setAttribute('data-page-style', 'true');
-                                    newLink.media = 'print';
-                                    newLink.onload = () => { newLink.media = 'all'; };
-                                    document.head.appendChild(newLink);
-                                }
-                            });
-                            
                             this.applyBranding();
-
                             requestAnimationFrame(() => resolve());
                         });
                     });
