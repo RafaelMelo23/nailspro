@@ -21,7 +21,10 @@ COPY --from=agent-downloader /sentry-agent.jar /app/sentry-agent.jar
 COPY --from=build /app/target/scheduling-nails-pro-0.0.1-SNAPSHOT.jar /app/app.jar
 
 ENV SENTRY_AUTO_INIT=false \
-JAVA_TOOL_OPTIONS="-XX:+UseParallelGC -XX:MaxRAMPercentage=75.0"
+    OTEL_TRACES_EXPORTER=none \
+    OTEL_METRICS_EXPORTER=none \
+    OTEL_LOGS_EXPORTER=none \
+    JAVA_TOOL_OPTIONS="-XX:+UseParallelGC -XX:MaxRAMPercentage=75.0"
 
 EXPOSE 8080
 CMD ["java", "-javaagent:sentry-agent.jar", "-jar", "app.jar"]
