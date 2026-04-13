@@ -16,7 +16,7 @@ public class TokenOrHeaderTenantResolver implements TenantResolver {
     private final TokenService tokenService;
 
     private static final java.util.Set<String> RESERVED_PATHS = java.util.Set.of(
-            "api", "js", "css", "assets", "pages", "favicon.svg", "error", "uploads", "public", "swagger-ui", "v3"
+            "api", "js", "css", "assets", "pages", "favicon.svg", "error", "uploads", "public", "swagger-ui", "v3", "agendar"
     );
 
     @Override

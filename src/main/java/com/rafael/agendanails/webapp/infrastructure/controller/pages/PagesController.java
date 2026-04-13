@@ -8,7 +8,9 @@ public class PagesController {
 
     @RequestMapping({
             "/",
+            "/agendar",
             "/{tenantId:^(?!index\\.html$)[^.]+$}",
+            "/{tenantId}/",
             "/{tenantId}/agendar",
             "/{tenantId}/entrar",
             "/{tenantId}/cadastro",

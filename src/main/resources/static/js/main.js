@@ -123,6 +123,11 @@ const App = {
         if (this.currentPath === fullPath) return;
         this.currentPath = fullPath;
 
+        if (path === '/') {
+            this.navigate('/agendar');
+            return;
+        }
+
         if (this.salon && (isInitial || Auth.getToken())) {
             UI.renderGlobalHeader(this.salon);
         }
