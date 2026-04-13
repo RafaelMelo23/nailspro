@@ -197,19 +197,25 @@ public class EvolutionWhatsappService implements WhatsappProvider {
     }
 
     private String buildInstanceUrl(String path) {
-        return UriComponentsBuilder
+        String url = UriComponentsBuilder
                 .fromUriString(evolutionApiBaseUrl)
                 .path(INSTANCE_PATH)
                 .path(path)
                 .toUriString();
+
+        log.info("Evolution API - Generated Instance URL: '{}' (Base URL was: '{}')", url, evolutionApiBaseUrl);
+        return url;
     }
 
     private String buildMessageUrl(String path) {
-        return UriComponentsBuilder
+        String url = UriComponentsBuilder
                 .fromUriString(evolutionApiBaseUrl)
                 .path(MESSAGE_PATH)
                 .path(path)
                 .toUriString();
+
+        log.info("Evolution API - Generated Message URL: '{}' (Base URL was: '{}')", url, evolutionApiBaseUrl);
+        return url;
     }
 
     private String buildConnectUrl(String instanceName, String phoneNumber) {
@@ -219,10 +225,12 @@ public class EvolutionWhatsappService implements WhatsappProvider {
 
         if (phoneNumber != null) {
             builder.queryParam("number", phoneNumber);
-            log.info("Connection Request built with number: {}", phoneNumber);
         }
 
-        return builder.toUriString();
+        String url = builder.toUriString();
+        log.info("Evolution API - Generated Connect URL: '{}' for instance: {} (Base URL was: '{}')",
+                url, instanceName, evolutionApiBaseUrl);
+        return url;
     }
 
     private HttpHeaders getHeaders() {
