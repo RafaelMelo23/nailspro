@@ -1,115 +1,94 @@
-﻿# Nail Space SaaS
+# NailSpace SaaS
 
-[![Java 21](https://img.shields.io/badge/Java-21-orange?logo=java)](https://jdk.java.net/21/)
-[![Spring Boot 3.5](https://img.shields.io/badge/Spring%20Boot-3.5-brightgreen?logo=springboot)](https://spring.io/projects/spring-boot)
-[![PostgreSQL 15](https://img.shields.io/badge/PostgreSQL-15-blue?logo=postgresql)](https://www.postgresql.org/)
-[![Docker](https://img.shields.io/badge/Docker-Enabled-blue?logo=docker)](https://www.docker.com/)
-[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-green?logo=swagger)](https://swagger.io/specification/)
+[![Java 21](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=openjdk)](https://jdk.java.net/21/)
+[![Spring Boot 3.5](https://img.shields.io/badge/Spring%20Boot-3.5-brightgreen?style=for-the-badge&logo=springboot)](https://spring.io/projects/spring-boot)
+[![PostgreSQL 15](https://img.shields.io/badge/PostgreSQL-15-blue?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)](https://www.docker.com/)
 
-SaaS de agendamento e retenção para salões de beleza e estúdios de unhas. A plataforma combina motor de agenda, automação de CRM e mensageria multicanal para reduzir no-show, aumentar recorrência e dar visão operacional em tempo real.
-
-**Este repositório é um produto completo**: backend com multi-tenancy, integrações com WhatsApp via Evolution API, front-end completo, jobs de automação e observabilidade.
+Plataforma SaaS multi-tenant para gestão de agendamentos e automação de retenção, desenvolvida especificamente para estúdios de unhas e salões de beleza. O sistema integra um motor de disponibilidade de alta performance com automação via WhatsApp para otimizar a operação e a fidelização de clientes.
 
 ---
 
-## Para Recrutadores (Resumo Técnico)
+## 🛠️ Diferenciais do Sistema
 
-- **Multi-tenant real com isolamento**: filtro Hibernate habilitado via AOP em `TenantAspect`, resolvendo `tenantId` por JWT claim ou subdomínio.
-- **Motor de agenda consistente**: cálculo de disponibilidade por janela, intervalos de buffer e bloqueios, com lock pessimista na reserva para evitar corrida.
-- **Arquitetura orientada a eventos**: `@TransactionalEventListener` + `@Async` para confirmação e lembretes sem travar a experiência do usuário.
-- **Mensageria inteligente**: WhatsApp integrado via Evolution API, webhooks processados por Strategy e feedback em tempo real via SSE.
-- **Segurança sólida**: JWT, refresh token, RBAC por papéis.
-- **Observabilidade pronta para produção**: Sentry, logs estruturados e métricas baseadas em Spring Actuator.
-- **Testes robustos**: JUnit 5, Testcontainers e suíte pronta para validar regras de negócio e infraestrutura.
+*   **Interface SPA Progressiva:** Arquitetura baseada em módulos Vanilla JS e fragmentos Thymeleaf, proporcionando transições de página rápidas sem a complexidade de frameworks pesados.
+*   **Sincronização WhatsApp em Tempo Real:** Conexão nativa via Evolution API com monitoramento de status e pareamento via QR Code atualizado via **Server-Sent Events (SSE)**.
+*   **Retenção Preditiva:** Algoritmo que calcula janelas de manutenção com base no histórico de serviços e automatiza o contato para novos agendamentos.
 
 ---
 
-## Visão de Produto
+## 💼 Proposta de Valor
 
-O Nail Space foi pensado como uma plataforma que faz o salão operar no piloto automático:
+### Gestão Estratégica
+- **Redução de Faltas:** Confirmações e lembretes automatizados via WhatsApp para garantir a ocupação da agenda.
+- **Ciclo de Recorrência:** Previsão automática de retorno, notificando clientes no momento ideal para manutenção.
+- **Identidade Visual (White-Label):** Personalização de cores e marca por salão, aplicada instantaneamente na interface do cliente.
+- **Painéis Operacionais:** Dashboards com métricas de receita estimada, ticket médio e produtividade por profissional.
 
-- **Agenda inteligente**: disponibilidade por profissional, intervalos de serviço, buffers e bloqueios manuais.
-- **Retenção automatizada**: previsão de retorno por manutenção e disparo de convites personalizados.
-- **WhatsApp como canal principal**: confirmação, lembretes e follow-up com status rastreável.
-- **Insights gerenciais**: receita, ticket médio, produtividade e comportamento de clientes.
-
----
-
-## Funcionalidades
-
-- **Agendamento do cliente**: disponibilidade por profissional, múltiplos serviços (add-ons), cancelamento e janela preferencial.
-- **Gestão de profissionais**: agenda semanal, pausas, bloqueios rápidos e perfil com foto.
-- **Gestão do salão**: serviços ativos/inativos, intervalos de manutenção e configurações gerais.
-- **CRM e retenção**: previsão automática de retorno, status do cliente e follow-up programado.
-- **Painéis administrativos**: receita mensal, histórico diário e perfil 360º do cliente.
-- **Mensageria**: confirmação, lembretes programados, reenvio com status e limpeza de mensagens antigas.
-- **Onboarding multi-tenant**: criação de tenant, salão e primeiro admin com slug dedicado.
-- **Portal web**: páginas públicas e privadas servidas pelo próprio backend (Thymeleaf + JS).
+### Fluxo de Trabalho do Profissional
+- **Agenda Dinâmica:** Visualização clara de compromissos diários com atualização de status (pendente, confirmado, finalizado).
+- **Gestão de Jornada:** Configuração individualizada de horários de trabalho, pausas e bloqueios manuais.
 
 ---
 
-## Arquitetura e Design
+## 🏗️ Arquitetura e Engenharia
 
-- **Camadas bem definidas**: `domain` (regras), `application` (casos de uso), `infrastructure` (adapters), `shared` (cross-cutting).
-- **Multi-tenant por filtro**: habilitação automática do filtro de tenant em repositórios, com exceções explícitas via `@IgnoreTenantFilter`.
-- **Engine de disponibilidade**: normalização de intervalos ocupados (appointments + blocks), cálculo de slots em passos de 30 minutos.
-- **Mensageria resiliente**: pipeline com status de envio, retries e persistência de mensagens.
-- **SSE em tempo real**: comunicação de eventos de conexão e QR Code para WhatsApp.
+### Padrões de Design e Implementação
+- **Multi-Tenancy Nativa:** Isolamento rigoroso de dados em nível de repositório utilizando filtros Hibernate e Spring AOP (`TenantAspect`). A resolução de contexto suporta claims de JWT e roteamento por subdomínios.
+- **Motor de Disponibilidade:** Cálculo de slots em janelas de 30 minutos com suporte a múltiplos serviços (add-ons) e trava pessimista para evitar conflitos de reserva.
+- **Comunicação Orientada a Eventos:** Uso de `@TransactionalEventListener` e processamento assíncrono para pipelines de mensageria, garantindo que a experiência do usuário não seja afetada pelo tempo de resposta de APIs externas.
+- **Strategy Pattern para Webhooks:** Processamento modular de eventos da Evolution API, permitindo fácil extensão para novos tipos de mensagens e notificações.
 
----
-
-## Stack Tecnológica
-
-- **Backend**: Java 21, Spring Boot 3.5, Spring Web, Spring Security, Spring Validation.
-- **Persistência**: Spring Data JPA, PostgreSQL 15, Flyway.
-- **Autenticação**: JWT (Auth0), BCrypt.
-- **Integrações**: Evolution API (WhatsApp), Resend (e-mail).
-- **Observabilidade**: Sentry, Actuator, Logback com encoder JSON.
-- **Frontend**: Thymeleaf + HTML/CSS/JS modularizado.
-- **Infra**: Docker, Docker Compose.
-- **Testes**: JUnit 5, Testcontainers.
-- **Qualidade**: suíte de testes automatizados com suporte a banco real via Testcontainers.
+### Stack
+| Camada | Tecnologias |
+| --- | --- |
+| **Backend** | Java 21, Spring Boot 3.5, Spring Security (JWT), Spring Data JPA |
+| **Frontend** | Vanilla JavaScript (ESM), CSS, Thymeleaf Fragments |
+| **Banco de Dados** | PostgreSQL 15, Flyway |
+| **Integrações** | Evolution API (WhatsApp), Resend (E-mail), Sentry (Observabilidade) |
+| **Infraestrutura** | Docker Compose, Spring Boot Actuator, Logback (JSON Encoding) |
+| **Testes** | JUnit 5, Testcontainers (PostgreSQL Real), Mockito |
 
 ---
 
-## Executar Localmente
+## 📊 Arquitetura de Fluxo
 
+| Origem | Destino | Meio / Protocolo | Finalidade |
+| :--- | :--- | :--- | :--- |
+| Navegador (Cliente) | Backend (Spring) | REST / SSE | Operações de interface e notificações live |
+| Backend (Spring) | PostgreSQL | Hibernate Filter | Persistência com isolamento multi-tenant |
+| Backend (Spring) | Evolution API | Webhooks / HTTP | Sincronização e disparos via WhatsApp |
+| Backend (Spring) | Sentry / Actuator | Logs Estruturados | Observabilidade e métricas de saúde |
+| Agendador (Cron) | Motor de Retenção | Spring Scheduling | Cálculo preditivo e gatilhos de mensagens |
+
+---
+
+## 🚦 Execução Local
+
+### 1. Pré-requisitos
+- Docker e Docker Compose
+- Java 21+ (para desenvolvimento local)
+
+### 2. Configuração de Ambiente
+Crie o arquivo `.env` com base no exemplo:
 ```bash
 cp .env.example .env
+```
+
+### 3. Deploy via Docker
+```bash
 ./mvnw clean package -DskipTests
+
 docker compose up -d --build
 ```
 
-- API: `http://localhost:8080`
-- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+- **Acesso à Aplicação:** `http://localhost:8080`
+- **Documentação da API:** `http://localhost:8080/swagger-ui/index.html`
 
 ---
 
-## Variáveis de Ambiente
-
-| Variável | Descrição |
-| --- | --- |
-| `POSTGRES_DB_APP` | Nome do banco principal da aplicação |
-| `POSTGRES_DB_EVO` | Nome do banco da Evolution API |
-| `POSTGRES_USER` | Usuário do PostgreSQL |
-| `POSTGRES_PASSWORD` | Senha do PostgreSQL |
-| `JWT_SECRET` | Segredo de assinatura do JWT |
-| `ALLOWED_ORIGINS` | CORS permitido |
-| `RESEND_API_KEY` | Chave da Resend (e-mail) |
-| `MAIL_HOST` | Host SMTP (fallback) |
-| `MAIL_PORT` | Porta SMTP |
-| `MAIL_USER` | Usuário SMTP |
-| `EVO_API_KEY` | Chave da Evolution API |
-| `DOMAIN_URL` | URL pública do domínio do produto |
-| `SENTRY_DSN` | DSN do Sentry |
-
----
-
-## Acesso e Papéis
-
-- **SUPER_ADMIN**: onboarding de tenants e endpoints internos.
-- **ADMIN**: gestão do salão, serviços, profissionais e insights.
-- **PROFESSIONAL**: agenda e perfil profissional.
-- **CLIENT**: agendamento e área do cliente.
-
+## 🛡️ Segurança
+- **Controle de Acesso (RBAC):** Níveis de permissão distintos para `SUPER_ADMIN`, `ADMIN`, `PROFESSIONAL` e `CLIENT`.
+- **Autenticação JWT:** Implementação stateless com suporte a refresh tokens e cookies seguros.
+- **Proteção de Dados:** Isolamento de inquilinos (tenants) validado em cada transação de banco de dados.
 ---
