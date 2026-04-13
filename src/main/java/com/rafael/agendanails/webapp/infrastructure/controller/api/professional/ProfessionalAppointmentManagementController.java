@@ -69,13 +69,17 @@ public class ProfessionalAppointmentManagementController {
     @GetMapping
     public ResponseEntity<List<ProfessionalAppointmentScheduleDTO>> findByDay(
             @AuthenticationPrincipal UserPrincipal principal,
-            @RequestParam @NotNull(message = "A data e hora inicial são obrigatórias")
+            @RequestParam(required = false)
             @Parameter(example = "2026-04-01T00:00:00-03:00")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime start,
-            @RequestParam @NotNull(message = "A data e hora final são obrigatórias")
+            @RequestParam(required = false)
             @Parameter(example = "2026-04-01T23:59:59-03:00")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime end
     ) {
+        if (start == null || end == null) {
+            return ResponseEntity.ok(List.of());
+        }
+
         return ResponseEntity.ok(
                 professionalScheduleQueryUseCase.findProfessionalAppointmentsByDay(
                         principal.getUserId(),
