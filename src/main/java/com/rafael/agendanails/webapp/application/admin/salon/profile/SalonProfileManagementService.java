@@ -37,6 +37,7 @@ public class SalonProfileManagementService {
                 .loyalClientBookingWindowDays(salonProfile.getLoyalClientBookingWindowDays())
                 .standardBookingWindow(salonProfile.getStandardBookingWindow())
                 .connectionState(salonProfile.getEvolutionConnectionState())
+                .autoConfirmationAppointment(salonProfile.isAutoConfirmationAppointment())
                 .build();
     }
 

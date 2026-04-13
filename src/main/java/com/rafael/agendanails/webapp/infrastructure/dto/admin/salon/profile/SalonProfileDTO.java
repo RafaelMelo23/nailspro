@@ -66,5 +66,5 @@ public record SalonProfileDTO(
 
         EvolutionConnectionState connectionState,
 
-        boolean autoConfirmationAppointment) {
+        Boolean autoConfirmationAppointment) {
 }

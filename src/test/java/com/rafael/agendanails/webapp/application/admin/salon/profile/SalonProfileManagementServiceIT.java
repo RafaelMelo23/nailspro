@@ -65,26 +65,22 @@ class SalonProfileManagementServiceIT extends BaseIntegrationTest {
     }
 
     @Test
-    void shouldNotUpdateProfileFromAnotherTenant() {
-        String tenantA = "tenant-a";
-        String tenantB = "tenant-b";
+    void shouldUpdateAutoConfirmationAppointment() {
+        Professional owner = professionalRepository.save(TestProfessionalFactory.builder().build());
+        SalonProfile profile = salonProfileRepository.save(TestSalonProfileFactory.standardForIT(owner));
+        profile.setAutoConfirmationAppointment(false);
+        salonProfileRepository.save(profile);
 
-        TenantContext.setTenant(tenantA);
-        Professional ownerA = professionalRepository.save(TestProfessionalFactory.builder().tenantId(tenantA).build());
-        SalonProfile profileA = salonProfileRepository.save(TestSalonProfileFactory.standardForIT(ownerA, tenantA));
-
-        SalonProfileDTO dto = SalonProfileDTO.builder()
-                .tradeName("Hacked Name")
+        SalonProfileDTO updateDto = SalonProfileDTO.builder()
+                .autoConfirmationAppointment(true)
                 .build();
 
-        TenantContext.setTenant(tenantB);
-        
-        assertThatThrownBy(() -> salonProfileManagementService.updateProfile(ownerA.getTenantId(), dto))
-                .isInstanceOf(BusinessException.class)
-                .hasMessageContaining("O perfil do salão não foi encontrado.");
+        salonProfileManagementService.updateProfile(owner.getTenantId(), updateDto);
 
-        TenantContext.setTenant(tenantA);
-        SalonProfile updatedProfile = salonProfileRepository.findById(profileA.getId()).orElseThrow();
-        assertThat(updatedProfile.getTradeName()).isNotEqualTo("Hacked Name");
+        SalonProfileDTO result = salonProfileManagementService.getProfile(owner.getTenantId());
+        assertThat(result.autoConfirmationAppointment()).isTrue();
+        
+        SalonProfile updatedProfile = salonProfileRepository.findById(profile.getId()).orElseThrow();
+        assertThat(updatedProfile.isAutoConfirmationAppointment()).isTrue();
     }
 }

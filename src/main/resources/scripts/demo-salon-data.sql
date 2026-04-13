@@ -23,7 +23,9 @@ VALUES
     ('Client', 601, 'demo-salon-2026', 'gabriele.santos@email.com', 'Gabriele Santos', '$2a$12$PB6L0TJuwgAOh9HMRkkkTusUO8XsbpMPTJzETlvOOEJaQCbfyxF2.', 'ACTIVE', 'CLIENT', '5511988882222', null, true, false),
     ('Client', 602, 'demo-salon-2026', 'marcos.oliveira@email.com', 'Marcos Oliveira', '$2a$12$PB6L0TJuwgAOh9HMRkkkTusUO8XsbpMPTJzETlvOOEJaQCbfyxF2.', 'ACTIVE', 'CLIENT', '5511988883333', null, true, false),
     ('Client', 603, 'demo-salon-2026', 'juliana.paes@email.com', 'Juliana Paes', '$2a$12$PB6L0TJuwgAOh9HMRkkkTusUO8XsbpMPTJzETlvOOEJaQCbfyxF2.', 'ACTIVE', 'CLIENT', '5511988884444', null, true, false),
-    ('Client', 604, 'demo-salon-2026', 'ricardo.almeida@email.com', 'Ricardo Almeida', '$2a$12$PB6L0TJuwgAOh9HMRkkkTusUO8XsbpMPTJzETlvOOEJaQCbfyxF2.', 'ACTIVE', 'CLIENT', '5511988885555', null, true, false);
+    ('Client', 604, 'demo-salon-2026', 'ricardo.almeida@email.com', 'Ricardo Almeida', '$2a$12$PB6L0TJuwgAOh9HMRkkkTusUO8XsbpMPTJzETlvOOEJaQCbfyxF2.', 'ACTIVE', 'CLIENT', '5511988885555', null, true, false),
+    ('Client', 605, 'demo-salon-2026', 'patricia.rocha@email.com', 'Patrícia Rocha', '$2a$12$PB6L0TJuwgAOh9HMRkkkTusUO8XsbpMPTJzETlvOOEJaQCbfyxF2.', 'ACTIVE', 'CLIENT', '5511988886666', null, true, false),
+    ('Client', 606, 'demo-salon-2026', 'lucas.martins@email.com', 'Lucas Martins', '$2a$12$PB6L0TJuwgAOh9HMRkkkTusUO8XsbpMPTJzETlvOOEJaQCbfyxF2.', 'ACTIVE', 'CLIENT', '5511988887777', null, true, false);
 
 INSERT INTO public.salon_profile
 (id, tenant_id, appointment_buffer_minutes, auto_confirmation_appointment, comercial_phone, evolution_connection_state, full_address, is_loyal_clientele_prioritized, logo_path, operational_status, primary_color, slogan, trade_name, salon_zone_id, owner_id, tenant_status)
@@ -63,50 +65,60 @@ VALUES
     (2005, 'demo-salon-2026', 'CONFIRMED', CURRENT_DATE + TIME '10:30:00', CURRENT_DATE + TIME '11:30:00', 50.00, 604, 104, 503, 'Demo Salon', 'America/Sao_Paulo'),
     (2006, 'demo-salon-2026', 'CONFIRMED', CURRENT_DATE + TIME '15:00:00', CURRENT_DATE + TIME '17:00:00', 180.00, 600, 102, 502, 'Demo Salon', 'America/Sao_Paulo'),
     (2007, 'demo-salon-2026', 'CONFIRMED', (CURRENT_DATE + INTERVAL '1 day') + TIME '09:00:00', (CURRENT_DATE + INTERVAL '1 day') + TIME '10:00:00', 75.00, 601, 101, 501, 'Demo Salon', 'America/Sao_Paulo'),
-    (2008, 'demo-salon-2026', 'CONFIRMED', (CURRENT_DATE + INTERVAL '1 day') + TIME '13:00:00', (CURRENT_DATE + INTERVAL '1 day') + TIME '14:30:00', 120.00, 602, 105, 502, 'Demo Salon', 'America/Sao_Paulo');
+    (2008, 'demo-salon-2026', 'CONFIRMED', (CURRENT_DATE + INTERVAL '1 day') + TIME '13:00:00', (CURRENT_DATE + INTERVAL '1 day') + TIME '14:30:00', 120.00, 602, 105, 502, 'Demo Salon', 'America/Sao_Paulo'),
+    (2009, 'demo-salon-2026', 'FINISHED', (CURRENT_DATE - INTERVAL '5 days') + TIME '10:00:00', (CURRENT_DATE - INTERVAL '5 days') + TIME '11:00:00', 75.00, 605, 101, 501, 'Demo Salon', 'America/Sao_Paulo'),
+    (2010, 'demo-salon-2026', 'FINISHED', (CURRENT_DATE - INTERVAL '4 days') + TIME '15:00:00', (CURRENT_DATE - INTERVAL '4 days') + TIME '17:00:00', 180.00, 606, 102, 502, 'Demo Salon', 'America/Sao_Paulo'),
+    (2011, 'demo-salon-2026', 'CONFIRMED', CURRENT_DATE + TIME '11:30:00', CURRENT_DATE + TIME '12:30:00', 75.00, 605, 101, 501, 'Demo Salon', 'America/Sao_Paulo'),
+    (2012, 'demo-salon-2026', 'CONFIRMED', CURRENT_DATE + TIME '16:00:00', CURRENT_DATE + TIME '17:30:00', 120.00, 606, 105, 502, 'Demo Salon', 'America/Sao_Paulo'),
+    (2013, 'demo-salon-2026', 'CONFIRMED', (CURRENT_DATE + INTERVAL '2 days') + TIME '09:00:00', (CURRENT_DATE + INTERVAL '2 days') + TIME '10:00:00', 50.00, 603, 104, 503, 'Demo Salon', 'America/Sao_Paulo'),
+    (2014, 'demo-salon-2026', 'CONFIRMED', (CURRENT_DATE + INTERVAL '3 days') + TIME '14:00:00', (CURRENT_DATE + INTERVAL '3 days') + TIME '16:00:00', 180.00, 604, 102, 502, 'Demo Salon', 'America/Sao_Paulo');
 
 INSERT INTO public.client_audit_metrics
 (id, tenant_id, completed_appointments_count, total_spent, client_id, last_visit_date)
 VALUES
     (3001, 'demo-salon-2026', 1, 75.00, 600, CURRENT_DATE - INTERVAL '3 days'),
     (3002, 'demo-salon-2026', 1, 180.00, 601, CURRENT_DATE - INTERVAL '2 days'),
-    (3003, 'demo-salon-2026', 1, 50.00, 602, CURRENT_DATE - INTERVAL '1 day');
+    (3003, 'demo-salon-2026', 1, 50.00, 602, CURRENT_DATE - INTERVAL '1 day'),
+    (3004, 'demo-salon-2026', 1, 75.00, 605, CURRENT_DATE - INTERVAL '5 days'),
+    (3005, 'demo-salon-2026', 1, 180.00, 606, CURRENT_DATE - INTERVAL '4 days');
 
 INSERT INTO public.salon_daily_revenue
 (id, tenant_id, appointments_count, date, total_revenue)
 VALUES
     (5001, 'demo-salon-2026', 1, CURRENT_DATE - INTERVAL '3 days', 75.00),
     (5002, 'demo-salon-2026', 1, CURRENT_DATE - INTERVAL '2 days', 180.00),
-    (5003, 'demo-salon-2026', 1, CURRENT_DATE - INTERVAL '1 day', 50.00);
+    (5003, 'demo-salon-2026', 1, CURRENT_DATE - INTERVAL '1 day', 50.00),
+    (5004, 'demo-salon-2026', 1, CURRENT_DATE - INTERVAL '5 days', 75.00),
+    (5005, 'demo-salon-2026', 1, CURRENT_DATE - INTERVAL '4 days', 180.00);
 
 INSERT INTO public.schedule_block
 (id, tenant_id, start_time, end_time, reason, professional_id, is_whole_day_blocked)
 VALUES
-
     (6001, 'demo-salon-2026', CURRENT_DATE + TIME '12:00:00', CURRENT_DATE + TIME '13:00:00', 'Dentista', 501, false),
     (6002, 'demo-salon-2026', (CURRENT_DATE + INTERVAL '1 day') + TIME '08:00:00', (CURRENT_DATE + INTERVAL '1 day') + TIME '10:00:00', 'Consulta Médica', 501, false),
-
     (6003, 'demo-salon-2026', CURRENT_DATE + TIME '13:30:00', CURRENT_DATE + TIME '15:00:00', 'Resolução de Problema Bancário', 502, false),
     (6004, 'demo-salon-2026', (CURRENT_DATE + INTERVAL '2 days') + TIME '16:00:00', (CURRENT_DATE + INTERVAL '2 days') + TIME '18:00:00', 'Reunião Escolar', 502, false),
-
     (6005, 'demo-salon-2026', CURRENT_DATE + TIME '11:00:00', CURRENT_DATE + TIME '12:00:00', 'Dentista', 503, false),
     (6006, 'demo-salon-2026', (CURRENT_DATE + INTERVAL '4 days'), (CURRENT_DATE + INTERVAL '4 days') + TIME '23:59:59', 'Folga Compensatória', 503, true),
     (6007, 'demo-salon-2026', (CURRENT_DATE + INTERVAL '1 day') + TIME '14:00:00', (CURRENT_DATE + INTERVAL '1 day') + TIME '15:00:00', 'Renovação de CNH', 503, false);
-
 
 INSERT INTO public.retention_forecast
 (id, tenant_id, predicted_return_date, status, client_id, origin_appointment_id, professional_id)
 VALUES
     (4001, 'demo-salon-2026', (CURRENT_DATE + INTERVAL '12 days') + TIME '09:00:00', 'PENDING', 600, 2001, 501),
     (4002, 'demo-salon-2026', (CURRENT_DATE + INTERVAL '23 days') + TIME '14:00:00', 'PENDING', 601, 2002, 502),
-    (4003, 'demo-salon-2026', (CURRENT_DATE + INTERVAL '19 days') + TIME '11:00:00', 'PENDING', 602, 2003, 503);
+    (4003, 'demo-salon-2026', (CURRENT_DATE + INTERVAL '19 days') + TIME '11:00:00', 'PENDING', 602, 2003, 503),
+    (4004, 'demo-salon-2026', (CURRENT_DATE + INTERVAL '15 days') + TIME '10:00:00', 'PENDING', 605, 2009, 501),
+    (4005, 'demo-salon-2026', (CURRENT_DATE + INTERVAL '28 days') + TIME '15:00:00', 'PENDING', 606, 2010, 502);
 
 INSERT INTO public.retention_forecast_salon_services
 (retention_forecast_id, salon_services_id)
 VALUES
     (4001, 101),
     (4002, 102),
-    (4003, 104);
+    (4003, 104),
+    (4004, 101),
+    (4005, 102);
 
 SELECT pg_catalog.setval('public.users_seq', (SELECT COALESCE(MAX(id), 1) + 50 FROM public.users), false);
 SELECT pg_catalog.setval('public.appointment_seq', (SELECT COALESCE(MAX(id), 1) + 50 FROM public.appointment), false);
