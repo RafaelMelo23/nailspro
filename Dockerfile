@@ -1,6 +1,7 @@
 FROM alpine:3.19 as agent-downloader
 RUN apk add --no-cache curl
-RUN curl -L https://repo1.maven.org/maven2/io/sentry/sentry-opentelemetry-agent/8.33.0/sentry-agent.jar -o sentry-agent.jar
+
+RUN curl -fsSL https://repo1.maven.org/maven2/io/sentry/sentry-opentelemetry-agent/8.33.0/sentry-opentelemetry-agent-8.33.0.jar -o sentry-agent.jar
 
 FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
@@ -15,7 +16,7 @@ RUN mkdir -p /tmp/uploads && chown -R spring:spring /tmp/uploads
 USER spring:spring
 WORKDIR /app
 
-COPY --from=agent-downloader /sentry-agent.jar /app/sentry-agent.jar
+COPY --from=agent-downloader --chown=spring:spring /sentry-agent.jar /app/sentry-agent.jar
 COPY --from=build /app/target/scheduling-nails-pro-0.0.1-SNAPSHOT.jar /app/app.jar
 
 ENV SENTRY_AUTO_INIT=false \
