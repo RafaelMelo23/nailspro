@@ -151,6 +151,53 @@ const UI = {
                 </nav>
             </div>
         `;
+
+        this.renderMobileTabBar();
+    },
+
+    renderMobileTabBar: function() {
+        const tabBar = document.getElementById('mobile-tab-bar');
+        if (!tabBar) return;
+
+        const token = Auth.getToken();
+        const isAdmin = Auth.hasRole('ADMIN');
+        const isProfessional = Auth.hasRole('PROFESSIONAL');
+        const currentPath = window.location.pathname;
+
+        const isHome = currentPath === '/' || currentPath.endsWith('/agendar');
+        const isProfile = currentPath.includes('/perfil');
+        const isAgenda = currentPath.includes('/profissional/agenda');
+        const isAdminArea = currentPath.includes('/admin');
+
+        tabBar.innerHTML = `
+            <button class="tab-item ${isHome ? 'active' : ''}" onclick="navigate('/agendar')">
+                <i>📅</i>
+                <span>Agendar</span>
+            </button>
+            ${token ? `
+                <button class="tab-item ${isProfile ? 'active' : ''}" onclick="navigate('/perfil')">
+                    <i>👤</i>
+                    <span>Perfil</span>
+                </button>
+                ${isProfessional ? `
+                    <button class="tab-item ${isAgenda ? 'active' : ''}" onclick="navigate('/profissional/agenda')">
+                        <i>📋</i>
+                        <span>Agenda</span>
+                    </button>
+                ` : ''}
+                ${isAdmin ? `
+                    <button class="tab-item ${isAdminArea ? 'active' : ''}" onclick="navigate('/admin/configuracoes')">
+                        <i>⚙️</i>
+                        <span>Admin</span>
+                    </button>
+                ` : ''}
+            ` : `
+                <button class="tab-item ${currentPath.includes('/entrar') ? 'active' : ''}" onclick="navigate('/entrar')">
+                    <i>🔑</i>
+                    <span>Entrar</span>
+                </button>
+            `}
+        `;
     },
 
     toggleMobileMenu: function() {

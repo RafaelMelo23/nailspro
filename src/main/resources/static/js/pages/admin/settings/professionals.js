@@ -175,7 +175,7 @@ export const ProfessionalsModule = {
     },
 
     handleDeactivateProfessional: async function(id, btn) {
-        const confirmed = await this.showConfirm('Desativar Profissional', 'Tem certeza que deseja desativar esta profissional?');
+        const confirmed = await UI.confirm('Desativar Profissional', 'Tem certeza que deseja desativar esta profissional?');
         if (!confirmed) return;
 
         this.setLoading(btn, true);
@@ -191,7 +191,7 @@ export const ProfessionalsModule = {
     },
 
     handleActivateProfessional: async function(id, btn) {
-        const confirmed = await this.showConfirm('Ativar Profissional', 'Deseja reativar esta profissional?');
+        const confirmed = await UI.confirm('Ativar Profissional', 'Deseja reativar esta profissional?');
         if (!confirmed) return;
 
         this.setLoading(btn, true);

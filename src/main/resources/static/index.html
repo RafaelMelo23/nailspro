@@ -50,6 +50,20 @@
 
     <footer id="main-footer"></footer>
 
+    <nav id="mobile-tab-bar" class="mobile-tab-bar"></nav>
+
+    <!-- Global Confirmation Modal -->
+    <div id="confirm-modal" class="modal-overlay hidden">
+        <div class="modal-content modal-sm">
+            <h3 id="confirm-modal-title">Confirmar Ação</h3>
+            <p id="confirm-modal-message" style="margin-top: 10px; color: var(--text-muted);"></p>
+            <div class="modal-actions" style="margin-top: 25px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" id="confirm-modal-cancel" class="btn btn-secondary btn-sm">Cancelar</button>
+                <button type="button" id="confirm-modal-ok" class="btn btn-primary btn-sm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- WhatsApp Connection Popup -->
     <div id="whatsapp-popup" class="whatsapp-popup hidden">
         <div class="whatsapp-popup-header">

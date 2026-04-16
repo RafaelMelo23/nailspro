@@ -196,25 +196,26 @@ input:checked + .slider:before {
 .prof-selection-list {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    max-height: 150px;
+    max-height: 200px;
     overflow-y: auto;
     margin-top: 5px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--border);
 }
 
 .prof-option {
     display: flex;
     align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #f3f3f3;
+    padding: 12px;
+    background: white;
     cursor: pointer;
-}
-
-.prof-option:last-child {
-    border-bottom: none;
+    transition: background 0.2s;
 }
 
 .prof-option:hover {
-    background: #f9f9f9;
+    background: var(--bg-body);
 }
 
 .prof-option input {

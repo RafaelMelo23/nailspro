@@ -2,6 +2,8 @@ window.NotificationService = {
     eventSource: null,
     whatsappStatus: 'CLOSE',
     connectionTimeout: null,
+    connectionPromise: null,
+    connectionResolve: null,
 
     init: function() {
         console.log("Initializing NotificationService...");
@@ -9,7 +11,7 @@ window.NotificationService = {
             console.log("No auth token found, skipping NotificationService init");
             return;
         }
-        // Connect if admin or professional (professionals are salon owners usually)
+
         if (Auth.hasRole('ADMIN') || Auth.hasRole('PROFESSIONAL')) {
             console.log("User is ADMIN or PROFESSIONAL, subscribing to notifications...");
             this.subscribe();
@@ -24,7 +26,10 @@ window.NotificationService = {
             this.eventSource.close();
         }
 
-        // Proactive token refresh for SSE
+        this.connectionPromise = new Promise(resolve => {
+            this.connectionResolve = resolve;
+        });
+
         if (Auth.isTokenExpired()) {
             await Auth.refreshToken();
         }
@@ -38,6 +43,10 @@ window.NotificationService = {
 
         this.eventSource.onopen = () => {
             console.log("SSE Connection opened successfully");
+            if (this.connectionResolve) {
+                this.connectionResolve();
+                this.connectionResolve = null;
+            }
         };
 
         this.eventSource.onmessage = (event) => {
@@ -46,7 +55,7 @@ window.NotificationService = {
                 const payload = JSON.parse(event.data);
                 this.handleNotification(payload);
             } catch (e) {
-                // Some events might be plain text (like the INIT event)
+
                 console.log("SSE plain text or invalid JSON:", event.data);
             }
         };
@@ -54,11 +63,26 @@ window.NotificationService = {
         this.eventSource.onerror = (err) => {
             console.error("SSE Connection Error", err);
             this.eventSource.close();
-            // Reconnect after 5 seconds if still authenticated
+            this.connectionPromise = null;
+            this.connectionResolve = null;
+
             if (Auth.getToken()) {
                 setTimeout(() => this.subscribe(), 5000);
             }
         };
+    },
+
+    ensureConnected: async function() {
+        if (!this.eventSource || this.eventSource.readyState === EventSource.CLOSED) {
+            await this.subscribe();
+        }
+        
+        if (this.eventSource.readyState === EventSource.CONNECTING) {
+            console.log("SSE is connecting, waiting for open...");
+
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('SSE connection timeout')), 5000));
+            await Promise.race([this.connectionPromise, timeoutPromise]);
+        }
     },
 
     handleNotification: function(payload) {
@@ -107,16 +131,14 @@ window.NotificationService = {
     },
 
     handleConnectionUpdate: function(data) {
-        // If the data object contains a pairing code, update it in the UI
+
         if (data && typeof data === 'object' && data.pairingCode) {
             this.updatePairingCodeUI(data.pairingCode);
         }
 
-        // data might be the EvolutionConnectionState string or an object containing it
         const state = typeof data === 'string' ? data : (data.state || data.status);
         if (!state) return;
 
-        // Clear timeout on any valid state update from server
         this.clearConnectionTimeout();
 
         this.whatsappStatus = state;
@@ -147,12 +169,12 @@ window.NotificationService = {
         
         if (success) {
             success.classList.remove('hidden');
-            // Auto-hide popup after 3 seconds
+
             setTimeout(() => {
                 this.hideWhatsappPopup();
             }, 3000);
         } else {
-            // Fallback if success element not found
+
             Toast.success("WhatsApp conectado com sucesso!");
             this.hideWhatsappPopup();
         }
@@ -170,7 +192,7 @@ window.NotificationService = {
         this.clearConnectionTimeout();
 
         if (codeEl) {
-            // Format 8-digit code as XXXX-XXXX for better readability
+
             let formattedCode = pairingCode;
             if (pairingCode && pairingCode.length === 8) {
                 formattedCode = pairingCode.substring(0, 4) + '-' + pairingCode.substring(4);
@@ -220,8 +242,7 @@ window.NotificationService = {
                 if (title) title.innerText = 'WhatsApp Desconectado';
             } else {
                 popup.classList.remove('disconnected');
-                // Don't hide alert here if we are showing it from handleQrCodeUpdate/updatePairingCodeUI
-                // but usually we want to start clean if it's not a disconnection trigger
+
                 const qrHidden = document.getElementById('whatsapp-qr-container')?.classList.contains('hidden');
                 const pairingHidden = document.getElementById('whatsapp-pairing-container')?.classList.contains('hidden');
                 
@@ -262,7 +283,6 @@ window.NotificationService = {
         if (popup) popup.classList.remove('disconnected');
         if (title) title.innerText = 'Conectar WhatsApp';
 
-        // Force UI to reflect disconnected state if not OPEN
         if (this.whatsappStatus !== 'OPEN') {
             this.updateStatusUI('CLOSE');
         }
@@ -302,6 +322,9 @@ window.NotificationService = {
         }, 15000); // 15 seconds timeout
 
         try {
+
+            await this.ensureConnected();
+
             const res = await fetch(`/api/v1/whatsapp?connectionMethod=${method}`, {
                 method: 'POST'
             });
@@ -313,8 +336,7 @@ window.NotificationService = {
                 if (instructions) instructions.classList.remove('hidden');
             } else {
                 const data = await res.json();
-                
-                // If the response contains a pairing code, show it immediately
+
                 if (data.pairingCode) {
                     this.updatePairingCodeUI(data.pairingCode);
                 }
@@ -322,7 +344,7 @@ window.NotificationService = {
         } catch (err) {
             this.clearConnectionTimeout();
             console.error("WhatsApp connection error:", err);
-            Toast.error("Erro de rede ao conectar WhatsApp.");
+            Toast.error("Erro ao conectar ao servidor de notificações.");
             if (loading) loading.classList.add('hidden');
             if (instructions) instructions.classList.remove('hidden');
         }

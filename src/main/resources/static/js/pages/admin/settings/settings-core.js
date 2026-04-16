@@ -7,7 +7,6 @@ export const CoreModule = {
             return;
         }
 
-        // Sequential loading to avoid race conditions and ensure DOM stability
         const fragments = ['modals', 'professionals', 'appointments', 'clients', 'salon', 'insights'];
         
         for (const tabId of fragments) {
@@ -26,7 +25,6 @@ export const CoreModule = {
             }
         }
 
-        // Wait for next frame to ensure DOM is fully painted
         await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
         adminSettingsApp.setupColorPicker();
@@ -77,29 +75,6 @@ export const CoreModule = {
             btn.classList.remove('btn-loading');
             btn.disabled = false;
         }
-    },
-
-    showConfirm: function(title, message) {
-        return new Promise((resolve) => {
-            const modal = document.getElementById('confirm-modal');
-            const btnOk = document.getElementById('confirm-ok');
-            const btnCancel = document.getElementById('confirm-cancel');
-            
-            document.getElementById('confirm-title').textContent = title;
-            document.getElementById('confirm-message').textContent = message;
-            
-            modal.classList.remove('hidden');
-
-            const cleanup = (result) => {
-                modal.classList.add('hidden');
-                btnOk.onclick = null;
-                btnCancel.onclick = null;
-                resolve(result);
-            };
-
-            btnOk.onclick = () => cleanup(true);
-            btnCancel.onclick = () => cleanup(false);
-        });
     },
 
     getInitials: function(name) {

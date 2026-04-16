@@ -71,7 +71,7 @@ export const AgendaModule = {
         const container = document.getElementById('agenda-container');
         if (!container) return;
 
-        container.innerHTML = '<div class="loading-placeholder">Carregando agendamentos...</div>';
+        this.showSkeletons();
 
         const start = new Date(this.currentDate);
         start.setHours(0, 0, 0, 0);
@@ -87,6 +87,23 @@ export const AgendaModule = {
         } catch (err) {
             container.innerHTML = '<div class="error-placeholder">Erro ao carregar agenda.</div>';
         }
+    },
+
+    showSkeletons: function() {
+        const container = document.getElementById('agenda-container');
+        if (!container) return;
+        
+        container.innerHTML = `
+            <div class="appointment-card skeleton-container" style="pointer-events: none; opacity: 0.6; margin-bottom: 15px; padding: 20px; border: 1px solid var(--border); border-radius: 12px;">
+                <div style="display: flex; gap: 15px;">
+                    <div class="skeleton skeleton-circle" style="width: 40px; height: 40px;"></div>
+                    <div style="flex: 1;">
+                        <div class="skeleton skeleton-title" style="width: 150px; height: 20px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 100px; height: 15px;"></div>
+                    </div>
+                </div>
+            </div>
+        `.repeat(3);
     },
 
     renderAgenda: function(appointments) {
@@ -129,12 +146,10 @@ export const AgendaModule = {
             const cleanPhone = ap.clientPhoneNumber.replace(/\D/g, '');
             waLink.href = `https://wa.me/55${cleanPhone}`;
 
-            // Status Badge
             const statusBadge = clone.querySelector('.status-badge');
             statusBadge.innerText = this.translateStatus(ap.status);
             statusBadge.className = `status-badge status-${ap.status.toLowerCase()}`;
 
-            // Warnings
             const warnings = (ap.clientMissedAppointments || 0) + (ap.clientCanceledAppointments || 0);
             if (warnings >= 2) {
                 const warningBadge = clone.querySelector('.warning-badge');
@@ -142,7 +157,6 @@ export const AgendaModule = {
                 clone.querySelector('.warning-count').innerText = warnings;
             }
 
-            // Observations
             if (ap.observations) {
                 const obsBtn = clone.querySelector('.btn-toggle-obs');
                 const obsContent = clone.querySelector('.obs-content');
@@ -153,7 +167,6 @@ export const AgendaModule = {
                 };
             }
 
-            // Actions
             this.renderActions(clone.querySelector('.appointment-actions-column'), ap);
 
             container.appendChild(clone);
@@ -195,7 +208,8 @@ export const AgendaModule = {
             'cancel': 'cancelar',
             'miss': 'marcar como falta'
         };
-        if (!confirm(`Deseja realmente ${msg[action] || action} este agendamento?`)) return;
+        const confirmed = await UI.confirm('Atualizar Status', `Deseja realmente ${msg[action] || action} este agendamento?`);
+        if (!confirmed) return;
 
         try {
             const res = await fetch(`/api/v1/professional/appointments/${id}/${action}`, { method: 'PATCH' });

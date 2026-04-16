@@ -141,6 +141,11 @@ const Auth = {
     },
 
     logout: async function() {
+        if (typeof NotificationService !== 'undefined' && NotificationService.eventSource) {
+            NotificationService.eventSource.close();
+            NotificationService.eventSource = null;
+        }
+
         const tenantId = this.getTenantId();
         const reserved = new Set(['entrar', 'cadastro', 'redefinir-senha', 'agendar', 'perfil', 'offline']);
 

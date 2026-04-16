@@ -18,6 +18,7 @@ const bookingApp = {
 
     init: async function() {
         this.resetState();
+        this.showSkeletons();
         await this.loadInitialData();
         this.renderProf();
 
@@ -33,6 +34,60 @@ const bookingApp = {
         }
 
         this.updateUI();
+        this.bindStepperEvents();
+    },
+
+    showSkeletons: function() {
+        const profList = document.getElementById('prof-list');
+        const serviceList = document.getElementById('service-list');
+        const addonsList = document.getElementById('addons-list');
+        
+        const skeletonHtml = `
+            <div class="card-item" style="pointer-events: none; opacity: 0.6;">
+                <div class="item-left">
+                    <div class="skeleton skeleton-circle"></div>
+                    <div class="item-info">
+                        <div class="skeleton skeleton-text" style="width: 120px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 80px;"></div>
+                    </div>
+                </div>
+            </div>
+        `.repeat(3);
+
+        if (profList) profList.innerHTML = skeletonHtml;
+        if (serviceList) serviceList.innerHTML = skeletonHtml;
+        if (addonsList) addonsList.innerHTML = skeletonHtml;
+    },
+
+    bindStepperEvents: function() {
+        document.querySelectorAll('.step').forEach(stepEl => {
+            stepEl.style.cursor = 'pointer';
+            stepEl.onclick = () => {
+                const targetStep = parseInt(stepEl.id.replace('st-', ''));
+                if (targetStep < this.step || stepEl.classList.contains('completed')) {
+                    this.goToStep(targetStep);
+                }
+            };
+        });
+    },
+
+    goToStep: function(targetStep) {
+        if (targetStep === this.step) return;
+
+        document.getElementById(`st-${this.step}`).classList.remove('active');
+        document.getElementById(`step-${this.step}`).classList.add('hidden');
+
+        this.step = targetStep;
+
+        document.getElementById(`st-${this.step}`).classList.add('active');
+        document.getElementById(`step-${this.step}`).classList.remove('hidden');
+
+        for (let i = targetStep; i <= 5; i++) {
+            document.getElementById(`st-${i}`).classList.remove('completed');
+        }
+
+        this.updateUI();
+        this.checkValidity();
     },
 
     resetState: function() {

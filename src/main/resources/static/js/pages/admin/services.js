@@ -35,6 +35,7 @@ const adminServicesApp = {
     },
 
     loadServices: async function() {
+        this.showSkeletons();
         try {
             const res = await fetch('/api/v1/admin/salon/service', {
                 headers: { 'Authorization': `Bearer ${Auth.getToken()}` }
@@ -48,6 +49,22 @@ const adminServicesApp = {
             console.error('Error loading services:', error);
             Toast.error('Erro ao carregar serviços.');
         }
+    },
+
+    showSkeletons: function() {
+        const el = document.getElementById('service-list');
+        if (!el) return;
+        
+        el.innerHTML = `
+            <div class="service-card skeleton-container" style="pointer-events: none; opacity: 0.6;">
+                <div class="card-top">
+                    <div class="service-info">
+                        <div class="skeleton skeleton-title" style="width: 200px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 150px;"></div>
+                    </div>
+                </div>
+            </div>
+        `.repeat(3);
     },
 
     renderServices: function() {

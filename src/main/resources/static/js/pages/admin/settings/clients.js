@@ -177,7 +177,7 @@ export const ClientsModule = {
 
     handleUpdateClientStatus: async function(clientId, status, btn) {
         const action = status === 'BANNED' ? 'banir' : 'desbloquear';
-        const confirmed = await this.showConfirm(`${status === 'BANNED' ? 'Banir' : 'Desbloquear'} Cliente`, `Tem certeza que deseja ${action} este cliente?`);
+        const confirmed = await UI.confirm(`${status === 'BANNED' ? 'Banir' : 'Desbloquear'} Cliente`, `Tem certeza que deseja ${action} este cliente?`);
         if (!confirmed) return;
 
         this.setLoading(btn, true);
