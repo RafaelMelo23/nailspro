@@ -22,7 +22,8 @@ public class TenantUrlProvider {
 
         return UriComponentsBuilder.newInstance()
                 .scheme(protocol)
-                .host(tenantId + "." + domain)
+                .host(domain)
+                .pathSegment(tenantId)
                 .build()
                 .toUriString();
     }
