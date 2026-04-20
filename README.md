@@ -69,18 +69,20 @@ Plataforma SaaS multi-tenant para gestão de agendamentos e automação de reten
 - **Multi-Tenancy Nativa:** Isolamento rigoroso de dados em nível de repositório utilizando filtros Hibernate e Spring AOP (`TenantAspect`). A resolução de contexto suporta claims de JWT e roteamento por subdomínios.
 - **Motor de Disponibilidade:** Cálculo de slots em janelas de 30 minutos com suporte a múltiplos serviços (add-ons) e trava pessimista para evitar conflitos de reserva.
 - **Comunicação Orientada a Eventos:** Uso de `@TransactionalEventListener` e processamento assíncrono para pipelines de mensageria, garantindo que a experiência do usuário não seja afetada pelo tempo de resposta de APIs externas.
+- **Caffeine Cache:** Implementação de cache de segundo nível para a API de perfil do salão (White-Label), reduzindo a latência e o consumo de recursos ao servir configurações de marca e cores em janelas de 10 minutos.
 - **Strategy Pattern para Webhooks:** Processamento modular de eventos da Evolution API, permitindo fácil extensão para novos tipos de mensagens e notificações.
 
 ### Stack
 | Camada | Tecnologias |
 | --- | --- |
-| **Backend** | Java 21, Spring Boot 3.5, Spring Security (JWT), Spring Data JPA |
+| **Backend** | Java 21, Spring Boot 3.5, Caffeine Cache, Spring Security (JWT) |
 | **Frontend** | Vanilla JavaScript (ESM), CSS, Thymeleaf Fragments |
 | **Banco de Dados** | PostgreSQL 15, Flyway |
 | **Integrações** | Evolution API (WhatsApp), Resend (E-mail), Sentry (Observabilidade) |
 | **Infraestrutura** | Docker Compose, Spring Boot Actuator, Logback (JSON Encoding) |
 | **Testes** | JUnit 5, Testcontainers (PostgreSQL Real), Mockito |
 
+* A Resend API foi removida da versão de produção atual.
 ---
 
 ## 📊 Arquitetura de Fluxo
