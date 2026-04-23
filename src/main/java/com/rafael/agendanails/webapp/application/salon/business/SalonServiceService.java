@@ -105,4 +105,9 @@ public class SalonServiceService {
             service.setProfessionals(professionals);
         }
     }
+
+    @Transactional
+    public void deleteService(Long id) {
+        salonServiceRepository.deleteById(id);
+    }
 }

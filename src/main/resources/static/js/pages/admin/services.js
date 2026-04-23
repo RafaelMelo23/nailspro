@@ -94,6 +94,7 @@ const adminServicesApp = {
                             <span class="slider"></span>
                         </label>
                         <button class="btn-icon" onclick="adminServicesApp.editService(${s.id})">✏️</button>
+                        <button class="btn-icon btn-delete" onclick="adminServicesApp.handleDeleteService(${s.id})" title="Excluir Serviço">🗑️</button>
                     </div>
                 </div>
 
@@ -247,6 +248,28 @@ const adminServicesApp = {
         } catch (error) {
             Toast.error('Erro de conexão.');
             await this.loadServices();
+        }
+    },
+
+    handleDeleteService: async function(id) {
+        const confirmed = await UI.confirm('Excluir Serviço', 'Tem certeza que deseja excluir este serviço? Esta ação não pode ser desfeita e ele deixará de aparecer em todos os agendamentos.');
+        if (!confirmed) return;
+
+        try {
+            const res = await fetch(`/api/v1/admin/salon/service/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${Auth.getToken()}` }
+            });
+
+            if (res.ok) {
+                Toast.success('Serviço excluído com sucesso!');
+                await this.loadServices();
+            } else {
+                Toast.error('Erro ao excluir serviço.');
+            }
+        } catch (error) {
+            console.error('Error deleting service:', error);
+            Toast.error('Erro de conexão.');
         }
     }
 };

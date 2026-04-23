@@ -11,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 import java.time.DayOfWeek;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Filter;
 
 @Entity
 @SuperBuilder
@@ -18,7 +20,13 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE users SET deleted = true WHERE id = ?")
+@Filter(name = "deletedFilter")
 public class Professional extends User {
+
+    @Builder.Default
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
 
     private String professionalPicture;
 

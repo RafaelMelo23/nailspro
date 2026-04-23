@@ -56,6 +56,7 @@ public class TenantAspect {
     private void disableFilter() {
         Session session = entityManager.unwrap(Session.class);
         session.disableFilter("tenantFilter");
+        session.disableFilter("deletedFilter");
         log.trace("TenantAspect: [FILTER-OFF] disabled for session");
     }
 
@@ -68,6 +69,7 @@ public class TenantAspect {
 
         Session session = entityManager.unwrap(Session.class);
         session.enableFilter("tenantFilter").setParameter("tenantId", tenantId);
+        session.enableFilter("deletedFilter");
         log.trace("TenantAspect: [FILTER-ON] enabled for tenant: [{}]", tenantId);
     }
 

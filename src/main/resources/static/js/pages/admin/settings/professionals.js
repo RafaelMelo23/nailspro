@@ -42,9 +42,12 @@ export const ProfessionalsModule = {
                 </td>
                 <td data-label="Status"><span class="badge ${prof.isActive ? 'badge-success' : 'badge-danger'}">${prof.isActive ? 'Ativo' : 'Inativo'}</span></td>
                 <td data-label="Ação">
-                    ${prof.isActive ?
-                        `<button class="btn-outline-danger btn-sm" onclick="adminSettingsApp.handleDeactivateProfessional(${prof.id}, this)">Desativar</button>` :
-                        `<button class="btn btn-secondary btn-sm" onclick="adminSettingsApp.handleActivateProfessional(${prof.id}, this)">Ativar</button>`}
+                    <div class="prof-btn-group">
+                        ${prof.isActive ?
+                            `<button class="btn-outline-danger btn-sm" onclick="adminSettingsApp.handleDeactivateProfessional(${prof.id}, this)">Desativar</button>` :
+                            `<button class="btn btn-secondary btn-sm" onclick="adminSettingsApp.handleActivateProfessional(${prof.id}, this)">Ativar</button>`}
+                        <button class="btn btn-danger btn-sm" onclick="adminSettingsApp.handleDeleteProfessional(${prof.id}, this)" title="Excluir Permanentemente">Excluir</button>
+                    </div>
                 </td>
             </tr>
         `).join('');
@@ -267,6 +270,25 @@ export const ProfessionalsModule = {
             if (response.ok) {
                 Toast.success('Profissional cadastrada com sucesso!');
                 this.closeProfessionalModal();
+                await this.loadProfessionals();
+            }
+        } finally {
+            this.setLoading(btn, false);
+        }
+    },
+
+    handleDeleteProfessional: async function(id, btn) {
+        const confirmed = await UI.confirm('Excluir Profissional', 'Tem certeza que deseja excluir esta profissional? Esta ação é permanente e ela não poderá mais acessar o sistema.');
+        if (!confirmed) return;
+
+        this.setLoading(btn, true);
+        try {
+            const response = await fetch(`/api/v1/admin/professional/${id}`, { 
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${Auth.getToken()}` }
+            });
+            if (response.ok) {
+                Toast.success('Profissional excluída com sucesso!');
                 await this.loadProfessionals();
             }
         } finally {

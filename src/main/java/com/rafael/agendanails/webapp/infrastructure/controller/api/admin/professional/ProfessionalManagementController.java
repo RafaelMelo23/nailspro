@@ -92,6 +92,23 @@ public class ProfessionalManagementController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Delete professional", description = "Deletes (soft-delete) a professional by id.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Professional deleted"),
+            @ApiResponse(responseCode = "400", description = "Invalid professional id"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProfessional(
+            @Parameter(example = "2002")
+            @PathVariable Long id) {
+
+        managementService.deleteProfessional(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "List professionalsIds", description = "Returns all professionalsIds.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Professionals returned",

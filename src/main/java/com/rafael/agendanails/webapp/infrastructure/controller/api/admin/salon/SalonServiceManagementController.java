@@ -93,6 +93,22 @@ public class SalonServiceManagementController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Delete salon service", description = "Deletes (soft-delete) a salon service by id.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Service deleted"),
+            @ApiResponse(responseCode = "400", description = "Invalid service id"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @DeleteMapping("/{serviceId}")
+    public ResponseEntity<Void> deleteSalonService(
+            @Parameter(example = "1001")
+            @PathVariable Long serviceId) {
+
+        salonService.deleteService(serviceId);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "List all salon services for admin", description = "Returns all salon services including inactive ones.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Services returned"),

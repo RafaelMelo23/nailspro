@@ -8,6 +8,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Filter;
 
 @Entity
 @SuperBuilder
@@ -16,7 +18,14 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "service")
+@SQLDelete(sql = "UPDATE service SET deleted = true WHERE id = ?")
+@Filter(name = "deletedFilter")
 public class SalonService extends BaseEntity {
+
+    @Builder.Default
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
